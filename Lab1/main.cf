@@ -1,18 +1,21 @@
 PDefs. Program ::= [Def] ;
 
 DFun. Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
-separator Arg "," ;
-terminator Stm "" ;
+DStm. Def ::= Stm;
+DTypedef. Def ::= "typedef" Type Id;
+DUsing. Def ::= "using" Id;
 
-comment "//" ;
-comment "/*" "*/" ;
+AType. Arg ::= Type ;
+ATypeId. Arg ::= Type Id ;
+AExp. Arg ::= Type Id "=" Exp ;
+AConst. Arg ::= "const" Type Id;
+
 
 SExp. Stm ::= Exp ";" ;
 SReturn. Stm ::= "return" Exp ";" ;
 SWhile. Stm ::= "while" "(" Exp ")" Stm ;
 SBlock. Stm ::= "{" [Stm] "}" ;
 SIfElse. Stm ::= "if" "(" Exp ")" Stm "else" Stm ;
-
 SDecl. Stm ::= Type Id ";" ;
 SDecls. Stm ::= Type Id "," [Id] ";" ;
 SInit. Stm ::= Type Id "=" Exp ";" ;
@@ -44,7 +47,19 @@ EOr. Exp3 ::= Exp3 "||" Exp4 ;
 EAss. Exp2 ::= Exp3 "=" Exp2 ;
 
 coercions Exp 15 ;
+
 separator Exp "," ;
+separator Def "";
+separator Arg "," ;
+separator nonempty Id ",";
+separator Stm "";
+
+terminator Stm "" ;
+
+comment "//" ;
+comment "/*" "*/" ;
+
+token Id (letter (letter | digit | '_')*) ;
 
 Tbool. Type ::= "bool" ;
 Tdouble. Type ::= "double" ;

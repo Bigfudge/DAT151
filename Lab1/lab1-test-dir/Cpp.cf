@@ -1,14 +1,12 @@
 PDefs. Program ::= [Def] ;
 
 DFun. Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
-DStm. Def ::= [Stm];
-DTypedef. Def ::= "typedef" Type Id;
-DUsing. Def ::= "using" Id;
+DStm. Def ::= Stm;
+DTypedef. Def ::= "typedef" Type Exp;
 
 AType. Arg ::= Type ;
-ATypeId. Arg ::= Type Id ;
-AExp. Arg ::= Type Id "=" Exp ;
-AConst. Arg ::= "const" Type Id;
+ATypeId. Arg ::= Stm;
+AConst. Arg ::= "const" Stm;
 
 
 SExp. Stm ::= Exp ";" ;
@@ -51,8 +49,7 @@ coercions Exp 15 ;
 separator Exp "," ;
 separator Def "";
 separator Arg "," ;
-separator nonempty Id ",";
-separator Stm "";
+separator Id "";
 
 terminator Stm "" ;
 
