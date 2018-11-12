@@ -13,7 +13,8 @@ data Program = PDefs [Def]
 
 data Def
     = DFun Type Id [Arg] [Stm]
-    | DStm Stm
+    | DFunn Type Id [Arg]
+    | DDecl Decl
     | DTypedef Type Id
     | DUsing Id
   deriving (Eq, Ord, Show, Read)
@@ -22,15 +23,21 @@ data Arg
     = AType Type | ATypeId Type Id | AExp Type Id Exp | AConst Type Id
   deriving (Eq, Ord, Show, Read)
 
+data Decl = Test Type Id | Test2 Type Id Exp
+  deriving (Eq, Ord, Show, Read)
+
 data Stm
     = SExp Exp
     | SReturn Exp
     | SWhile Exp Stm
+    | SDoWhile Stm Exp Stm
     | SBlock [Stm]
+    | SFor Decl Exp Exp Stm
     | SIfElse Exp Stm Stm
-    | SDecl Type Id
+    | SDecl Decl
     | SDecls Type Id [Id]
     | SInit Type Id Exp
+    | SExps Type [Exp]
   deriving (Eq, Ord, Show, Read)
 
 data Exp
@@ -40,16 +47,24 @@ data Exp
     | ETrue
     | EFalse
     | EId Id
+    | EQuaConst Exp [Exp]
+    | EIndex Exp Exp
     | ECall Id [Exp]
+    | EStut Exp Exp
+    | EPro Exp Exp
     | EPIncr Exp
     | EPDecr Exp
     | EIncr Exp
     | EDecr Exp
+    | EDere Exp
+    | ENege Exp
     | ENeg Exp
     | EMul Exp Exp
     | EDiv Exp Exp
     | EAdd Exp Exp
     | ESub Exp Exp
+    | ELShift Exp Exp
+    | ERShift Exp Exp
     | ELt Exp Exp
     | EGt Exp Exp
     | ELEq Exp Exp
@@ -59,6 +74,10 @@ data Exp
     | EAnd Exp Exp
     | EOr Exp Exp
     | EAss Exp Exp
+    | EAssDec Exp Exp
+    | EAssInc Exp Exp
+    | ECond Exp Exp Exp
+    | EThrow Exp
   deriving (Eq, Ord, Show, Read)
 
 data Type = Tbool | Tdouble | Tint | Tstring | Tvoid

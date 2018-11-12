@@ -1,24 +1,32 @@
 PDefs. Program ::= [Def] ;
 
 DFun. Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
-DStm. Def ::= Stm;
-DTypedef. Def ::= "typedef" Type Id;
-DUsing. Def ::= "using" Id;
+DFunn. Def ::= Type Id "(" [Arg] ");";
+DDecl. Def ::= Decl;
+DTypedef. Def ::= "typedef" Type Id ";";
+DUsing. Def ::= "using" Id ";";
 
 AType. Arg ::= Type ;
 ATypeId. Arg ::= Type Id ;
 AExp. Arg ::= Type Id "=" Exp ;
 AConst. Arg ::= "const" Type Id;
 
+Test. Decl ::= Type Id ;
+Test2. Decl ::= Type Id "=" Exp ";";
 
 SExp. Stm ::= Exp ";" ;
 SReturn. Stm ::= "return" Exp ";" ;
 SWhile. Stm ::= "while" "(" Exp ")" Stm ;
+SDoWhile. Stm ::= "do" Stm ";" "while" "(" Exp ")" Stm ;
 SBlock. Stm ::= "{" [Stm] "}" ;
+SFor. Stm ::= "for" "(" Decl Exp Exp ")" Stm ;
 SIfElse. Stm ::= "if" "(" Exp ")" Stm "else" Stm ;
-SDecl. Stm ::= Type Id ";" ;
+SDecl. Stm ::= Decl;
 SDecls. Stm ::= Type Id "," [Id] ";" ;
 SInit. Stm ::= Type Id "=" Exp ";" ;
+SExps. Stm ::= Type [Exp];
+
+
 
 EInt. Exp15 ::= Integer ;
 EDouble. Exp15 ::= Double ;
@@ -26,16 +34,24 @@ EString. Exp15 ::= String ;
 ETrue. Exp15 ::= "true" ;
 EFalse. Exp15 ::= "false" ;
 EId. Exp15 ::= Id ;
+EQuaConst. Exp15 ::= Id "::" [Id];
+EIndex. Exp14 ::= Exp "[" Exp "]";
 ECall. Exp15 ::= Id "(" [Exp] ")" ;
+EStut. Exp14 ::= Exp14 "." Exp15;
+EPro. Exp14 ::= Exp14 "->" Exp15;
 EPIncr. Exp14 ::= Exp15 "++" ;
 EPDecr. Exp14 ::= Exp15 "--" ;
 EIncr. Exp13 ::= "++" Exp14 ;
 EDecr. Exp13 ::= "--" Exp14 ;
+EDere. Exp13 ::= "*" Exp14;
+ENege. Exp13 ::= "!" Exp14;
 ENeg. Exp13 ::= "-" Exp14 ;
 EMul. Exp12 ::= Exp12 "*" Exp13 ;
 EDiv. Exp12 ::= Exp12 "/" Exp13 ;
 EAdd. Exp11 ::= Exp11 "+" Exp12 ;
 ESub. Exp11 ::= Exp11 "-" Exp12 ;
+ELShift. Exp10 ::= Exp10 "<<" Exp11;
+ERShift. Exp10 ::= Exp10 ">>" Exp11;
 ELt. Exp9 ::= Exp9 "<" Exp10 ;
 EGt. Exp9 ::= Exp9 ">" Exp10 ;
 ELEq. Exp9 ::= Exp9 "<=" Exp10 ;
@@ -45,19 +61,24 @@ ENEq. Exp8 ::= Exp8 "!=" Exp9 ;
 EAnd. Exp4 ::= Exp4 "&&" Exp5 ;
 EOr. Exp3 ::= Exp3 "||" Exp4 ;
 EAss. Exp2 ::= Exp3 "=" Exp2 ;
+EAssDec. Exp2 ::= Exp3 "-=" Exp2;
+EAssInc. Exp2 ::= Exp3 "+=" Exp2;
+ECond. Exp2 ::= Exp3 "?" Exp2 ":" Exp2;
+EThrow. Exp1 ::= "throw" Exp ;
 
 coercions Exp 15 ;
 
-separator Exp "," ;
+separator Exp "" ;
 separator Def "";
 separator Arg "," ;
-separator nonempty Id ",";
+separator nonempty Id "::";
 separator Stm "";
 
 terminator Stm "" ;
 
 comment "//" ;
 comment "/*" "*/" ;
+comment "#";
 
 token Id (letter (letter | digit | '_')*) ;
 
