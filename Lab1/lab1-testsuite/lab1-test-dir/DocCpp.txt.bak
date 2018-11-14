@@ -21,6 +21,10 @@ two sequences of digits separated by a decimal point, optionally
 followed by an unsigned or negative exponent.
 
 
+Character literals //Char// have the form
+``'``//c//``'``, where //c// is any single character.
+
+
 String literals //String// have the form
 ``"``//x//``"``}, where //x// is any sequence of any characters
 except ``"`` unless preceded by ``\``.
@@ -28,7 +32,7 @@ except ``"`` unless preceded by ``\``.
 
 
 
-Id literals are recognized by the regular expression
+QuaConstId literals are recognized by the regular expression
 `````letter (letter | digit | '_')*`````
 
 
@@ -36,22 +40,22 @@ Id literals are recognized by the regular expression
 The set of reserved words is the set of terminals appearing in the grammar. Those reserved words that consist of non-letter characters are called symbols, and they are treated in a different way from those that are similar to identifiers. The lexer follows rules familiar from languages like Haskell, C, and Java, including longest match and spacing conventions.
 
 The reserved words used in Cpp are the following:
-  | ``bool`` | ``const`` | ``do`` | ``double``
-  | ``else`` | ``false`` | ``for`` | ``if``
-  | ``int`` | ``return`` | ``string`` | ``throw``
+  | ``bool`` | ``char`` | ``const`` | ``do``
+  | ``double`` | ``else`` | ``false`` | ``for``
+  | ``if`` | ``int`` | ``return`` | ``throw``
   | ``true`` | ``typedef`` | ``using`` | ``void``
   | ``while`` |  |  | 
 
 The symbols used in Cpp are the following:
   | ( | ) | { | }
-  | ); | ; | = | ,
-  | :: | [ | ] | .
-  | -> | ++ | -- | *
-  | ! | - | / | +
-  | << | >> | < | >
-  | <= | >= | == | !=
-  | && | || | -= | +=
-  | ? | : |  | 
+  | ); | ; | = | [
+  | ] | . | -> | ++
+  | -- | * | ! | /
+  | + | - | << | >>
+  | < | > | <= | >=
+  | == | != | && | ||
+  | -= | += | ? | :
+  | , | :: |  | 
 
 ===Comments===
 Single-line comments begin with //, #.Multiple-line comments are  enclosed with /* and */.
@@ -65,46 +69,45 @@ All other symbols are terminals.
   | //Program// | -> | //[Def]// 
   | //Def// | -> | //Type// //Id// ``(`` //[Arg]// ``)`` ``{`` //[Stm]// ``}`` 
   |  |  **|**  | //Type// //Id// ``(`` //[Arg]// ``);`` 
-  |  |  **|**  | //Decl// 
+  |  |  **|**  | //Type// //Decl// 
   |  |  **|**  | ``typedef`` //Type// //Id// ``;`` 
   |  |  **|**  | ``using`` //Id// ``;`` 
   | //Arg// | -> | //Type// 
   |  |  **|**  | //Type// //Id// 
   |  |  **|**  | //Type// //Id// ``=`` //Exp// 
   |  |  **|**  | ``const`` //Type// //Id// 
-  | //Decl// | -> | //Type// //Id// 
-  |  |  **|**  | //Type// //Id// ``=`` //Exp// ``;`` 
+  | //Decl// | -> | //Id// 
+  |  |  **|**  | //Id// ``=`` //Exp// 
   | //Stm// | -> | //Exp// ``;`` 
   |  |  **|**  | ``return`` //Exp// ``;`` 
   |  |  **|**  | ``while`` ``(`` //Exp// ``)`` //Stm// 
   |  |  **|**  | ``do`` //Stm// ``;`` ``while`` ``(`` //Exp// ``)`` //Stm// 
   |  |  **|**  | ``{`` //[Stm]// ``}`` 
-  |  |  **|**  | ``for`` ``(`` //Decl// //Exp// //Exp// ``)`` //Stm// 
+  |  |  **|**  | ``for`` ``(`` //Decl// ``;`` //Exp// ``;`` //Exp// ``)`` //Stm// 
+  |  |  **|**  | ``if`` ``(`` //Exp// ``)`` //Stm// 
   |  |  **|**  | ``if`` ``(`` //Exp// ``)`` //Stm// ``else`` //Stm// 
-  |  |  **|**  | //Decl// 
-  |  |  **|**  | //Type// //Id// ``,`` //[Id]// ``;`` 
-  |  |  **|**  | //Type// //Id// ``=`` //Exp// ``;`` 
-  |  |  **|**  | //Type// //[Exp]// 
-  | //Exp15// | -> | //Integer// 
+  |  |  **|**  | //Type// //[Decl]// ``;`` 
+  |  |  **|**  | ``typedef`` //Type// //Id// ``;`` 
+  | //Exp16// | -> | //Integer// 
   |  |  **|**  | //Double// 
-  |  |  **|**  | //String// 
+  |  |  **|**  | //[String]// 
+  |  |  **|**  | //Char// 
   |  |  **|**  | ``true`` 
   |  |  **|**  | ``false`` 
   |  |  **|**  | //Id// 
-  |  |  **|**  | //Id// ``::`` //[Id]// 
-  |  |  **|**  | //Id// ``(`` //[Exp]// ``)`` 
+  |  |  **|**  | //Exp16// ``(`` //[Exp]// ``)`` 
+  |  |  **|**  | //Exp16// ``[`` //Exp// ``]`` 
   |  |  **|**  | ``(`` //Exp// ``)`` 
-  | //Exp14// | -> | //Exp// ``[`` //Exp// ``]`` 
-  |  |  **|**  | //Exp14// ``.`` //Exp15// 
-  |  |  **|**  | //Exp14// ``->`` //Exp15// 
-  |  |  **|**  | //Exp15// ``++`` 
-  |  |  **|**  | //Exp15// ``--`` 
+  | //Exp15// | -> | //Exp15// ``.`` //Exp16// 
+  |  |  **|**  | //Exp15// ``->`` //Exp16// 
+  |  |  **|**  | //Exp16// 
+  | //Exp14// | -> | //Exp14// ``++`` 
+  |  |  **|**  | //Exp14// ``--`` 
   |  |  **|**  | //Exp15// 
-  | //Exp13// | -> | ``++`` //Exp14// 
-  |  |  **|**  | ``--`` //Exp14// 
-  |  |  **|**  | ``*`` //Exp14// 
-  |  |  **|**  | ``!`` //Exp14// 
-  |  |  **|**  | ``-`` //Exp14// 
+  | //Exp13// | -> | ``++`` //Exp13// 
+  |  |  **|**  | ``--`` //Exp13// 
+  |  |  **|**  | ``*`` //Exp13// 
+  |  |  **|**  | ``!`` //Exp13// 
   |  |  **|**  | //Exp14// 
   | //Exp12// | -> | //Exp12// ``*`` //Exp13// 
   |  |  **|**  | //Exp12// ``/`` //Exp13// 
@@ -138,15 +141,28 @@ All other symbols are terminals.
   | //Exp5// | -> | //Exp6// 
   | //Exp6// | -> | //Exp7// 
   | //Exp7// | -> | //Exp8// 
+  | //Id// | -> | //Id1// 
+  |  |  **|**  | //[QuaConstId]// 
+  | //Id1// | -> | ``(`` //Id// ``)`` 
   | //[Exp]// | -> | **eps**
-  |  |  **|**  | //Exp// //[Exp]// 
+  |  |  **|**  | //Exp// 
+  |  |  **|**  | //Exp// ``,`` //[Exp]// 
   | //[Def]// | -> | **eps**
+  |  |  **|**  | //Def// //[Def]// 
+  |  |  **|**  | **eps**
   |  |  **|**  | //Def// //[Def]// 
   | //[Arg]// | -> | **eps**
   |  |  **|**  | //Arg// 
   |  |  **|**  | //Arg// ``,`` //[Arg]// 
-  | //[Id]// | -> | //Id// 
+  | //[Id]// | -> | **eps**
+  |  |  **|**  | //Id// 
   |  |  **|**  | //Id// ``,`` //[Id]// 
+  | //[Decl]// | -> | //Decl// 
+  |  |  **|**  | //Decl// ``,`` //[Decl]// 
+  | //[QuaConstId]// | -> | //QuaConstId// 
+  |  |  **|**  | //QuaConstId// ``::`` //[QuaConstId]// 
+  | //[String]// | -> | //String// 
+  |  |  **|**  | //String// //[String]// 
   | //[Stm]// | -> | **eps**
   |  |  **|**  | //Stm// //[Stm]// 
   |  |  **|**  | **eps**
@@ -154,7 +170,9 @@ All other symbols are terminals.
   | //Type// | -> | ``bool`` 
   |  |  **|**  | ``double`` 
   |  |  **|**  | ``int`` 
-  |  |  **|**  | ``string`` 
   |  |  **|**  | ``void`` 
+  |  |  **|**  | ``char`` 
+  |  |  **|**  | //Id// 
+  |  |  **|**  | //Id// ``::`` //Type// 
 
 

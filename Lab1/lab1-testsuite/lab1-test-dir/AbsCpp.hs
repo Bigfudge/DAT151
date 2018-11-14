@@ -7,14 +7,15 @@ module AbsCpp where
 
 
 
-newtype Id = Id String deriving (Eq, Ord, Show, Read)
+newtype QuaConstId = QuaConstId String
+  deriving (Eq, Ord, Show, Read)
 data Program = PDefs [Def]
   deriving (Eq, Ord, Show, Read)
 
 data Def
     = DFun Type Id [Arg] [Stm]
     | DFunn Type Id [Arg]
-    | DDecl Decl
+    | DDecl Type Decl
     | DTypedef Type Id
     | DUsing Id
   deriving (Eq, Ord, Show, Read)
@@ -23,7 +24,7 @@ data Arg
     = AType Type | ATypeId Type Id | AExp Type Id Exp | AConst Type Id
   deriving (Eq, Ord, Show, Read)
 
-data Decl = Test Type Id | Test2 Type Id Exp
+data Decl = Test Id | Test2 Id Exp
   deriving (Eq, Ord, Show, Read)
 
 data Stm
@@ -33,23 +34,22 @@ data Stm
     | SDoWhile Stm Exp Stm
     | SBlock [Stm]
     | SFor Decl Exp Exp Stm
+    | SIf Exp Stm
     | SIfElse Exp Stm Stm
-    | SDecl Decl
-    | SDecls Type Id [Id]
-    | SInit Type Id Exp
-    | SExps Type [Exp]
+    | SDecl Type [Decl]
+    | STypedef Type Id
   deriving (Eq, Ord, Show, Read)
 
 data Exp
     = EInt Integer
     | EDouble Double
-    | EString String
+    | EString [String]
+    | EChar Char
     | ETrue
     | EFalse
     | EId Id
-    | EQuaConst Id [Id]
+    | ECall Exp [Exp]
     | EIndex Exp Exp
-    | ECall Id [Exp]
     | EStut Exp Exp
     | EPro Exp Exp
     | EPIncr Exp
@@ -58,7 +58,6 @@ data Exp
     | EDecr Exp
     | EDere Exp
     | ENege Exp
-    | ENeg Exp
     | EMul Exp Exp
     | EDiv Exp Exp
     | EAdd Exp Exp
@@ -80,6 +79,16 @@ data Exp
     | EThrow Exp
   deriving (Eq, Ord, Show, Read)
 
-data Type = Tbool | Tdouble | Tint | Tstring | Tvoid
+data Id = IId [QuaConstId]
+  deriving (Eq, Ord, Show, Read)
+
+data Type
+    = Tbool
+    | Tdouble
+    | Tint
+    | Tvoid
+    | Tchar
+    | TId Id
+    | TQuConst Id Type
   deriving (Eq, Ord, Show, Read)
 
