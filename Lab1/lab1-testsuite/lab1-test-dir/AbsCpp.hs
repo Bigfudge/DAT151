@@ -13,31 +13,46 @@ data Program = PDefs [Def]
   deriving (Eq, Ord, Show, Read)
 
 data Def
-    = DFun Type Id [Arg] [Stm]
-    | DFunn Type Id [Arg]
-    | DDecl Type Decl
-    | DTypedef Type Id
+    = DFunStm Type Id [Arg] [Stm]
+    | DFun Type Id [Arg]
+    | DDecl Stm
     | DUsing Id
   deriving (Eq, Ord, Show, Read)
 
 data Arg
-    = AType Type | ATypeId Type Id | AExp Type Id Exp | AConst Type Id
+    = AType Type
+    | ATypeConst Type
+    | ATypeId Type Id
+    | AExp Type Id Exp
+    | AConst Type Id
   deriving (Eq, Ord, Show, Read)
 
-data Decl = Test Id | Test2 Id Exp
+data Decl = Decl Id | DeclExp Id Exp
   deriving (Eq, Ord, Show, Read)
 
 data Stm
-    = SExp Exp
+    = SDeclConst Type [Decl]
+    | STypedef Type Id
+    | SDecl Type [Decl]
+    | SExp Exp
     | SReturn Exp
     | SWhile Exp Stm
     | SDoWhile Stm Exp Stm
-    | SBlock [Stm]
-    | SFor Decl Exp Exp Stm
+    | SFor Stm Exp Exp Stm
     | SIf Exp Stm
     | SIfElse Exp Stm Stm
-    | SDecl Type [Decl]
-    | STypedef Type Id
+    | SBlock [Stm]
+    | SEnd
+  deriving (Eq, Ord, Show, Read)
+
+data Associative = PFun [Exp] | PIndex Exp
+  deriving (Eq, Ord, Show, Read)
+
+data Type
+    = TAddr Type | TBool | TDouble | TInt | TVoid | TChar | TId Id
+  deriving (Eq, Ord, Show, Read)
+
+data Id = IId [QuaConstId]
   deriving (Eq, Ord, Show, Read)
 
 data Exp
@@ -48,8 +63,7 @@ data Exp
     | ETrue
     | EFalse
     | EId Id
-    | ECall Exp [Exp]
-    | EIndex Exp Exp
+    | ECall Id [Associative]
     | EStut Exp Exp
     | EPro Exp Exp
     | EPIncr Exp
@@ -60,6 +74,7 @@ data Exp
     | ENege Exp
     | EMul Exp Exp
     | EDiv Exp Exp
+    | EMod Exp Exp
     | EAdd Exp Exp
     | ESub Exp Exp
     | ELShift Exp Exp
@@ -77,18 +92,5 @@ data Exp
     | EAssInc Exp Exp
     | ECond Exp Exp Exp
     | EThrow Exp
-  deriving (Eq, Ord, Show, Read)
-
-data Id = IId [QuaConstId]
-  deriving (Eq, Ord, Show, Read)
-
-data Type
-    = Tbool
-    | Tdouble
-    | Tint
-    | Tvoid
-    | Tchar
-    | TId Id
-    | TQuConst Id Type
   deriving (Eq, Ord, Show, Read)
 

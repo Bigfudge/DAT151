@@ -48,14 +48,14 @@ The reserved words used in Cpp are the following:
 
 The symbols used in Cpp are the following:
   | ( | ) | { | }
-  | ); | ; | = | [
-  | ] | . | -> | ++
-  | -- | * | ! | /
+  | ; | = | [ | ]
+  | . | -> | ++ | --
+  | * | ! | / | %
   | + | - | << | >>
   | < | > | <= | >=
   | == | != | && | ||
   | -= | += | ? | :
-  | , | :: |  | 
+  | , | :: | & | 
 
 ===Comments===
 Single-line comments begin with //, #.Multiple-line comments are  enclosed with /* and */.
@@ -67,27 +67,35 @@ and **eps** (empty rule) belong to the BNF notation.
 All other symbols are terminals.
 
   | //Program// | -> | //[Def]// 
-  | //Def// | -> | //Type// //Id// ``(`` //[Arg]// ``)`` ``{`` //[Stm]// ``}`` 
-  |  |  **|**  | //Type// //Id// ``(`` //[Arg]// ``);`` 
-  |  |  **|**  | //Type// //Decl// 
-  |  |  **|**  | ``typedef`` //Type// //Id// ``;`` 
+  | //Def// | -> | //Type// //Id// ``(`` //[Arg]// ``)`` ``{`` //[Stm1]// ``}`` 
+  |  |  **|**  | //Type// //Id// ``(`` //[Arg]// ``)`` ``;`` 
+  |  |  **|**  | //Stm3// 
   |  |  **|**  | ``using`` //Id// ``;`` 
   | //Arg// | -> | //Type// 
+  |  |  **|**  | ``const`` //Type// 
   |  |  **|**  | //Type// //Id// 
   |  |  **|**  | //Type// //Id// ``=`` //Exp// 
   |  |  **|**  | ``const`` //Type// //Id// 
   | //Decl// | -> | //Id// 
   |  |  **|**  | //Id// ``=`` //Exp// 
-  | //Stm// | -> | //Exp// ``;`` 
-  |  |  **|**  | ``return`` //Exp// ``;`` 
+  | //Stm3// | -> | ``const`` //Type// //[Decl]// ``;`` 
+  |  |  **|**  | ``typedef`` //Type// //Id// ``;`` 
+  |  |  **|**  | //Type// //[Decl]// ``;`` 
+  |  |  **|**  | ``(`` //Stm// ``)`` 
+  | //Stm2// | -> | //Exp// ``;`` 
+  |  |  **|**  | //Stm3// 
+  | //Stm1// | -> | ``return`` //Exp// ``;`` 
   |  |  **|**  | ``while`` ``(`` //Exp// ``)`` //Stm// 
-  |  |  **|**  | ``do`` //Stm// ``;`` ``while`` ``(`` //Exp// ``)`` //Stm// 
-  |  |  **|**  | ``{`` //[Stm]// ``}`` 
-  |  |  **|**  | ``for`` ``(`` //Decl// ``;`` //Exp// ``;`` //Exp// ``)`` //Stm// 
+  |  |  **|**  | ``do`` //Stm// ``while`` ``(`` //Exp// ``)`` //Stm// 
+  |  |  **|**  | ``for`` ``(`` //Stm3// //Exp// ``;`` //Exp// ``)`` //Stm// 
   |  |  **|**  | ``if`` ``(`` //Exp// ``)`` //Stm// 
   |  |  **|**  | ``if`` ``(`` //Exp// ``)`` //Stm// ``else`` //Stm// 
-  |  |  **|**  | //Type// //[Decl]// ``;`` 
-  |  |  **|**  | ``typedef`` //Type// //Id// ``;`` 
+  |  |  **|**  | //Stm2// 
+  | //Stm// | -> | ``{`` //[Stm1]// ``}`` 
+  |  |  **|**  | ``;`` 
+  |  |  **|**  | //Stm1// 
+  | //Point// | -> | ``(`` //[Exp]// ``)`` 
+  |  |  **|**  | ``[`` //Exp// ``]`` 
   | //Exp16// | -> | //Integer// 
   |  |  **|**  | //Double// 
   |  |  **|**  | //[String]// 
@@ -95,8 +103,7 @@ All other symbols are terminals.
   |  |  **|**  | ``true`` 
   |  |  **|**  | ``false`` 
   |  |  **|**  | //Id// 
-  |  |  **|**  | //Exp16// ``(`` //[Exp]// ``)`` 
-  |  |  **|**  | //Exp16// ``[`` //Exp// ``]`` 
+  |  |  **|**  | //Id// //[Point]// 
   |  |  **|**  | ``(`` //Exp// ``)`` 
   | //Exp15// | -> | //Exp15// ``.`` //Exp16// 
   |  |  **|**  | //Exp15// ``->`` //Exp16// 
@@ -111,6 +118,7 @@ All other symbols are terminals.
   |  |  **|**  | //Exp14// 
   | //Exp12// | -> | //Exp12// ``*`` //Exp13// 
   |  |  **|**  | //Exp12// ``/`` //Exp13// 
+  |  |  **|**  | //Exp12// ``%`` //Exp13// 
   |  |  **|**  | //Exp13// 
   | //Exp11// | -> | //Exp11// ``+`` //Exp12// 
   |  |  **|**  | //Exp11// ``-`` //Exp12// 
@@ -133,9 +141,9 @@ All other symbols are terminals.
   | //Exp2// | -> | //Exp3// ``=`` //Exp2// 
   |  |  **|**  | //Exp3// ``-=`` //Exp2// 
   |  |  **|**  | //Exp3// ``+=`` //Exp2// 
-  |  |  **|**  | //Exp3// ``?`` //Exp2// ``:`` //Exp2// 
+  |  |  **|**  | //Exp3// ``?`` //Exp3// ``:`` //Exp3// 
   |  |  **|**  | //Exp3// 
-  | //Exp1// | -> | ``throw`` //Exp// 
+  | //Exp1// | -> | ``throw`` //Exp1// 
   |  |  **|**  | //Exp2// 
   | //Exp// | -> | //Exp1// 
   | //Exp5// | -> | //Exp6// 
@@ -144,13 +152,18 @@ All other symbols are terminals.
   | //Id// | -> | //Id1// 
   |  |  **|**  | //[QuaConstId]// 
   | //Id1// | -> | ``(`` //Id// ``)`` 
+  | //Type// | -> | //Type1// 
+  |  |  **|**  | //Type1// ``&`` 
+  | //Type1// | -> | ``(`` //Type// ``)`` 
+  |  |  **|**  | ``bool`` 
+  |  |  **|**  | ``double`` 
+  |  |  **|**  | ``int`` 
+  |  |  **|**  | ``void`` 
+  |  |  **|**  | ``char`` 
+  |  |  **|**  | //Id// 
   | //[Exp]// | -> | **eps**
   |  |  **|**  | //Exp// 
   |  |  **|**  | //Exp// ``,`` //[Exp]// 
-  | //[Def]// | -> | **eps**
-  |  |  **|**  | //Def// //[Def]// 
-  |  |  **|**  | **eps**
-  |  |  **|**  | //Def// //[Def]// 
   | //[Arg]// | -> | **eps**
   |  |  **|**  | //Arg// 
   |  |  **|**  | //Arg// ``,`` //[Arg]// 
@@ -163,16 +176,11 @@ All other symbols are terminals.
   |  |  **|**  | //QuaConstId// ``::`` //[QuaConstId]// 
   | //[String]// | -> | //String// 
   |  |  **|**  | //String// //[String]// 
-  | //[Stm]// | -> | **eps**
-  |  |  **|**  | //Stm// //[Stm]// 
-  |  |  **|**  | **eps**
-  |  |  **|**  | //Stm// //[Stm]// 
-  | //Type// | -> | ``bool`` 
-  |  |  **|**  | ``double`` 
-  |  |  **|**  | ``int`` 
-  |  |  **|**  | ``void`` 
-  |  |  **|**  | ``char`` 
-  |  |  **|**  | //Id// 
-  |  |  **|**  | //Id// ``::`` //Type// 
+  | //[Point]// | -> | //Point// 
+  |  |  **|**  | //Point// //[Point]// 
+  | //[Def]// | -> | **eps**
+  |  |  **|**  | //Def// //[Def]// 
+  | //[Stm1]// | -> | **eps**
+  |  |  **|**  | //Stm1// //[Stm1]// 
 
 

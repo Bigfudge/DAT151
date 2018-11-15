@@ -17,33 +17,51 @@ transProgram x = case x of
   PDefs defs -> failure x
 transDef :: Def -> Result
 transDef x = case x of
-  DFun type_ id args stms -> failure x
-  DFunn type_ id args -> failure x
-  DDecl type_ decl -> failure x
-  DTypedef type_ id -> failure x
+  DFunStm type_ id args stms -> failure x
+  DFun type_ id args -> failure x
+  DDecl stm -> failure x
   DUsing id -> failure x
 transArg :: Arg -> Result
 transArg x = case x of
   AType type_ -> failure x
+  ATypeConst type_ -> failure x
   ATypeId type_ id -> failure x
   AExp type_ id exp -> failure x
   AConst type_ id -> failure x
 transDecl :: Decl -> Result
 transDecl x = case x of
-  Test id -> failure x
-  Test2 id exp -> failure x
+  Decl id -> failure x
+  DeclExp id exp -> failure x
 transStm :: Stm -> Result
 transStm x = case x of
+  SDeclConst type_ decls -> failure x
+  STypedef type_ id -> failure x
+  SDecl type_ decls -> failure x
   SExp exp -> failure x
   SReturn exp -> failure x
   SWhile exp stm -> failure x
   SDoWhile stm1 exp stm2 -> failure x
-  SBlock stms -> failure x
-  SFor decl exp1 exp2 stm -> failure x
+  SFor stm1 exp1 exp2 stm2 -> failure x
   SIf exp stm -> failure x
   SIfElse exp stm1 stm2 -> failure x
-  SDecl type_ decls -> failure x
-  STypedef type_ id -> failure x
+  SBlock stms -> failure x
+  SEnd -> failure x
+transAssociative :: Associative -> Result
+transAssociative x = case x of
+  PFun exps -> failure x
+  PIndex exp -> failure x
+transType :: Type -> Result
+transType x = case x of
+  TAddr type_ -> failure x
+  TBool -> failure x
+  TDouble -> failure x
+  TInt -> failure x
+  TVoid -> failure x
+  TChar -> failure x
+  TId id -> failure x
+transId :: Id -> Result
+transId x = case x of
+  IId quaconstids -> failure x
 transExp :: Exp -> Result
 transExp x = case x of
   EInt integer -> failure x
@@ -53,8 +71,7 @@ transExp x = case x of
   ETrue -> failure x
   EFalse -> failure x
   EId id -> failure x
-  ECall exp exps -> failure x
-  EIndex exp1 exp2 -> failure x
+  ECall id associatives -> failure x
   EStut exp1 exp2 -> failure x
   EPro exp1 exp2 -> failure x
   EPIncr exp -> failure x
@@ -65,6 +82,7 @@ transExp x = case x of
   ENege exp -> failure x
   EMul exp1 exp2 -> failure x
   EDiv exp1 exp2 -> failure x
+  EMod exp1 exp2 -> failure x
   EAdd exp1 exp2 -> failure x
   ESub exp1 exp2 -> failure x
   ELShift exp1 exp2 -> failure x
@@ -82,16 +100,4 @@ transExp x = case x of
   EAssInc exp1 exp2 -> failure x
   ECond exp1 exp2 exp3 -> failure x
   EThrow exp -> failure x
-transId :: Id -> Result
-transId x = case x of
-  IId quaconstids -> failure x
-transType :: Type -> Result
-transType x = case x of
-  Tbool -> failure x
-  Tdouble -> failure x
-  Tint -> failure x
-  Tvoid -> failure x
-  Tchar -> failure x
-  TId id -> failure x
-  TQuConst id type_ -> failure x
 
