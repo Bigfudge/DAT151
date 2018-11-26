@@ -11,9 +11,21 @@ public class TypeChecker {
     }
     public static class Env {
         public HashMap<String,Sigma> signature ;
-        public LinkedList<HashMap<String,TypeCode>> contexts ;
-        public static Type lookupVar(String id) {} ;
-        public static TypeCode lookupFun(String id) {} ;
+        public static LinkedList<HashMap<String,Type>> contexts ;
+        public static Type lookupVar(String id) {
+            for(HashMap<String,Type> context : contexts) {
+                Type storedValue = context.get(id);
+                if(storedValue != null) {
+                    return storedValue;
+                }
+            }
+            throw new TypeException("The variable " + id + " is not defined");
+        } ;
+        public static TypeCode lookupFun(String id) {
+            //Test
+            //Also fett oklart vad som ska ske har
+            return TypeCode.CInt;
+        } ;
         public static void updateVar (String id, Type ty) {} ;
         // ...
     }
@@ -59,6 +71,7 @@ public class TypeChecker {
 
 
     }
+    //Why do we need this?
       private void checkStm (Stm st , Env ev)
     {
         st.accept(new CheckStm() , ev);
@@ -66,10 +79,36 @@ public class TypeChecker {
     
     public class CheckStm implements Stm.Visitor<Env,Env>{
         public Env visit(SDecls p, Env env) {
-        
+            //This method should be here.
+            return env;
         }
         public Env visit(SExp p, Env env) {
-        
+            //This method should be here.
+            return env;
         }
+        public Env visit(SIfElse p, Env env) {
+            //This method should be here.
+            return env;
+        }
+        public Env visit(SBlock p, Env env) {
+            //This method should be here.
+            return env;
+        }
+        public Env visit(SInit p, Env env) {
+            //This method should be here.
+            return env;
+        }
+        public Env visit(SReturn p, Env env) {
+            //This method should be here.
+            return env;
+        }
+        public Env visit(SWhile p , Env env) {
+            //This method should be here.
+            return env;
+        }
+        
+        
     }
+    
+    
 }
