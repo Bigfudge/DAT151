@@ -9,11 +9,39 @@ public class TypeChecker {
         public LinkedList<TypeCode> arguments;
         public TypeCode returnType;
 
+        public Sigma(){
+            arguments = new LinkedList<>();
+        }
     }
-    public static class Env {
-        public static HashMap<String,Sigma> signature ;
-        public static LinkedList<HashMap<String,Type>> contexts ;
-        public static Type lookupVar(String id) {
+    
+    public TypeCode typeCode(Type type) {
+        if(type instanceof Type_bool) {
+            return TypeCode.CBool;
+        }
+        else if(type instanceof Type_int) {
+            return TypeCode.CInt;
+        }
+        else if(type instanceof Type_double) {
+            return TypeCode.CDouble;
+        }
+        else if(type instanceof Type_void) {
+            return TypeCode.CVoid;
+        }
+        else throw new TypeException("That type does not exist");
+    
+    }
+    
+    
+    public class Env {
+        public HashMap<String,Sigma> signature ;
+        public LinkedList<HashMap<String,Type>> contexts ;
+        
+        public Env(){
+            signature = new HashMap<>();
+            contexts = new LinkedList<>();
+        }
+        
+        public Type lookupVar(String id) {
             for(HashMap<String,Type> context : contexts) {
                 Type storedValue = context.get(id);
                 if(storedValue != null) {
@@ -21,16 +49,24 @@ public class TypeChecker {
                 }
             }
             throw new TypeException("The variable " + id + " is not defined");
-        } ;
-        public static TypeCode lookupFun(String id) {
+        } 
+        
+        public TypeCode lookupFun(String id) {
             Sigma storedFunction = signature.get(id);
             if(storedFunction != null) {
                 return storedFunction.returnType;
             }
             throw new TypeException("The function " + id + " is not defined.");
-        } ;
+        }
         
-        public static void updateVar(String id, Type ty) { ;
+        public void putFun (String id, Sigma functionDef){
+            if (signature.get(id) != null) {
+                throw new TypeException ("The function " +id+ " is already defined.");
+            }
+            signature.put(id, functionDef);
+        }
+        
+        public void updateVar(String id, Type ty) { ;
             for(HashMap<String,Type> context : contexts) {
                 Type storedValue = context.get(id);
                 if (storedValue != null) {
@@ -41,12 +77,17 @@ public class TypeChecker {
             throw new TypeException ("The variable " + id + " does not exist");
         }
         
-        public static void putVar(String id, Type ty) {
+        public void putVar(String id, Type ty) {
             HashMap<String,Type> context = contexts.peek();
             if (context.get(id) != null) {
                 throw new TypeException("The variable " + id + " is already defined.");
             }
             context.put(id, ty);
+        }
+        
+        public void newScope() {
+            HashMap<String,Type> context = new HashMap<>();
+            contexts.addFirst(context);
         }
     }
     
@@ -54,10 +95,20 @@ public class TypeChecker {
     public HashMap<String,Sigma> symbolTable = new HashMap<String,Sigma>();
 
     public void typecheck(Program p) {
+        Env env = new Env();
         //PrettyPrinter pp = new PrettyPrinter();
         PDefs defs = (PDefs)p;
         ListDef listOfDefs = defs.listdef_;
-
+        
+        for (Def def : listOfDefs) {
+            Sigma tempFunc = new Sigma();
+            DFun definedF = (DFun) def;
+            //tempFunc.arguments = definedF.listarg_;
+            //tempFunc.returnType = TypeCode(definedF.type_);
+            //env.putFun(definedF.id_, tempFunc);
+        }
+        
+        
         //Add built-in functions, fix without symbolTable
         Sigma printInt = new Sigma();
         printInt.arguments = new LinkedList<TypeCode>();
@@ -80,12 +131,7 @@ public class TypeChecker {
         symbolTable.put("readInt", readInt);
         symbolTable.put("readDouble", readDbl);
         
-//        for (Def def : listOfDefs) {
-//            DFun function = (DFun)def;
-//            symbolTable.put(function.id_, new Sigma(function.listarg_, function.type_));
-//            CheckFuncion(function);
-
-//        }
+        
     System.out.println(symbolTable);
     throw new TypeException("Not yet a typechecker");
 
@@ -99,7 +145,8 @@ public class TypeChecker {
     }
     
     public class CheckStm implements Stm.Visitor<Env,Env>{
-        public Env visit(SDecls p, Env env) {
+       
+       public Env visit(SDecls p, Env env) {
             Type declType = p.type_;
             LinkedList<String> declIds = p.listid_;
             for (String declId : declIds) {
@@ -108,8 +155,10 @@ public class TypeChecker {
             
             return env;
         }
+        
         public Env visit(SExp p, Env env) {
-            //This method should be here.
+            Exp exp = p.exp_;
+            inferExp(exp, env);
             return env;
         }
         public Env visit(SIfElse p, Env env) {
@@ -134,6 +183,111 @@ public class TypeChecker {
         }
         
         
+    }
+    
+    private void inferExp (Exp exp, Env env) {
+        exp.accept(new InferExp(), env);
+    }
+    
+    
+    public class InferExp implements Exp.Visitor<Type,Env> {
+       
+       public Type visit(EInt p, Env env) {
+            Type t1 = p.accept(this, env);
+            if (typeCode(t1) == TypeCode.CInt){
+                return t1;
+            }
+            else throw new TypeException("Something is declared as an int but is not");
+            
+        }
+        
+        public Type visit(EPlus p, Env env) {
+            Type t1 = p.exp_1.accept(this, env);
+            Type t2 = p.exp_2.accept(this, env);
+            if (typeCode(t1) == TypeCode.CInt && typeCode(t2) == TypeCode.CInt) {
+                return new Type_int();
+            }
+            else if (typeCode(t1) == TypeCode.CDouble && typeCode(t2) == TypeCode.CDouble) {
+                return new Type_double();
+            }
+            else throw new TypeException("Trying to add two unmatching types.");
+            
+        }
+        public Type visit(EAnd p, Env env) {
+            Type t1 = p.exp_1.accept(this, env);
+            Type t2 = p.exp_2.accept(this, env);
+            if (typeCode(t1) == TypeCode.CBool && typeCode(t2) == TypeCode.CBool) {
+                return new Type_bool();
+            }
+            else throw new TypeException("Exception.");
+        }
+        public Type visit(EApp p, Env env) {
+        return null;
+        }
+        public Type visit(EAss p, Env env) {
+        return null;
+        }
+        public Type visit(EDiv p, Env env) {
+        return null;
+        }
+        public Type visit(EDouble p, Env env) {
+            Type t1 = p.accept(this, env);
+            if (typeCode(t1) == TypeCode.CDouble){
+                return t1;
+            }
+            else throw new TypeException("Something is declared as a double but is not");
+         
+        }
+        public Type visit(EEq p, Env env) {
+        return null;
+        }
+        public Type visit(EFalse p, Env env) {
+        return null;
+        }
+        public Type visit(EGt p, Env env) {
+        return null;
+        }
+        public Type visit(EGtEq p, Env env) {
+        return null;
+        }
+        public Type visit(EId p, Env env) {
+            return env.lookupVar(p.id_);
+        }
+        public Type visit(ELt p, Env env) {
+        return null;
+        }
+        public Type visit(ELtEq p, Env env) {
+        return null;
+        }
+        public Type visit(EMinus p, Env env) {
+        return null;
+        }
+        public Type visit(ENEq p, Env env) {
+        return null;
+        }
+        public Type visit(EOr p, Env env) {
+        return null;
+        }
+        public Type visit(EPostDecr p, Env env) {
+        return null;
+        }
+        public Type visit(EPostIncr p, Env env) {
+        return null;
+        }
+        public Type visit(EPreDecr p, Env env) {
+        return null;
+        }
+        public Type visit(EPreIncr p, Env env) {
+        return null;
+        }
+        public Type visit(ETimes p, Env env) {
+        return null;
+        }
+        public Type visit(ETrue p, Env env) {
+        return null;
+        }
+        
+        // ... inferring types of different expressions
     }
     
     
