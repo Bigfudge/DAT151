@@ -4,13 +4,14 @@ import java.util.*;
 
 public class TypeChecker {
     public static enum TypeCode { CInt, CDouble, CBool, CVoid } ;
+    //Maybe types and not typecodes?
     public static class Sigma{
         public LinkedList<TypeCode> arguments;
         public TypeCode returnType;
 
     }
     public static class Env {
-        public HashMap<String,Sigma> signature ;
+        public static HashMap<String,Sigma> signature ;
         public static LinkedList<HashMap<String,Type>> contexts ;
         public static Type lookupVar(String id) {
             for(HashMap<String,Type> context : contexts) {
@@ -22,14 +23,34 @@ public class TypeChecker {
             throw new TypeException("The variable " + id + " is not defined");
         } ;
         public static TypeCode lookupFun(String id) {
-            //Test
-            //Also fett oklart vad som ska ske har
-            return TypeCode.CInt;
+            Sigma storedFunction = signature.get(id);
+            if(storedFunction != null) {
+                return storedFunction.returnType;
+            }
+            throw new TypeException("The function " + id + " is not defined.");
         } ;
-        public static void updateVar (String id, Type ty) {} ;
-        // ...
-    }
         
+        public static void updateVar(String id, Type ty) { ;
+            for(HashMap<String,Type> context : contexts) {
+                Type storedValue = context.get(id);
+                if (storedValue != null) {
+                    context.put(id, ty);
+                    break;
+                }
+            }
+            throw new TypeException ("The variable " + id + " does not exist");
+        }
+        
+        public static void putVar(String id, Type ty) {
+            HashMap<String,Type> context = contexts.peek();
+            if (context.get(id) != null) {
+                throw new TypeException("The variable " + id + " is already defined.");
+            }
+            context.put(id, ty);
+        }
+    }
+    
+    //Detta ska bort
     public HashMap<String,Sigma> symbolTable = new HashMap<String,Sigma>();
 
     public void typecheck(Program p) {
@@ -37,7 +58,7 @@ public class TypeChecker {
         PDefs defs = (PDefs)p;
         ListDef listOfDefs = defs.listdef_;
 
-        //Add built-in fnctions
+        //Add built-in functions, fix without symbolTable
         Sigma printInt = new Sigma();
         printInt.arguments = new LinkedList<TypeCode>();
         printInt.returnType = TypeCode.CVoid;
@@ -79,7 +100,12 @@ public class TypeChecker {
     
     public class CheckStm implements Stm.Visitor<Env,Env>{
         public Env visit(SDecls p, Env env) {
-            //This method should be here.
+            Type declType = p.type_;
+            LinkedList<String> declIds = p.listid_;
+            for (String declId : declIds) {
+                env.putVar(declId, declType);
+            }
+            
             return env;
         }
         public Env visit(SExp p, Env env) {
