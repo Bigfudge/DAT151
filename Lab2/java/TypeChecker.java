@@ -12,9 +12,19 @@ public class TypeChecker {
         public Sigma(){
             arguments = new LinkedList<>();
         }
+        public Sigma(ListArg a, TypeCode t){
+            LinkedList<TypeCode> tempList = new LinkedList<>();
+            for (Arg arg : a) {
+                ADecl tempDecl = (ADecl)arg;
+                tempList.add(typeCode(tempDecl.type_));
+            }
+            arguments = tempList;
+            returnType = t;
+        }
+
     }
     
-    public TypeCode typeCode(Type type) {
+    public static TypeCode typeCode(Type type) {
         if(type instanceof Type_bool) {
             return TypeCode.CBool;
         }
@@ -32,7 +42,7 @@ public class TypeChecker {
     }
     
     
-    public class Env {
+    private class Env {
         public HashMap<String,Sigma> signature ;
         public LinkedList<HashMap<String,Type>> contexts ;
         
@@ -91,23 +101,10 @@ public class TypeChecker {
         }
     }
     
-    //Detta ska bort
-    public HashMap<String,Sigma> symbolTable = new HashMap<String,Sigma>();
-
+    
     public void typecheck(Program p) {
         Env env = new Env();
-        //PrettyPrinter pp = new PrettyPrinter();
-        PDefs defs = (PDefs)p;
-        ListDef listOfDefs = defs.listdef_;
-        
-        for (Def def : listOfDefs) {
-            Sigma tempFunc = new Sigma();
-            DFun definedF = (DFun) def;
-            //tempFunc.arguments = definedF.listarg_;
-            //tempFunc.returnType = TypeCode(definedF.type_);
-            //env.putFun(definedF.id_, tempFunc);
-        }
-        
+        env.newScope();
         
         //Add built-in functions, fix without symbolTable
         Sigma printInt = new Sigma();
@@ -126,25 +123,80 @@ public class TypeChecker {
         readDbl.arguments = new LinkedList<TypeCode>();
         readDbl.returnType = TypeCode.CDouble;
         
-        symbolTable.put("printInt", printInt);
-        symbolTable.put("printDouble", printDbl);
-        symbolTable.put("readInt", readInt);
-        symbolTable.put("readDouble", readDbl);
+        env.signature.put("printInt", printInt);
+        env.signature.put("printDouble", printDbl);
+        env.signature.put("readInt", readInt);
+        env.signature.put("readDouble", readDbl);
         
         
-    System.out.println(symbolTable);
-    throw new TypeException("Not yet a typechecker");
+        
+        PDefs defs = (PDefs)p;
+        ListDef listOfDefs = defs.listdef_;
+        
+        //Building the symbol table.
+        for (Def def : listOfDefs) {
+            //Sigma tempFunc = new Sigma();
+            def.accept(new SetupSymbolTable(), env);
+            //DFun definedF = (DFun) def;
+            //checkDef(def, env);
+            //Type funcType = definedF.type_;
+            //String funcName = definedF.id_;
+            //ListArg functionArgs = definedF.listarg_;
+            //ListStm functionStms = definedF.liststm_;
+            //setupFunction(functionArgs, funcType);
+            //for(Arg arg : functionArgs) {
+            //    arg.accept(new SetupFunction(), env);
+            //}
+            //env.putFun(definedF.id_, tempFunc);
+        }
+        
+        //Typechecking by using the symbol table.
+        for(Def def : listOfDefs) {
+            def.accept(new CheckTypes(), env);
+        }
+    //throw new TypeException("Not yet a typechecker");
 
 
 
     }
     //Why do we need this?
-      private void checkStm (Stm st , Env ev)
-    {
+
+    private class CheckTypes implements Def.Visitor<Env, Env> {
+        public Env visit (DFun fun, Env env) {
+            Type functionType = fun.type_;
+            String functionName = fun.id_;
+            ListArg functionArgs = fun.listarg_;
+            ListStm functionStms = fun.liststm_;
+            for (Stm statement : functionStms) {
+                checkStm(statement, env);
+            }
+            return env;
+        }
+    }
+    
+    private class SetupSymbolTable implements Def.Visitor<Env,Env> {
+        public Env visit(DFun fun, Env env) {
+            Type functionType = fun.type_;
+            String functionName = fun.id_;
+            ListArg functionArgs = fun.listarg_;
+            ListStm functionStms = fun.liststm_;
+            Sigma function = new Sigma(functionArgs, typeCode(functionType));
+            env.signature.put(functionName, function);
+            HashMap<String,Type> context = env.contexts.peek();
+            context.put(functionName, functionType);
+            return env;   
+        }
+    }
+    
+    
+    
+    
+    
+    private void checkStm (Stm st , Env ev){
         st.accept(new CheckStm() , ev);
     }
     
-    public class CheckStm implements Stm.Visitor<Env,Env>{
+    private class CheckStm implements Stm.Visitor<Env,Env>{
        
        public Env visit(SDecls p, Env env) {
             Type declType = p.type_;
@@ -190,7 +242,7 @@ public class TypeChecker {
     }
     
     
-    public class InferExp implements Exp.Visitor<Type,Env> {
+    private class InferExp implements Exp.Visitor<Type,Env> {
        
        public Type visit(EInt p, Env env) {
             Type t1 = p.accept(this, env);
@@ -230,14 +282,15 @@ public class TypeChecker {
         public Type visit(EDiv p, Env env) {
         return null;
         }
+        
         public Type visit(EDouble p, Env env) {
             Type t1 = p.accept(this, env);
             if (typeCode(t1) == TypeCode.CDouble){
                 return t1;
             }
             else throw new TypeException("Something is declared as a double but is not");
-         
         }
+        
         public Type visit(EEq p, Env env) {
         return null;
         }
