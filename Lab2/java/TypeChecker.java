@@ -23,7 +23,7 @@ public class TypeChecker {
         }
 
     }
-    
+    //Should be rewritten with visitors.
     public static TypeCode typeCode(Type type) {
         if(type instanceof Type_bool) {
             return TypeCode.CBool;
@@ -135,19 +135,7 @@ public class TypeChecker {
         
         //Building the symbol table.
         for (Def def : listOfDefs) {
-            //Sigma tempFunc = new Sigma();
             def.accept(new SetupSymbolTable(), env);
-            //DFun definedF = (DFun) def;
-            //checkDef(def, env);
-            //Type funcType = definedF.type_;
-            //String funcName = definedF.id_;
-            //ListArg functionArgs = definedF.listarg_;
-            //ListStm functionStms = definedF.liststm_;
-            //setupFunction(functionArgs, funcType);
-            //for(Arg arg : functionArgs) {
-            //    arg.accept(new SetupFunction(), env);
-            //}
-            //env.putFun(definedF.id_, tempFunc);
         }
         
         //Typechecking by using the symbol table.
@@ -214,42 +202,63 @@ public class TypeChecker {
             return env;
         }
         public Env visit(SIfElse p, Env env) {
-            //This method should be here.
+            Stm s1 = p.stm_1;
+            Stm s2 = p.stm_2;
+            TypeCode type = typeCode(inferExp(p.exp_, env));
+            if (type != TypeCode.CBool) {
+                throw new TypeException("IfElse block has wrong type.");
+            }
+            checkStm(s1, env);
+            checkStm(s2, env);
             return env;
         }
         public Env visit(SBlock p, Env env) {
-            //This method should be here.
+            ListStm statements = p.liststm_;
+            for (Stm statement : statements) {
+                checkStm(statement, env);
+            }
             return env;
         }
         public Env visit(SInit p, Env env) {
-            //This method should be here.
+            //type_, id_, exp_
+            TypeCode expType = typeCode(inferExp(p.exp_, env));
+            if (typeCode(p.type_) != expType) {
+                throw new TypeException("Wrong type at initialization.");
+            }
+            env.putVar(p.id_, p.type_);
             return env;
         }
         public Env visit(SReturn p, Env env) {
-            //This method should be here.
+            TypeCode returnType = typeCode(inferExp(p.exp_, env));
+            HashMap<String,Type> context = env.contexts.peek();
+            if (typeCode(context.get("return")) != returnType) {
+                throw new TypeException("Reteurn type does not match.");
+            }
+            
             return env;
         }
         public Env visit(SWhile p , Env env) {
-            //This method should be here.
+            //exp_, stm_
+            TypeCode expType = typeCode(inferExp(p.exp_, env));
+                if(expType != TypeCode.CBool) {
+                    throw new TypeException("Statement in while loop must have type boolean.");
+                }
+                checkStm(p.stm_, env);
             return env;
         }
         
         
     }
     
-    private void inferExp (Exp exp, Env env) {
-        exp.accept(new InferExp(), env);
+    private Type inferExp (Exp exp, Env env) {
+        return exp.accept(new InferExp(), env);
     }
     
     
     private class InferExp implements Exp.Visitor<Type,Env> {
        
        public Type visit(EInt p, Env env) {
-            Type t1 = p.accept(this, env);
-            if (typeCode(t1) == TypeCode.CInt){
-                return t1;
-            }
-            else throw new TypeException("Something is declared as an int but is not");
+            return new Type_int();
             
         }
         
@@ -274,70 +283,169 @@ public class TypeChecker {
             else throw new TypeException("Exception.");
         }
         public Type visit(EApp p, Env env) {
-        return null;
+            ListExp listExp = p.listexp_;
+            for(Exp exp : listExp) {
+                inferExp(exp, env);
+            }
+            return env.contexts.peek().get(p.id_);
+            
         }
         public Type visit(EAss p, Env env) {
-        return null;
+            String name = p.id_;
+            Type assignedType = p.exp_.accept(this, env);
+            env.contexts.peek().put(name, assignedType);
+            return assignedType;
         }
         public Type visit(EDiv p, Env env) {
-        return null;
+            Type t1 = p.exp_1.accept(this, env);
+            Type t2 = p.exp_2.accept(this, env);
+            if (typeCode(t1) == TypeCode.CInt && typeCode(t2) == TypeCode.CInt) {
+                return new Type_int();
+            }
+            else if (typeCode(t1) == TypeCode.CDouble && typeCode(t2) == TypeCode.CDouble) {
+                return new Type_double();
+            }
+            else throw new TypeException("Trying to divide two unmatching types.");
         }
         
         public Type visit(EDouble p, Env env) {
-            Type t1 = p.accept(this, env);
-            if (typeCode(t1) == TypeCode.CDouble){
-                return t1;
-            }
-            else throw new TypeException("Something is declared as a double but is not");
+            return new Type_double();
         }
         
         public Type visit(EEq p, Env env) {
-        return null;
+            Type t1 = p.exp_1.accept(this, env);
+            Type t2 = p.exp_2.accept(this, env);
+            if (typeCode(t1) == TypeCode.CInt && typeCode(t2) ==    TypeCode.CInt) {
+                return new Type_int();
+            }
+            else if (typeCode(t1) == TypeCode.CDouble && typeCode(t2) == TypeCode.CDouble) {
+                return new Type_double();
+            }
+            else throw new TypeException("Trying to equal two unmatching types.");
         }
         public Type visit(EFalse p, Env env) {
-        return null;
+            return new Type_bool();
         }
         public Type visit(EGt p, Env env) {
-        return null;
+            Type t1 = p.exp_1.accept(this, env);
+            Type t2 = p.exp_2.accept(this, env);
+            if (typeCode(t1) == typeCode(t2)) {
+                return t1;
+            }
+            else throw new TypeException("Trying to commpare two elements of unmatching types.");
         }
+        
         public Type visit(EGtEq p, Env env) {
-        return null;
+            Type t1 = p.exp_1.accept(this, env);
+            Type t2 = p.exp_2.accept(this, env);
+            if (typeCode(t1) == typeCode(t2)) {
+                return t1;
+            }
+            else throw new TypeException("Trying to commpare two elements of unmatching types.");
         }
         public Type visit(EId p, Env env) {
             return env.lookupVar(p.id_);
         }
         public Type visit(ELt p, Env env) {
-        return null;
+            Type t1 = p.exp_1.accept(this, env);
+            Type t2 = p.exp_2.accept(this, env);
+            if (typeCode(t1) == typeCode(t2)) {
+                return t1;
+            }
+            else throw new TypeException("Trying to commpare two elements of unmatching types.");
         }
         public Type visit(ELtEq p, Env env) {
-        return null;
+            Type t1 = p.exp_1.accept(this, env);
+            Type t2 = p.exp_2.accept(this, env);
+            if (typeCode(t1) == typeCode(t2)) {
+                return t1;
+            }
+            else throw new TypeException("Trying to commpare two elements of unmatching types.");
         }
         public Type visit(EMinus p, Env env) {
-        return null;
+            Type t1 = p.exp_1.accept(this, env);
+            Type t2 = p.exp_2.accept(this, env);
+            if (typeCode(t1) == TypeCode.CInt && typeCode(t2) == TypeCode.CInt) {
+                return new Type_int();
+            }
+            else if (typeCode(t1) == TypeCode.CDouble && typeCode(t2) == TypeCode.CDouble) {
+                return new Type_double();
+            }
+            else throw new TypeException("Trying to subtract two unmatching types.");
         }
         public Type visit(ENEq p, Env env) {
-        return null;
+            Type t1 = p.exp_1.accept(this, env);
+            Type t2 = p.exp_2.accept(this, env);
+            if (typeCode(t1) == typeCode(t2)) {
+                return t1;
+            }
+            else throw new TypeException("Trying to commpare two elements of unmatching types.");
         }
         public Type visit(EOr p, Env env) {
-        return null;
+            Type t1 = p.exp_1.accept(this, env);
+            Type t2 = p.exp_2.accept(this, env);
+            if (typeCode(t1) == TypeCode.CBool && typeCode(t2) == TypeCode.CBool) {
+                return new Type_bool();
+            }
+            else throw new TypeException("Exception.");
         }
         public Type visit(EPostDecr p, Env env) {
-        return null;
+            String name = p.id_;
+            Type type = env.contexts.peek().get(name);
+            if (typeCode(type) == TypeCode.CInt) {
+                return new Type_int();
+            }
+            else if (typeCode(type) == TypeCode.CDouble) {
+                return new Type_double();
+            }
+            else throw new TypeException("Trying to decrement something that is not int or double.");
         }
         public Type visit(EPostIncr p, Env env) {
-        return null;
+              String name = p.id_;
+            Type type = env.contexts.peek().get(name);
+            if (typeCode(type) == TypeCode.CInt) {
+                return new Type_int();
+            }
+            else if (typeCode(type) == TypeCode.CDouble) {
+                return new Type_double();
+            }
+            else throw new TypeException("Trying to increment something that is not int or double.");
         }
         public Type visit(EPreDecr p, Env env) {
-        return null;
+              String name = p.id_;
+            Type type = env.contexts.peek().get(name);
+            if (typeCode(type) == TypeCode.CInt) {
+                return new Type_int();
+            }
+            else if (typeCode(type) == TypeCode.CDouble) {
+                return new Type_double();
+            }
+            else throw new TypeException("Trying to decrement something that is not int or double.");
         }
         public Type visit(EPreIncr p, Env env) {
-        return null;
+              String name = p.id_;
+            Type type = env.contexts.peek().get(name);
+            if (typeCode(type) == TypeCode.CInt) {
+                return new Type_int();
+            }
+            else if (typeCode(type) == TypeCode.CDouble) {
+                return new Type_double();
+            }
+            else throw new TypeException("Trying to increment something that is not int or double.");
         }
         public Type visit(ETimes p, Env env) {
-        return null;
+            Type t1 = p.exp_1.accept(this, env);
+            Type t2 = p.exp_2.accept(this, env);
+            if (typeCode(t1) == TypeCode.CInt && typeCode(t2) == TypeCode.CInt) {
+                return new Type_int();
+            }
+            else if (typeCode(t1) == TypeCode.CDouble && typeCode(t2) == TypeCode.CDouble) {
+                return new Type_double();
+            }
+            else throw new TypeException("Trying to multiply two unmatching types.");
         }
         public Type visit(ETrue p, Env env) {
-        return null;
+            return new Type_bool();
         }
         
         // ... inferring types of different expressions
