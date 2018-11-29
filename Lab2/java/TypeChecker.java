@@ -280,11 +280,12 @@ public class TypeChecker {
         }
 
         public Env visit(SWhile p , Env env) {
+            env.newScope();
             TypeCode expType = inferExp(p.exp_, env);
             if(expType != TypeCode.CBool)
                 throw new TypeException("SWhile: Expression is not bool.");
 
-            env.newScope();
+    
             checkStm(p.stm_, env);
             env.deleteScope();
             return env;

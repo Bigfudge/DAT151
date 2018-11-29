@@ -23,7 +23,7 @@ public class Test
       System.err.println("Error: File not found: " + args[0]);
       System.exit(1);
     }
-    p = new parser(l);
+    p = new parser(l, l.getSymbolFactory());
   }
   
   public CPP.Absyn.Program parse() throws Exception

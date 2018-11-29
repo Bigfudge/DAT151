@@ -201,6 +201,8 @@ public class Interpreter {
             VBool temp = (VBool) value;
             while(temp.bool_ == true) {
                 p.stm_.accept(new StmExecuter(), env);
+                value = p.exp_.accept(new ExpEvaluator(), env);
+                temp = (VBool) value;
             }
             return env;
         }
