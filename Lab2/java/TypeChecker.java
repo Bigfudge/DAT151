@@ -99,6 +99,10 @@ public class TypeChecker {
             HashMap<String,Type> context = new HashMap<>();
             contexts.addFirst(context);
         }
+        
+        public void deleteScope() {
+            contexts.remove();
+        }
     }
     
     
@@ -106,7 +110,7 @@ public class TypeChecker {
         Env env = new Env();
         env.newScope();
         
-        //Add built-in functions, fix without symbolTable
+        //Add built-in functions
         Sigma printInt = new Sigma();
         printInt.arguments = new LinkedList<TypeCode>();
         printInt.returnType = TypeCode.CVoid;
@@ -142,12 +146,11 @@ public class TypeChecker {
         for(Def def : listOfDefs) {
             def.accept(new CheckTypes(), env);
         }
-    //throw new TypeException("Not yet a typechecker");
+    
 
 
 
     }
-    //Why do we need this?
 
     private class CheckTypes implements Def.Visitor<Env, Env> {
         public Env visit (DFun fun, Env env) {
@@ -164,14 +167,10 @@ public class TypeChecker {
     
     private class SetupSymbolTable implements Def.Visitor<Env,Env> {
         public Env visit(DFun fun, Env env) {
-            Type functionType = fun.type_;
-            String functionName = fun.id_;
-            ListArg functionArgs = fun.listarg_;
-            ListStm functionStms = fun.liststm_;
-            Sigma function = new Sigma(functionArgs, typeCode(functionType));
-            env.signature.put(functionName, function);
+            Sigma function = new Sigma(fun.listarg_, typeCode(fun.type_));
+            env.signature.put(fun.id_, function);
             HashMap<String,Type> context = env.contexts.peek();
-            context.put(functionName, functionType);
+            context.put(fun.id_, fun.type_);
             return env;   
         }
     }
@@ -189,18 +188,23 @@ public class TypeChecker {
        public Env visit(SDecls p, Env env) {
             Type declType = p.type_;
             LinkedList<String> declIds = p.listid_;
+            env.newScope();
             for (String declId : declIds) {
                 env.putVar(declId, declType);
             }
+            env.deleteScope();
             
             return env;
         }
         
         public Env visit(SExp p, Env env) {
             Exp exp = p.exp_;
+            env.newScope();
             inferExp(exp, env);
+            env.deleteScope();
             return env;
         }
+        
         public Env visit(SIfElse p, Env env) {
             Stm s1 = p.stm_1;
             Stm s2 = p.stm_2;
@@ -208,15 +212,21 @@ public class TypeChecker {
             if (type != TypeCode.CBool) {
                 throw new TypeException("IfElse block has wrong type.");
             }
+            env.newScope();
             checkStm(s1, env);
+            env.deleteScope();
+            env.newScope();
             checkStm(s2, env);
+            env.deleteScope();
             return env;
         }
         public Env visit(SBlock p, Env env) {
             ListStm statements = p.liststm_;
+            env.newScope();
             for (Stm statement : statements) {
                 checkStm(statement, env);
             }
+            env.deleteScope();
             return env;
         }
         public Env visit(SInit p, Env env) {
@@ -225,7 +235,9 @@ public class TypeChecker {
             if (typeCode(p.type_) != expType) {
                 throw new TypeException("Wrong type at initialization.");
             }
+            env.newScope();
             env.putVar(p.id_, p.type_);
+            env.deleteScope();
             return env;
         }
         public Env visit(SReturn p, Env env) {
@@ -240,10 +252,12 @@ public class TypeChecker {
         public Env visit(SWhile p , Env env) {
             //exp_, stm_
             TypeCode expType = typeCode(inferExp(p.exp_, env));
-                if(expType != TypeCode.CBool) {
-                    throw new TypeException("Statement in while loop must have type boolean.");
-                }
-                checkStm(p.stm_, env);
+            if(expType != TypeCode.CBool) {
+                throw new TypeException("Statement in while loop must have type boolean.");
+            }
+            env.newScope();
+            checkStm(p.stm_, env);
+            env.deleteScope();
             return env;
         }
         
