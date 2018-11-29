@@ -151,7 +151,17 @@ public class TypeChecker {
 
 
     }
-
+    
+    private class SetupSymbolTable implements Def.Visitor<Env,Env> {
+        public Env visit(DFun fun, Env env) {
+            Sigma function = new Sigma(fun.listarg_, typeCode(fun.type_));
+            env.signature.put(fun.id_, function);
+            HashMap<String,Type> context = env.contexts.peek();
+            context.put(fun.id_, fun.type_);
+            return env;   
+        }
+    }
+    
     private class CheckTypes implements Def.Visitor<Env, Env> {
         public Env visit (DFun fun, Env env) {
             Type functionType = fun.type_;
@@ -164,20 +174,7 @@ public class TypeChecker {
             return env;
         }
     }
-    
-    private class SetupSymbolTable implements Def.Visitor<Env,Env> {
-        public Env visit(DFun fun, Env env) {
-            Sigma function = new Sigma(fun.listarg_, typeCode(fun.type_));
-            env.signature.put(fun.id_, function);
-            HashMap<String,Type> context = env.contexts.peek();
-            context.put(fun.id_, fun.type_);
-            return env;   
-        }
-    }
-    
-    
-    
-    
+        
     
     private void checkStm (Stm st , Env ev){
         st.accept(new CheckStm() , ev);
@@ -188,20 +185,20 @@ public class TypeChecker {
        public Env visit(SDecls p, Env env) {
             Type declType = p.type_;
             LinkedList<String> declIds = p.listid_;
-            env.newScope();
+          //  env.newScope();
             for (String declId : declIds) {
                 env.putVar(declId, declType);
             }
-            env.deleteScope();
+          //  env.deleteScope();
             
             return env;
         }
         
         public Env visit(SExp p, Env env) {
             Exp exp = p.exp_;
-            env.newScope();
+           // env.newScope();
             inferExp(exp, env);
-            env.deleteScope();
+           // env.deleteScope();
             return env;
         }
         
@@ -212,21 +209,21 @@ public class TypeChecker {
             if (type != TypeCode.CBool) {
                 throw new TypeException("IfElse block has wrong type.");
             }
-            env.newScope();
+           // env.newScope();
             checkStm(s1, env);
-            env.deleteScope();
-            env.newScope();
+          //  env.deleteScope();
+          //  env.newScope();
             checkStm(s2, env);
-            env.deleteScope();
+           // env.deleteScope();
             return env;
         }
         public Env visit(SBlock p, Env env) {
             ListStm statements = p.liststm_;
-            env.newScope();
+           // env.newScope();
             for (Stm statement : statements) {
                 checkStm(statement, env);
             }
-            env.deleteScope();
+          //  env.deleteScope();
             return env;
         }
         public Env visit(SInit p, Env env) {
@@ -235,9 +232,9 @@ public class TypeChecker {
             if (typeCode(p.type_) != expType) {
                 throw new TypeException("Wrong type at initialization.");
             }
-            env.newScope();
+          //  env.newScope();
             env.putVar(p.id_, p.type_);
-            env.deleteScope();
+           // env.deleteScope();
             return env;
         }
         public Env visit(SReturn p, Env env) {
@@ -255,9 +252,9 @@ public class TypeChecker {
             if(expType != TypeCode.CBool) {
                 throw new TypeException("Statement in while loop must have type boolean.");
             }
-            env.newScope();
+          //  env.newScope();
             checkStm(p.stm_, env);
-            env.deleteScope();
+          //  env.deleteScope();
             return env;
         }
         
