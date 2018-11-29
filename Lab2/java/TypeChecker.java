@@ -128,10 +128,12 @@ public class TypeChecker {
         //Add built-in functions
         Sigma printInt = new Sigma();
         printInt.arguments = new LinkedList<TypeCode>();
+        printInt.arguments.add(TypeCode.CInt);
         printInt.returnType = TypeCode.CVoid;
 
         Sigma printDbl = new Sigma();
         printDbl.arguments = new LinkedList<TypeCode>();
+        printDbl.arguments.add(TypeCode.CDouble);
         printDbl.returnType = TypeCode.CVoid;
 
         Sigma readInt = new Sigma();
@@ -142,10 +144,10 @@ public class TypeChecker {
         readDbl.arguments = new LinkedList<TypeCode>();
         readDbl.returnType = TypeCode.CDouble;
 
-        env.signature.put("printInt", printInt);
-        env.signature.put("printDouble", printDbl);
-        env.signature.put("readInt", readInt);
-        env.signature.put("readDouble", readDbl);
+        env.addFun("printInt", printInt);
+        env.addFun("printDouble", printDbl);
+        env.addFun("readInt", readInt);
+        env.addFun("readDouble", readDbl);
 
 
 
@@ -360,8 +362,6 @@ public class TypeChecker {
             if (t1 != t2) {
                 throw new TypeException("EAss: Types do not match");
             }
-            env.addVar(name, t1);
-
             return t1;
         }
 
@@ -377,8 +377,8 @@ public class TypeChecker {
         public TypeCode visit(EEq p, Env env) {
             TypeCode t1 = p.exp_1.accept(this, env);
             TypeCode t2 = p.exp_2.accept(this, env);
-            if (t1 == t2 && (t1 == TypeCode.CInt || t1 ==TypeCode.CDouble)) {
-                return t1;
+            if (t1 == t2) {
+                return TypeCode.CBool;
             }
             throw new TypeException("EEq: Types do not match.");
         }
@@ -387,7 +387,7 @@ public class TypeChecker {
             TypeCode t1 = p.exp_1.accept(this, env);
             TypeCode t2 = p.exp_2.accept(this, env);
             if (t1 == t2 && (t1 == TypeCode.CInt || t1 ==TypeCode.CDouble)) {
-                return t1;
+                return TypeCode.CBool;
             }
             throw new TypeException("EGt: Types do not match.");
         }
@@ -396,7 +396,7 @@ public class TypeChecker {
             TypeCode t1 = p.exp_1.accept(this, env);
             TypeCode t2 = p.exp_2.accept(this, env);
             if (t1 == t2 && (t1 == TypeCode.CInt || t1 ==TypeCode.CDouble)) {
-                return t1;
+                return TypeCode.CBool;
             }
             throw new TypeException("EGtEq: Types do not match.");
         }
@@ -405,7 +405,7 @@ public class TypeChecker {
             TypeCode t1 = p.exp_1.accept(this, env);
             TypeCode t2 = p.exp_2.accept(this, env);
             if (t1 == t2 && (t1 == TypeCode.CInt || t1 ==TypeCode.CDouble)) {
-                return t1;
+                return TypeCode.CBool;
             }
             throw new TypeException("ELt: Types do not match.");
         }
@@ -414,7 +414,7 @@ public class TypeChecker {
             TypeCode t1 = p.exp_1.accept(this, env);
             TypeCode t2 = p.exp_2.accept(this, env);
             if (t1 == t2) {
-                return t1;
+                return TypeCode.CBool;
             }
             throw new TypeException("ELtEq: Types do not match.");
         }
@@ -432,7 +432,7 @@ public class TypeChecker {
             TypeCode t1 = p.exp_1.accept(this, env);
             TypeCode t2 = p.exp_2.accept(this, env);
             if (t1 == t2) {
-                return t1;
+                return TypeCode.CBool;
             }
             throw new TypeException("ENEq: Types do not match.");
         }
@@ -448,7 +448,7 @@ public class TypeChecker {
 
         public TypeCode visit(EPostDecr p, Env env) {
             String name = p.id_;
-            TypeCode type = env.contexts.peek().get(name);
+            TypeCode type = env.getVar(name);
             if (type == TypeCode.CInt || type == TypeCode.CDouble) {
                 return type;
             }
@@ -457,7 +457,7 @@ public class TypeChecker {
 
         public TypeCode visit(EPostIncr p, Env env) {
             String name = p.id_;
-            TypeCode type = env.contexts.peek().get(name);
+            TypeCode type = env.getVar(name);
             if (type == TypeCode.CInt || type == TypeCode.CDouble) {
                 return type;
             }
@@ -466,7 +466,7 @@ public class TypeChecker {
 
         public TypeCode visit(EPreDecr p, Env env) {
             String name = p.id_;
-            TypeCode type = env.contexts.peek().get(name);
+            TypeCode type = env.getVar(name);
             if (type == TypeCode.CInt || type == TypeCode.CDouble) {
                 return type;
             }
@@ -475,7 +475,7 @@ public class TypeChecker {
 
         public TypeCode visit(EPreIncr p, Env env) {
             String name = p.id_;
-            TypeCode type = env.contexts.peek().get(name);
+            TypeCode type = env.getVar(name);
             if (type == TypeCode.CInt || type == TypeCode.CDouble) {
                 return type;
             }
