@@ -209,13 +209,30 @@ public class Interpreter {
     
     private class ExpEvaluator implements Exp.Visitor<Val, Env> {
         public Val visit(EPlus p, Env env) {
-         
-            return null;
+            Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
+            if ((u instanceof VInt) && (v instanceof VInt)) {
+                VInt uInt = (VInt) u;
+                VInt vInt = (VInt) v;
+                return new VInt((uInt.integer_) + (vInt.integer_));
+            }
+            else if ((u instanceof VDouble) && (v instanceof VDouble)) {
+                VDouble uInt = (VDouble) u;
+                VDouble vInt = (VDouble) v;
+                return new VDouble((uInt.double_) + (vInt.double_));
+            }
+            else throw new TypeException("Things got broken");
         }
         
         public Val visit(EAnd p, Env env) {
-            
-            return null;
+            Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
+            if ((u instanceof VBool) && (v instanceof VBool)) {
+                VBool uInt = (VBool) u;
+                VBool vInt = (VBool) v;
+                return new VBool((uInt.bool_) && (vInt.bool_));
+            }
+            else throw new TypeException("Things got broken");
         }
         
         public Val visit(EApp p, Env env) {
@@ -227,54 +244,137 @@ public class Interpreter {
             return null;
         }
         public Val visit(EDiv p, Env env) {
+            Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
             
-            return null;
+            if ((u instanceof VInt) && (v instanceof VInt)) {
+                VInt uInt = (VInt) u;
+                VInt vInt = (VInt) v;
+                return new VInt((uInt.integer_) / (vInt.integer_));
+            }
+            else if ((u instanceof VDouble) && (v instanceof VDouble)) {
+                VDouble uInt = (VDouble) u;
+                VDouble vInt = (VDouble) v;
+                return new VDouble((uInt.double_) / (vInt.double_));
+            }
+            else throw new TypeException("Things got broken");
         }
         public Val visit(EDouble p, Env env) {
-            
-            return null;
+            return new VDouble();
         }
         public Val visit(EEq p , Env env) {
-            return null;
+            Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
+            
+            return new VBool (u == v);
         }
         public Val visit(EFalse p, Env env) {
-            
-            return null;
+            return new VBool(false);
         }
         
         public Val visit(EGt p, Env env) {
+            Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
             
-            return null;
+            if ((u instanceof VInt) && (v instanceof VInt)) {
+                VInt uInt = (VInt) u;
+                VInt vInt = (VInt) v;
+                return new VBool((uInt.integer_) > (vInt.integer_));
+            }
+            else if ((u instanceof VDouble) && (v instanceof VDouble)) {
+                VDouble uInt = (VDouble) u;
+                VDouble vInt = (VDouble) v;
+                return new VBool((uInt.double_) > (vInt.double_));
+            }
+            else throw new TypeException("Things got broken");
         }
         public Val visit(EGtEq p, Env env) {
+            Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
             
-            return null;
+            if ((u instanceof VInt) && (v instanceof VInt)) {
+                VInt uInt = (VInt) u;
+                VInt vInt = (VInt) v;
+                return new VBool((uInt.integer_) >= (vInt.integer_));
+            }
+            else if ((u instanceof VDouble) && (v instanceof VDouble)) {
+                VDouble uInt = (VDouble) u;
+                VDouble vInt = (VDouble) v;
+                return new VBool((uInt.double_) >= (vInt.double_));
+            }
+            else throw new TypeException("Things got broken");
         }
         public Val visit(EId p, Env env) {
             
             return null;
         }
         public Val visit(EInt p, Env env) {
-            
-            return null;
+            return new VInt();
         }
         public Val visit(ELt p, Env env) {
+             Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
             
-            return null;
+            if ((u instanceof VInt) && (v instanceof VInt)) {
+                VInt uInt = (VInt) u;
+                VInt vInt = (VInt) v;
+                return new VBool((uInt.integer_) < (vInt.integer_));
+            }
+            else if ((u instanceof VDouble) && (v instanceof VDouble)) {
+                VDouble uInt = (VDouble) u;
+                VDouble vInt = (VDouble) v;
+                return new VBool((uInt.double_) < (vInt.double_));
+            }
+            else throw new TypeException("Things got broken");
         }
         public Val visit(ELtEq p, Env env) {
+             Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
             
-            return null;
+            if ((u instanceof VInt) && (v instanceof VInt)) {
+                VInt uInt = (VInt) u;
+                VInt vInt = (VInt) v;
+                return new VBool((uInt.integer_) <= (vInt.integer_));
+            }
+            else if ((u instanceof VDouble) && (v instanceof VDouble)) {
+                VDouble uInt = (VDouble) u;
+                VDouble vInt = (VDouble) v;
+                return new VBool((uInt.double_) <= (vInt.double_));
+            }
+            else throw new TypeException("Things got broken");
         }
         public Val visit(EMinus p , Env env) {
-            return null;
-        }
-        public Val visit(ENEq p, Env env) {
+            Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
             
-            return null;
+            if ((u instanceof VInt) && (v instanceof VInt)) {
+                VInt uInt = (VInt) u;
+                VInt vInt = (VInt) v;
+                return new VInt((uInt.integer_) - (vInt.integer_));
+            }
+            else if ((u instanceof VDouble) && (v instanceof VDouble)) {
+                VDouble uInt = (VDouble) u;
+                VDouble vInt = (VDouble) v;
+                return new VDouble((uInt.double_) - (vInt.double_));
+            }
+            else throw new TypeException("Things got broken");
         }
+        
+        public Val visit(ENEq p, Env env) {
+            Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
+            return new VBool (u != v);
+        }
+        
         public Val visit(EOr p , Env env) {
-            return null;
+            Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
+            if ((u instanceof VBool) && (v instanceof VBool)) {
+                VBool uInt = (VBool) u;
+                VBool vInt = (VBool) v;
+                return new VBool((uInt.bool_) || (vInt.bool_));
+            }
+            else throw new TypeException("Things got broken");
         }
         public Val visit(EPostDecr p, Env env) {
             
@@ -294,11 +394,24 @@ public class Interpreter {
             return null;
         }
         public Val visit(ETimes p, Env env) {
+            Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
             
-            return null;
+            if ((u instanceof VInt) && (v instanceof VInt)) {
+                VInt uInt = (VInt) u;
+                VInt vInt = (VInt) v;
+                return new VInt((uInt.integer_) * (vInt.integer_));
+            }
+            else if ((u instanceof VDouble) && (v instanceof VDouble)) {
+                VDouble uInt = (VDouble) u;
+                VDouble vInt = (VDouble) v;
+                return new VDouble((uInt.double_) * (vInt.double_));
+            }
+            else throw new TypeException("Things got broken");
+            
         }
         public Val visit(ETrue p , Env env) {
-            return null;
+            return new VBool(true);
         }
     }
     
