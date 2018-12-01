@@ -55,15 +55,35 @@ public class Interpreter {
 
 
     
-    //Basically copied from typechecker.
+    
+    private class Func {
+        public LinkedList<String> args = new LinkedList<>();
+        public LinkedList<Stm> statements = new LinkedList<>();
+        public Val returnValue;
+        
+        public Func(LinkedList<Arg> inArgs, LinkedList<Stm> inStms, Type inType) {
+            LinkedList<String> stringArgs = new LinkedList<>();
+            for (Arg arg : inArgs) {
+                ADecl tempArg = (ADecl) arg;
+                stringArgs.addFirst(tempArg.id_);
+            }
+            args = stringArgs;
+            statements = inStms;
+            returnValue = toVal(inType);
+        }
+    }
+    
+    
+    
     private class Env {
-        public LinkedList<HashMap<String,Val>> contexts ;
+        public HashMap <String, Func> signature;
+        public LinkedList<HashMap<String,Val>> contexts;
         
         public Env(){
             contexts = new LinkedList<>();
         }
         
-        public Val lookupValue(String id) {
+        public Val getVal(String id) {
             for(HashMap<String,Val> context : contexts) {
                 Val storedValue = context.get(id);
                 if(storedValue != null) {
@@ -92,6 +112,21 @@ public class Interpreter {
             context.put(id,value);
         }
         
+        public Func getFun(String id) {
+            if (signature.get(id) != null) {
+                return signature.get(id);
+            }
+            else throw new TypeException("No function with that name is defined");
+        }
+        
+        public void putFun(String id, Func function){
+            if (signature.get(id) != null) {
+                throw new TypeException("A function with that name is already defined");
+            }
+            signature.put(id, function);
+        
+        }
+        
         public void newScope() {
             HashMap<String,Val> context = new HashMap<>();
             contexts.addFirst(context);
@@ -116,15 +151,24 @@ public class Interpreter {
         //1.
         env.newScope();
         for (Def def : listOfDefs) {
-            
+            def.accept(new FunctionPutter(), env);
             
             def.accept(new FunctionExecuter(), env);
         }
-        
+        Val programVal = env.getVal("main");
         //Only for main()?
         for (Def def : listOfDefs) {
+            
             //def.accept(new ExpEvaluator(), env); 
             
+        }
+        
+    }
+    private class FunctionPutter implements Def.Visitor<Object, Env> {
+        public Object visit (DFun fun, Env env) {
+            Func function = new Func (fun.listarg_, fun.liststm_, fun.type_);
+            env.putFun(fun.id_, function);
+            return null;
         }
         
     }
@@ -199,8 +243,13 @@ public class Interpreter {
                 throw new TypeException("Wrong shit");
             }
             VBool temp = (VBool) value;
-            while(temp.bool_ == true) {
+            while(temp.bool_) {
+                env.newScope();
                 p.stm_.accept(new StmExecuter(), env);
+                env.deleteScope();
+                p.exp_.accept(new ExpEvaluator(), env);
+                
+                //temp = (VBool) tempValue;
             }
             return env;
         }
@@ -236,12 +285,16 @@ public class Interpreter {
         }
         
         public Val visit(EApp p, Env env) {
+            for (Exp exp : p.listexp_) {
+                exp.accept(new ExpEvaluator(), env);
+            }
+            return new VVoid();
             
-            return null;
         }
         public Val visit(EAss p, Env env) {
-            
-            return null;
+            Val value = p.exp_.accept(new ExpEvaluator(), env);
+            env.updateVar(p.id_, value);
+            return new VVoid();
         }
         public Val visit(EDiv p, Env env) {
             Val u = p.exp_1.accept(new ExpEvaluator(), env);
@@ -305,8 +358,8 @@ public class Interpreter {
             else throw new TypeException("Things got broken");
         }
         public Val visit(EId p, Env env) {
+            return env.getVal(p.id_);
             
-            return null;
         }
         public Val visit(EInt p, Env env) {
             return new VInt();
@@ -378,20 +431,35 @@ public class Interpreter {
         }
         public Val visit(EPostDecr p, Env env) {
             
-            return null;
+            String id = p.id_;
+            Val temp = env.getVal(id);
+            if (temp instanceof VInt) {
+                VInt temp1 = (VInt) temp;
+                return new VInt(temp1.integer_ - 1);
+                
+            }
+           
+            else throw new TypeException("Things got broken");
         }
         
         public Val visit(EPostIncr p, Env env) {
-            
-            return null;
+                     String id = p.id_;
+            Val temp = env.getVal(id);
+            if (temp instanceof VInt) {
+                VInt temp1 = (VInt) temp;
+                return new VInt(temp1.integer_ + 1);
+                
+            }
+           
+            else throw new TypeException("Things got broken");
         }
         public Val visit(EPreIncr p, Env env) {
             
-            return null;
+            throw new TypeException("Preincr exception");
         }
         public Val visit(EPreDecr p, Env env) {
             
-            return null;
+            throw new TypeException("Predecr exception");
         }
         public Val visit(ETimes p, Env env) {
             Val u = p.exp_1.accept(new ExpEvaluator(), env);
