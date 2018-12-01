@@ -78,3 +78,7 @@ Temporary Items
 .apdisk
 
 # End of https://www.gitignore.io/api/java,kate,macos,archlinuxpackages
+
+Lab2/java/CPP/parser\.java
+
+Lab2/java/CPP/sym\.java
