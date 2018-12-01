@@ -295,9 +295,44 @@ public class Interpreter {
         }
 
         public Val visit(EApp p, Env env) {
-            for (Exp exp : p.listexp_) {
-                exp.accept(new ExpEvaluator(), env);
+            if (p.id_ == "printInt") {
+                Val value = p.listexp_.getFirst().accept(new ExpEvaluator(), env);
+                if (value instanceof VInt) {
+                    VInt value1 = (VInt) value;
+                    System.out.println(value1.integer_);
+                    return new VVoid();
+                }
+                else throw new TypeException("Trying to call printInt on something that is not an int.");
+                
             }
+            else if (p.id_ == "printDouble") {
+                Val value = p.listexp_.getFirst().accept(new ExpEvaluator(), env);
+                if (value instanceof VDouble) {
+                    VDouble value2 = (VDouble) value;
+                    System.out.println(value2.double_);
+                    return new VVoid();
+                }
+                else throw new TypeException("Trying to call printDouble on something that is not double.");
+                
+                
+            }
+            else if (p.id_ == "readInt") {
+                Scanner sc = new Scanner(System.in);
+                Integer i = sc.nextInt();
+                sc.close();
+                return new VInt(i);
+            }
+            else if (p.id_ == "readDouble") {
+                Scanner sc = new Scanner(System.in);
+                Double d = sc.nextDouble();
+                sc.close();
+                return new VDouble(d);
+            }
+            
+        
+//            for (Exp exp : p.listexp_) {
+//                exp.accept(new ExpEvaluator(), env);
+//            }
             return new VVoid();
 
         }
