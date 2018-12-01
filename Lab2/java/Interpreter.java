@@ -429,11 +429,21 @@ public class Interpreter {
             else throw new TypeException("Things got broken");
         }
         public Val visit(EPreIncr p, Env env) {
-
+            Val val = env.getVal(p.id_);
+            if (val.isInt()) {
+                Val newVal = new VInt(val.getInt()+1);
+                env.updateVar(p.id_, newVal);
+                return val;
+            }
             throw new TypeException("Preincr exception");
         }
         public Val visit(EPreDecr p, Env env) {
-
+            Val val = env.getVal(p.id_);
+            if (val.isInt()) {
+                Val newVal = new VInt(val.getInt()-1);
+                env.updateVar(p.id_, newVal);
+                return val;
+            }
             throw new TypeException("Predecr exception");
         }
         public Val visit(ETimes p, Env env) {
