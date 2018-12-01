@@ -98,6 +98,7 @@ public class Interpreter {
         public LinkedList<HashMap<String,Val>> contexts;
 
         public Env(){
+            signature = new HashMap<>();
             contexts = new LinkedList<>();
         }
 
@@ -116,16 +117,16 @@ public class Interpreter {
                 Val storedValue = context.get(id);
                 if (storedValue != null) {
                     context.put(id, value);
-                    break;
+                    return;
                 }
             }
-            throw new TypeException ("The variable " + id + " does not exist");
+            throw new TypeException ("updateVar variable " + id + " does not exist");
         }
 
         public void putVar(String id, Val value) {
             HashMap<String,Val> context = contexts.peek();
             if (context.get(id) != null) {
-                throw new TypeException("The variable " + id + " is already defined.");
+                throw new TypeException("putVarThe variable " + id + " is already defined.");
             }
             context.put(id,value);
         }
@@ -170,14 +171,16 @@ public class Interpreter {
         env.newScope();
         for (Def def : listOfDefs) {
             def.accept(new FunctionPutter(), env);
-
-            def.accept(new FunctionExecuter(), env);
+           // def.accept(new FunctionExecuter(), env);
         }
-        Val programVal = env.getVal("main");
+        //System.out.println("Everything putted.");
+
         //Only for main()?
         for (Def def : listOfDefs) {
-
-            //def.accept(new ExpEvaluator(), env);
+            DFun function = (DFun) def;
+            if(function.id_ == "main") {
+                function.accept(new FunctionExecuter(), env);
+            }
 
         }
 
@@ -193,12 +196,8 @@ public class Interpreter {
 
     private class FunctionExecuter implements Def.Visitor<Env, Env> {
         public Env visit(DFun fun, Env env) {
-            //Do some checks most likely
-            Type funType = fun.type_;
-            String funName = fun.id_;
-            ListArg funArgs = fun.listarg_;
 
-            Val functionValue = toVal(funType);
+            Val functionValue = toVal(fun.type_);
 
             for(Stm stm : fun.liststm_){
                 stm.accept(new StmExecuter(), env);
@@ -212,7 +211,7 @@ public class Interpreter {
     private class StmExecuter implements Stm.Visitor<Object,Env> {
         public Env visit(SDecls p, Env env) {
             for (String id : p.listid_){
-                env.contexts.peek().put(id, toVal(p.type_));
+                env.putVar(id, toVal(p.type_));
             }
             return env;
         }
@@ -246,8 +245,13 @@ public class Interpreter {
         }
         public Env visit(SInit p, Env env) {
             //type, exp, id
-            env.contexts.peek().put(p.id_, toVal(p.type_));
-            p.exp_.accept(new ExpEvaluator(), env);
+            System.out.println("2");
+            env.putVar(p.id_, toVal(p.type_));
+            System.out.println("3");
+            Val val = p.exp_.accept(new ExpEvaluator(), env);
+            System.out.println("1");
+            env.updateVar(p.id_, val);
+            System.out.println("Sinit finished");
             return env;
         }
         public Env visit(SReturn p, Env env) {
@@ -255,11 +259,13 @@ public class Interpreter {
             return env;
         }
         public Env visit(SWhile p , Env env) {
+            
             Val value = p.exp_.accept(new ExpEvaluator(), env);
             if (!value.isBool()) {
                 throw new TypeException("Wrong shit");
             }
             while(value.getBool()) {
+                
                 env.newScope();
                 p.stm_.accept(new StmExecuter(), env);
                 env.deleteScope();
@@ -297,9 +303,9 @@ public class Interpreter {
         public Val visit(EApp p, Env env) {
             if (p.id_ == "printInt") {
                 Val value = p.listexp_.getFirst().accept(new ExpEvaluator(), env);
-                if (value instanceof VInt) {
-                    VInt value1 = (VInt) value;
-                    System.out.println(value1.integer_);
+                if (value.isInt()) {
+                    
+                    System.out.println(value.getInt());
                     return new VVoid();
                 }
                 else throw new TypeException("Trying to call printInt on something that is not an int.");
@@ -307,14 +313,11 @@ public class Interpreter {
             }
             else if (p.id_ == "printDouble") {
                 Val value = p.listexp_.getFirst().accept(new ExpEvaluator(), env);
-                if (value instanceof VDouble) {
-                    VDouble value2 = (VDouble) value;
-                    System.out.println(value2.double_);
+                if (value.isDouble()) {
+                    System.out.println(value.getDouble());
                     return new VVoid();
                 }
                 else throw new TypeException("Trying to call printDouble on something that is not double.");
-                
-                
             }
             else if (p.id_ == "readInt") {
                 Scanner sc = new Scanner(System.in);
@@ -328,12 +331,25 @@ public class Interpreter {
                 sc.close();
                 return new VDouble(d);
             }
-            
-        
-//            for (Exp exp : p.listexp_) {
-//                exp.accept(new ExpEvaluator(), env);
-//            }
-            return new VVoid();
+            else {
+                env.newScope();
+                LinkedList<Val> expList = new LinkedList<>();
+                for (Exp exp : p.listexp_) {
+                    expList.add(exp.accept(new ExpEvaluator(), env));
+                }
+                Func function = env.getFun(p.id_);
+                for (String arg : function.args){
+                    env.putVar(arg, expList.remove()); 
+                }
+                
+                for (Stm stm : function.statements) {
+                    stm.accept(new StmExecuter(), env);
+                }
+                env.deleteScope();
+                return new VVoid();
+                
+                
+            }
 
         }
         public Val visit(EAss p, Env env) {
@@ -468,7 +484,7 @@ public class Interpreter {
             if (val.isInt()) {
                 Val newVal = new VInt(val.getInt()+1);
                 env.updateVar(p.id_, newVal);
-                return val;
+                return newVal;
             }
             throw new TypeException("Preincr exception");
         }
@@ -477,7 +493,7 @@ public class Interpreter {
             if (val.isInt()) {
                 Val newVal = new VInt(val.getInt()-1);
                 env.updateVar(p.id_, newVal);
-                return val;
+                return newVal;
             }
             throw new TypeException("Predecr exception");
         }
