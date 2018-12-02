@@ -197,7 +197,13 @@ public class Interpreter {
             Val functionValue = toVal(fun.type_);
 
             for(Stm stm : fun.liststm_){
+                if(stm instanceof SReturn) {
+                    //System.out.println("hello return");
+                    stm.accept(new StmExecuter(), env);
+                    return env;
+                }
                 stm.accept(new StmExecuter(), env);
+                
             }
             return env;
         }
@@ -206,19 +212,19 @@ public class Interpreter {
 
 
     private class StmExecuter implements Stm.Visitor<Object,Env> {
-        public Env visit(SDecls p, Env env) {
+        public Object visit(SDecls p, Env env) {
             for (String id : p.listid_){
                 env.putVar(id, toVal(p.type_));
             }
-            return env;
+            return null;
         }
 
-        public Env visit(SExp p, Env env) {
+        public Object visit(SExp p, Env env) {
             p.exp_.accept(new ExpEvaluator(), env);
-            return env;
+            return null;
         }
 
-        public Env visit(SIfElse p, Env env) {
+        public Object visit(SIfElse p, Env env) {
             Val value = p.exp_.accept(new ExpEvaluator(), env);
             if (!value.isBool()) {
                 throw new TypeException("Wrong shit");
@@ -230,28 +236,34 @@ public class Interpreter {
             else {
                 p.stm_2.accept(new StmExecuter(), env);
             }
-            return env;
+            return null;
         }
-        public Env visit(SBlock p, Env env) {
+        public Object visit(SBlock p, Env env) {
             env.newScope();
             for (Stm stm : p.liststm_){
+                if (stm instanceof SReturn) {
+                    env.deleteScope();
+                    SReturn tempRet = (SReturn) stm;
+                    return tempRet.exp_.accept(new ExpEvaluator(), env);
+                }
                 stm.accept(new StmExecuter(), env);
             }
             env.deleteScope();
-            return env;
+            return null;
         }
-        public Env visit(SInit p, Env env) {
+        public Object visit(SInit p, Env env) {
             //type, exp, id
             env.putVar(p.id_, toVal(p.type_));
             Val val = p.exp_.accept(new ExpEvaluator(), env);
             env.updateVar(p.id_, val);
-            return env;
+            return null;
         }
-        public Env visit(SReturn p, Env env) {
-            p.exp_.accept(new ExpEvaluator(), env);
-            return env;
+        public Object visit(SReturn p, Env env) {
+            //System.out.println(p.exp_.accept(new ExpEvaluator(), env));
+            return p.exp_.accept(new ExpEvaluator(), env);
+            
         }
-        public Env visit(SWhile p , Env env) {
+        public Object visit(SWhile p , Env env) {
             Val value = p.exp_.accept(new ExpEvaluator(), env);
             while(value.isBool() && value.getBool()) {
 
@@ -261,7 +273,7 @@ public class Interpreter {
                 value=p.exp_.accept(new ExpEvaluator(), env);
 
             }
-            return env;
+            return null;
         }
     }
 
@@ -331,10 +343,16 @@ public class Interpreter {
                 }
 
                 for (Stm stm : function.statements) {
-                    stm.accept(new StmExecuter(), env);
+                    if (stm instanceof SReturn) {
+                        function.returnValue = (Val) stm.accept(new StmExecuter(), env);
+                    }
+                    else {
+                        stm.accept(new StmExecuter(), env);
+                    }
+                    
                 }
                 env.deleteScope();
-                return new VVoid();
+                return function.returnValue;
 
 
             }
