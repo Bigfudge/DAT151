@@ -145,6 +145,15 @@ public class Interpreter {
             signature.put(id, function);
 
         }
+        public void updateFunReturn(String id, Val value){
+            if(signature.get(id) != null){
+                Func function = signature.get(id);
+                function.returnValue= value;
+                signature.put(id, function);
+                return;
+            }
+            throw new RuntimeException("updateFunReturn: Error");
+        }
 
         public void newScope() {
             HashMap<String,Val> context = new HashMap<>();
@@ -199,11 +208,11 @@ public class Interpreter {
             for(Stm stm : fun.liststm_){
                 if(stm instanceof SReturn) {
                     //System.out.println("hello return");
-                    stm.accept(new StmExecuter(), env);
+                    env.updateFunReturn(fun.id_, (Val)stm.accept(new StmExecuter(), env));
                     return env;
                 }
                 stm.accept(new StmExecuter(), env);
-                
+
             }
             return env;
         }
@@ -225,17 +234,19 @@ public class Interpreter {
         }
 
         public Object visit(SIfElse p, Env env) {
+            env.newScope();
             Val value = p.exp_.accept(new ExpEvaluator(), env);
             if (!value.isBool()) {
                 throw new TypeException("Wrong shit");
 
             }
-            if (value.getBool()) {
+            if (value.getBool()==true) {
                 p.stm_1.accept(new StmExecuter(), env);
             }
-            else {
+            else if(value.getBool()==false) {
                 p.stm_2.accept(new StmExecuter(), env);
             }
+            env.deleteScope();
             return null;
         }
         public Object visit(SBlock p, Env env) {
@@ -261,7 +272,7 @@ public class Interpreter {
         public Object visit(SReturn p, Env env) {
             //System.out.println(p.exp_.accept(new ExpEvaluator(), env));
             return p.exp_.accept(new ExpEvaluator(), env);
-            
+
         }
         public Object visit(SWhile p , Env env) {
             Val value = p.exp_.accept(new ExpEvaluator(), env);
@@ -344,12 +355,15 @@ public class Interpreter {
 
                 for (Stm stm : function.statements) {
                     if (stm instanceof SReturn) {
-                        function.returnValue = (Val) stm.accept(new StmExecuter(), env);
+                        Val val = (Val) stm.accept(new StmExecuter(), env);
+                        //System.out.println(val);
+                        env.updateFunReturn(p.id_, val);
+                        function.returnValue = val;
                     }
                     else {
                         stm.accept(new StmExecuter(), env);
                     }
-                    
+
                 }
                 env.deleteScope();
                 return function.returnValue;
