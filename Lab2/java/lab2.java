@@ -18,12 +18,13 @@ public class lab2 {
             new TypeChecker().typecheck(parse_tree);
             new Interpreter().interpret(parse_tree);
 
+
         } catch (TypeException e) {
             System.out.println("TYPE ERROR");
             System.err.println(e.toString());
             System.exit(1);
         } catch (RuntimeException e) {
-            //            System.out.println("RUNTIME ERROR");
+            System.out.println("RUNTIME ERROR");
             System.err.println(e.toString());
             System.exit(-1);
         } catch (IOException e) {
