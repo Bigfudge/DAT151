@@ -221,7 +221,10 @@ public class Interpreter {
 
 
     private class StmExecuter implements Stm.Visitor<Object,Env> {
+        private boolean returnFlag = false;
+        
         public Object visit(SDecls p, Env env) {
+            if (returnFlag) return null;
             for (String id : p.listid_){
                 env.putVar(id, toVal(p.type_));
             }
@@ -229,30 +232,54 @@ public class Interpreter {
         }
 
         public Object visit(SExp p, Env env) {
-            p.exp_.accept(new ExpEvaluator(), env);
-            return null;
+            if (returnFlag) return null;
+            return p.exp_.accept(new ExpEvaluator(), env);
+            //return null;
         }
 
         public Object visit(SIfElse p, Env env) {
+            if (returnFlag) return null;
             env.newScope();
+            Object o = new Object();
             Val value = p.exp_.accept(new ExpEvaluator(), env);
             if (!value.isBool()) {
                 throw new TypeException("Wrong shit");
 
             }
             if (value.getBool()==true) {
-                p.stm_1.accept(new StmExecuter(), env);
+                if (p.stm_1.accept(new StmExecuter(), env) instanceof SReturn) {
+                    returnFlag = true;
+                    env.deleteScope();
+                    SReturn tempRet = (SReturn) p.stm_1.accept(new StmExecuter(), env);
+                    return tempRet.exp_.accept(new ExpEvaluator(), env);
+                }
+                else {
+                    p.stm_1.accept(new StmExecuter(), env);
+                }
+                //System.out.println("Here");
+                
             }
             else if(value.getBool()==false) {
-                p.stm_2.accept(new StmExecuter(), env);
+                if (p.stm_2.accept(new StmExecuter(), env) instanceof SReturn) {
+                    returnFlag = true;
+                    env.deleteScope();
+                    SReturn tempRet = (SReturn) p.stm_2.accept(new StmExecuter(), env);
+                    return tempRet.exp_.accept(new ExpEvaluator(), env);
+                }
+                else {
+                    p.stm_2.accept(new StmExecuter(), env);
+                }
+                //System.out.println("Or here?");
             }
             env.deleteScope();
             return null;
         }
         public Object visit(SBlock p, Env env) {
+            if (returnFlag) return null;
             env.newScope();
             for (Stm stm : p.liststm_){
                 if (stm instanceof SReturn) {
+                    returnFlag = true;
                     env.deleteScope();
                     SReturn tempRet = (SReturn) stm;
                     return tempRet.exp_.accept(new ExpEvaluator(), env);
@@ -263,6 +290,7 @@ public class Interpreter {
             return null;
         }
         public Object visit(SInit p, Env env) {
+            if (returnFlag) return null;
             //type, exp, id
             env.putVar(p.id_, toVal(p.type_));
             Val val = p.exp_.accept(new ExpEvaluator(), env);
@@ -270,15 +298,24 @@ public class Interpreter {
             return null;
         }
         public Object visit(SReturn p, Env env) {
+            if (returnFlag) return null;
+            returnFlag = true;
             //System.out.println(p.exp_.accept(new ExpEvaluator(), env));
             return p.exp_.accept(new ExpEvaluator(), env);
 
         }
         public Object visit(SWhile p , Env env) {
+            if (returnFlag) return null;
             Val value = p.exp_.accept(new ExpEvaluator(), env);
             while(value.isBool() && value.getBool()) {
 
                 env.newScope();
+                if (p.stm_.accept(new StmExecuter(), env) instanceof SReturn) {
+                    returnFlag = true;
+                    env.deleteScope();
+                    SReturn tempRet = (SReturn) p.stm_.accept(new StmExecuter(), env);
+                    return tempRet.exp_.accept(new ExpEvaluator(), env);
+                }
                 p.stm_.accept(new StmExecuter(), env);
                 env.deleteScope();
                 value=p.exp_.accept(new ExpEvaluator(), env);
