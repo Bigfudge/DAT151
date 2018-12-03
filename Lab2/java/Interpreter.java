@@ -188,9 +188,9 @@ public class Interpreter {
             DFun function = (DFun) def;
             if(function.id_ == "main") {
                 function.accept(new FunctionExecuter(), env);
-                if(env.returnFlag) {
-                    break;
-                }
+                // if(res != null) {
+                //     break;
+                // }
             }
 
         }
@@ -241,14 +241,14 @@ public class Interpreter {
             if (value.isBool()) {
                 if (value.getBool()) {
                     Val res = p.stm_1.accept(new StmExecuter(), env);
-                    if(env.returnFlag){
+                    if(res != null){
                         env.deleteScope();
                         return res;
                     }
                 }
                 else {
                     Val res = p.stm_2.accept(new StmExecuter(), env);
-                    if(env.returnFlag){
+                    if(res != null){
                         env.deleteScope();
                         return res;
                     }
@@ -261,7 +261,7 @@ public class Interpreter {
             env.newScope();
             for (Stm stm : p.liststm_){
                 Val res = stm.accept(new StmExecuter(), env);
-                if(env.returnFlag){
+                if(res != null){
                     //System.out.println("Sblock: returnflag =  true ");
                     env.deleteScope();
                     return res;
@@ -290,7 +290,7 @@ public class Interpreter {
                 Val res = p.stm_.accept(new StmExecuter(), env);
                 env.deleteScope();
                 value=p.exp_.accept(new ExpEvaluator(), env);
-                if(env.returnFlag)
+                if(res != null)
                     return res;
             }
             return null;
@@ -344,7 +344,7 @@ public class Interpreter {
                 else throw new TypeException("Trying to call printDouble on something that is not double.");
             }
             else if (p.id_ == "readInt") {
-                if (sc.hasNextInt()){ 
+                if (sc.hasNextInt()){
                     Integer i = sc.nextInt();
                     return new VInt(i);
                 }
@@ -358,20 +358,21 @@ public class Interpreter {
                 else return new VVoid();
             }
             else {
-                env.newScope();
+                Func function = env.getFun(p.id_);
 
                 LinkedList<Val> expList = new LinkedList<>();
                 for (Exp exp : p.listexp_) {
-                    expList.add(exp.accept(new ExpEvaluator(), env));
+                    expList.addFirst(exp.accept(new ExpEvaluator(), env));
                 }
-                Func function = env.getFun(p.id_);
+                env.newScope();
+
                 for (String arg : function.args){
                     env.putVar(arg, expList.remove());
                 }
 
                 for (Stm stm : function.statements) {
                     Val res = stm.accept(new StmExecuter(), env);
-                    if (env.returnFlag) {
+                    if (res != null) {
                         env.deleteScope();
                         return res;
                     }
@@ -409,10 +410,10 @@ public class Interpreter {
                 return new VBool ((int)u.getInt() == (int)v.getInt());
             }
             else if (u.isDouble() && v.isDouble()) {
-                return new VBool (u.getDouble() == v.getDouble());
+                return new VBool ((double)u.getDouble() == (double)v.getDouble());
             }
             else if (u.isBool() && v.isBool()){
-                return new VBool (u.getBool() == v.getBool());
+                return new VBool ((boolean)u.getBool() == (boolean)v.getBool());
             }
             else return new VVoid();
         }
@@ -490,10 +491,10 @@ public class Interpreter {
                 return new VBool ((int)u.getInt() != (int)v.getInt());
             }
             else if (u.isDouble() && v.isDouble()) {
-                return new VBool (u.getInt() != v.getInt());
+                return new VBool ((double)u.getDouble() != (double)v.getDouble());
             }
             else if (u.isBool() && v.isBool()){
-                return new VBool (u.getBool() != v.getBool());
+                return new VBool ((boolean)u.getBool() != (boolean)v.getBool());
             }
             else return new VVoid();
         }
