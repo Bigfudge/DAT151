@@ -188,8 +188,9 @@ public class Interpreter {
             DFun function = (DFun) def;
             if(function.id_ == "main") {
                 function.accept(new FunctionExecuter(), env);
-                if(env.returnFlag)
+                if(env.returnFlag) {
                     break;
+                }
             }
 
         }
@@ -210,9 +211,13 @@ public class Interpreter {
             Val functionValue = toVal(fun.type_);
 
             for(Stm stm : fun.liststm_){
+                if(fun.id_!="main"&&env.returnFlag) {
+                    break;
+                }
                 Val res = stm.accept(new StmExecuter(), env);
-                // if(fun.id_=="main"&&env.returnFlag)
-                //     break;
+//                 if(fun.id_!="main"&&env.returnFlag) {
+//                     break;
+//                 }
             }
             return env;
         }
@@ -236,7 +241,6 @@ public class Interpreter {
         public Val visit(SIfElse p, Env env) {
             env.newScope();
             Val value = p.exp_.accept(new ExpEvaluator(), env);
-
             if (value.isBool()) {
                 if (value.getBool()) {
                     Val res = p.stm_1.accept(new StmExecuter(), env);
@@ -311,7 +315,10 @@ public class Interpreter {
 
         public Val visit(EAnd p, Env env) {
             Val u = p.exp_1.accept(new ExpEvaluator(), env);
-            if(u.isBool() && u.getBool()){
+            if (!(u.getBool())){
+                return new VBool(false);
+            }
+            else if(u.getBool()){
                 Val v = p.exp_2.accept(new ExpEvaluator(), env);
                 if (v.isBool() && v.getBool()) {
                     return new VBool(true);
@@ -340,12 +347,18 @@ public class Interpreter {
                 else throw new TypeException("Trying to call printDouble on something that is not double.");
             }
             else if (p.id_ == "readInt") {
-                Integer i = sc.nextInt();
-                return new VInt(i);
+                if (sc.hasNextInt()){ 
+                    Integer i = sc.nextInt();
+                    return new VInt(i);
+                }
+                else return new VVoid();
             }
             else if (p.id_ == "readDouble") {
-                Double d = sc.nextDouble();
-                return new VDouble(d);
+                if (sc.hasNextDouble()){
+                    Double d = sc.nextDouble();
+                    return new VDouble(d);
+                }
+                else return new VVoid();
             }
             else {
                 env.newScope();
@@ -396,14 +409,15 @@ public class Interpreter {
             Val u = p.exp_1.accept(new ExpEvaluator(), env);
             Val v = p.exp_2.accept(new ExpEvaluator(), env);
             if (u.isInt() && v.isInt()) {
-                return new VBool (u.getInt() == v.getInt());
+                return new VBool ((int)u.getInt() == (int)v.getInt());
             }
             else if (u.isDouble() && v.isDouble()) {
-                return new VBool (u.getInt() == v.getInt());
+                return new VBool (u.getDouble() == v.getDouble());
             }
-            else {
+            else if (u.isBool() && v.isBool()){
                 return new VBool (u.getBool() == v.getBool());
             }
+            else return new VVoid();
         }
         public Val visit(EFalse p, Env env) {
             return new VBool(false);
@@ -439,7 +453,7 @@ public class Interpreter {
             return new VInt(p.integer_);
         }
         public Val visit(ELt p, Env env) {
-             Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val u = p.exp_1.accept(new ExpEvaluator(), env);
             Val v = p.exp_2.accept(new ExpEvaluator(), env);
 
             if (u.isInt() && v.isInt()) {
@@ -476,14 +490,15 @@ public class Interpreter {
             Val u = p.exp_1.accept(new ExpEvaluator(), env);
             Val v = p.exp_2.accept(new ExpEvaluator(), env);
             if (u.isInt() && v.isInt()) {
-                return new VBool (u.getInt() != v.getInt());
+                return new VBool ((int)u.getInt() != (int)v.getInt());
             }
             else if (u.isDouble() && v.isDouble()) {
                 return new VBool (u.getInt() != v.getInt());
             }
-            else {
+            else if (u.isBool() && v.isBool()){
                 return new VBool (u.getBool() != v.getBool());
             }
+            else return new VVoid();
         }
 
         public Val visit(EOr p , Env env) {
