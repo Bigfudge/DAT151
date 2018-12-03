@@ -1,6 +1,7 @@
 import CPP.Absyn.*;
 import java.util.*;
 public class Interpreter {
+    Scanner sc = new Scanner(System.in);
 
     private abstract class Val {
         public Boolean isInt(){return false;}
@@ -96,6 +97,8 @@ public class Interpreter {
     private class Env {
         public HashMap <String, Func> signature;
         public LinkedList<HashMap<String,Val>> contexts;
+        public boolean returnFlag = false;
+
 
         public Env(){
             signature = new HashMap<>();
@@ -109,7 +112,7 @@ public class Interpreter {
                     return storedValue;
                 }
             }
-            throw new TypeException("The variable " + id + " is not defined");
+            throw new TypeException("getVal: The variable " + id + " is not defined");
         }
 
         public void updateVar(String id, Val value) {
@@ -120,13 +123,13 @@ public class Interpreter {
                     return;
                 }
             }
-            throw new TypeException ("updateVar variable " + id + " does not exist");
+            throw new TypeException ("updateVar: Variable " + id + " does not exist");
         }
 
         public void putVar(String id, Val value) {
             HashMap<String,Val> context = contexts.peek();
             if (context.get(id) != null) {
-                throw new TypeException("putVarThe variable " + id + " is already defined.");
+                throw new TypeException("putVar: The variable " + id + " is already defined.");
             }
             context.put(id,value);
         }
@@ -135,12 +138,12 @@ public class Interpreter {
             if (signature.get(id) != null) {
                 return signature.get(id);
             }
-            else throw new TypeException("No function with that name is defined");
+            else throw new TypeException("getFun: No function with that name is defined");
         }
 
         public void putFun(String id, Func function){
             if (signature.get(id) != null) {
-                throw new TypeException("A function with that name is already defined");
+                throw new TypeException("putFun: A function with that name is already defined");
             }
             signature.put(id, function);
 
@@ -156,7 +159,7 @@ public class Interpreter {
         }
 
         public void newScope() {
-            HashMap<String,Val> context = new HashMap<>();
+            HashMap<String,Val> context = new HashMap<String, Val>();
             contexts.addFirst(context);
         }
 
@@ -179,13 +182,14 @@ public class Interpreter {
         env.newScope();
         for (Def def : listOfDefs) {
             def.accept(new FunctionPutter(), env);
-           // def.accept(new FunctionExecuter(), env);
         }
         //Only for main()?
         for (Def def : listOfDefs) {
             DFun function = (DFun) def;
             if(function.id_ == "main") {
                 function.accept(new FunctionExecuter(), env);
+                if(env.returnFlag)
+                    break;
             }
 
         }
@@ -206,13 +210,9 @@ public class Interpreter {
             Val functionValue = toVal(fun.type_);
 
             for(Stm stm : fun.liststm_){
-                if(stm instanceof SReturn) {
-                    //System.out.println("hello return");
-                    env.updateFunReturn(fun.id_, (Val)stm.accept(new StmExecuter(), env));
-                    return env;
-                }
-                stm.accept(new StmExecuter(), env);
-
+                Val res = stm.accept(new StmExecuter(), env);
+                // if(fun.id_=="main"&&env.returnFlag)
+                //     break;
             }
             return env;
         }
@@ -220,69 +220,77 @@ public class Interpreter {
 
 
 
-    private class StmExecuter implements Stm.Visitor<Object,Env> {
-        public Object visit(SDecls p, Env env) {
+    private class StmExecuter implements Stm.Visitor<Val,Env> {
+        public Val visit(SDecls p, Env env) {
             for (String id : p.listid_){
                 env.putVar(id, toVal(p.type_));
             }
             return null;
         }
 
-        public Object visit(SExp p, Env env) {
+        public Val visit(SExp p, Env env) {
             p.exp_.accept(new ExpEvaluator(), env);
             return null;
         }
 
-        public Object visit(SIfElse p, Env env) {
+        public Val visit(SIfElse p, Env env) {
             env.newScope();
             Val value = p.exp_.accept(new ExpEvaluator(), env);
-            if (!value.isBool()) {
-                throw new TypeException("Wrong shit");
 
-            }
-            if (value.getBool()==true) {
-                p.stm_1.accept(new StmExecuter(), env);
-            }
-            else if(value.getBool()==false) {
-                p.stm_2.accept(new StmExecuter(), env);
+            if (value.isBool()) {
+                if (value.getBool()) {
+                    Val res = p.stm_1.accept(new StmExecuter(), env);
+                    if(env.returnFlag){
+                        env.deleteScope();
+                        return res;
+                    }
+                }
+                else {
+                    Val res = p.stm_2.accept(new StmExecuter(), env);
+                    if(env.returnFlag){
+                        env.deleteScope();
+                        return res;
+                    }
+                }
             }
             env.deleteScope();
             return null;
         }
-        public Object visit(SBlock p, Env env) {
+        public Val visit(SBlock p, Env env) {
             env.newScope();
             for (Stm stm : p.liststm_){
-                if (stm instanceof SReturn) {
+                Val res = stm.accept(new StmExecuter(), env);
+                if(env.returnFlag){
+                    //System.out.println("Sblock: returnflag =  true ");
                     env.deleteScope();
-                    SReturn tempRet = (SReturn) stm;
-                    return tempRet.exp_.accept(new ExpEvaluator(), env);
+                    return res;
                 }
-                stm.accept(new StmExecuter(), env);
             }
             env.deleteScope();
             return null;
         }
-        public Object visit(SInit p, Env env) {
-            //type, exp, id
+        public Val visit(SInit p, Env env) {
             env.putVar(p.id_, toVal(p.type_));
             Val val = p.exp_.accept(new ExpEvaluator(), env);
             env.updateVar(p.id_, val);
             return null;
         }
-        public Object visit(SReturn p, Env env) {
-            //System.out.println(p.exp_.accept(new ExpEvaluator(), env));
+        public Val visit(SReturn p, Env env) {
+            env.returnFlag=true;
+            // System.out.println("SReturn: returnflag =  true ");
             return p.exp_.accept(new ExpEvaluator(), env);
 
         }
-        public Object visit(SWhile p , Env env) {
+        public Val visit(SWhile p , Env env) {
             Val value = p.exp_.accept(new ExpEvaluator(), env);
             while(value.isBool() && value.getBool()) {
 
                 env.newScope();
-                p.stm_.accept(new StmExecuter(), env);
+                Val res = p.stm_.accept(new StmExecuter(), env);
                 env.deleteScope();
                 value=p.exp_.accept(new ExpEvaluator(), env);
-
+                if(env.returnFlag)
+                    return res;
             }
             return null;
         }
@@ -296,19 +304,20 @@ public class Interpreter {
             if (u.isInt() && v.isInt()) {
                 return new VInt(u.getInt() + v.getInt());
             }
-            else if (u.isDouble() && v.isDouble()) {
+            else {
                 return new VDouble(u.getDouble() + v.getDouble());
             }
-            else throw new TypeException("Things got broken");
         }
 
         public Val visit(EAnd p, Env env) {
             Val u = p.exp_1.accept(new ExpEvaluator(), env);
-            Val v = p.exp_2.accept(new ExpEvaluator(), env);
-            if (u.isBool() && v.isBool()) {
-                return new VBool(u.getBool() && v.getBool());
+            if(u.isBool() && u.getBool()){
+                Val v = p.exp_2.accept(new ExpEvaluator(), env);
+                if (v.isBool() && v.getBool()) {
+                    return new VBool(true);
+                }
             }
-            else throw new TypeException("Things got broken");
+            return new VBool(false);
         }
 
         public Val visit(EApp p, Env env) {
@@ -331,19 +340,16 @@ public class Interpreter {
                 else throw new TypeException("Trying to call printDouble on something that is not double.");
             }
             else if (p.id_ == "readInt") {
-                Scanner sc = new Scanner(System.in);
                 Integer i = sc.nextInt();
-                sc.close();
                 return new VInt(i);
             }
             else if (p.id_ == "readDouble") {
-                Scanner sc = new Scanner(System.in);
                 Double d = sc.nextDouble();
-                sc.close();
                 return new VDouble(d);
             }
             else {
                 env.newScope();
+
                 LinkedList<Val> expList = new LinkedList<>();
                 for (Exp exp : p.listexp_) {
                     expList.add(exp.accept(new ExpEvaluator(), env));
@@ -354,28 +360,23 @@ public class Interpreter {
                 }
 
                 for (Stm stm : function.statements) {
-                    if (stm instanceof SReturn) {
-                        Val val = (Val) stm.accept(new StmExecuter(), env);
-                        //System.out.println(val);
-                        env.updateFunReturn(p.id_, val);
-                        function.returnValue = val;
+                    Val res = stm.accept(new StmExecuter(), env);
+                    if (env.returnFlag) {
+                        env.deleteScope();
+                        return res;
                     }
-                    else {
-                        stm.accept(new StmExecuter(), env);
-                    }
+
 
                 }
                 env.deleteScope();
-                return function.returnValue;
-
-
+                return null;
             }
 
         }
         public Val visit(EAss p, Env env) {
             Val value = p.exp_.accept(new ExpEvaluator(), env);
             env.updateVar(p.id_, value);
-            return new VVoid();
+            return value;
         }
         public Val visit(EDiv p, Env env) {
             Val u = p.exp_1.accept(new ExpEvaluator(), env);
@@ -384,10 +385,9 @@ public class Interpreter {
             if (u.isInt() && v.isInt()) {
                 return new VInt(u.getInt() / v.getInt());
             }
-            else if (u.isDouble() && v.isDouble()) {
+            else  {
                 return new VDouble(u.getDouble() / v.getDouble());
             }
-            else throw new TypeException("Things got broken");
         }
         public Val visit(EDouble p, Env env) {
             return new VDouble(p.double_);
@@ -395,8 +395,15 @@ public class Interpreter {
         public Val visit(EEq p , Env env) {
             Val u = p.exp_1.accept(new ExpEvaluator(), env);
             Val v = p.exp_2.accept(new ExpEvaluator(), env);
-
-            return new VBool (u == v);
+            if (u.isInt() && v.isInt()) {
+                return new VBool (u.getInt() == v.getInt());
+            }
+            else if (u.isDouble() && v.isDouble()) {
+                return new VBool (u.getInt() == v.getInt());
+            }
+            else {
+                return new VBool (u.getBool() == v.getBool());
+            }
         }
         public Val visit(EFalse p, Env env) {
             return new VBool(false);
@@ -409,10 +416,9 @@ public class Interpreter {
             if (u.isInt() && v.isInt()) {
                 return new VBool(u.getInt() > v.getInt());
             }
-            else if (u.isDouble() && v.isDouble()) {
+            else  {
                 return new VBool(u.getDouble() > v.getDouble());
             }
-            else throw new TypeException("Things got broken");
         }
         public Val visit(EGtEq p, Env env) {
             Val u = p.exp_1.accept(new ExpEvaluator(), env);
@@ -421,10 +427,9 @@ public class Interpreter {
             if (u.isInt() && v.isInt()) {
                 return new VBool(u.getInt() >= v.getInt());
             }
-            else if (u.isDouble() && v.isDouble()) {
+            else {
                 return new VBool(u.getDouble() >= v.getDouble());
             }
-            else throw new TypeException("Things got broken");
         }
         public Val visit(EId p, Env env) {
             return env.getVal(p.id_);
@@ -440,22 +445,20 @@ public class Interpreter {
             if (u.isInt() && v.isInt()) {
                 return new VBool(u.getInt() < v.getInt());
             }
-            else if (u.isDouble() && v.isDouble()) {
+            else{
                 return new VBool(u.getDouble() < v.getDouble());
             }
-            else throw new TypeException("Things got broken");
         }
         public Val visit(ELtEq p, Env env) {
-             Val u = p.exp_1.accept(new ExpEvaluator(), env);
+            Val u = p.exp_1.accept(new ExpEvaluator(), env);
             Val v = p.exp_2.accept(new ExpEvaluator(), env);
 
             if (u.isInt() && v.isInt()) {
                 return new VBool(u.getInt() <= v.getInt());
             }
-            else if (u.isDouble() && v.isDouble()) {
+            else {
                 return new VBool(u.getDouble() <= v.getDouble());
             }
-            else throw new TypeException("Things got broken");
         }
         public Val visit(EMinus p , Env env) {
             Val u = p.exp_1.accept(new ExpEvaluator(), env);
@@ -464,25 +467,37 @@ public class Interpreter {
             if (u.isInt() && v.isInt()) {
                 return new VInt(u.getInt() - v.getInt());
             }
-            else if (u.isDouble() && v.isDouble()) {
+            else  {
                 return new VDouble(u.getDouble() - v.getDouble());
             }
-            else throw new TypeException("Things got broken");
         }
 
         public Val visit(ENEq p, Env env) {
             Val u = p.exp_1.accept(new ExpEvaluator(), env);
             Val v = p.exp_2.accept(new ExpEvaluator(), env);
-            return new VBool (u != v);
+            if (u.isInt() && v.isInt()) {
+                return new VBool (u.getInt() != v.getInt());
+            }
+            else if (u.isDouble() && v.isDouble()) {
+                return new VBool (u.getInt() != v.getInt());
+            }
+            else {
+                return new VBool (u.getBool() != v.getBool());
+            }
         }
 
         public Val visit(EOr p , Env env) {
             Val u = p.exp_1.accept(new ExpEvaluator(), env);
-            Val v = p.exp_2.accept(new ExpEvaluator(), env);
-            if (u.isBool() && v.isBool()) {
-                return new VBool(u.getBool() || v.getBool());
+            if (u.isBool() && u.getBool()) {
+                return new VBool(true);
             }
-            else throw new TypeException("Things got broken");
+            Val v = p.exp_2.accept(new ExpEvaluator(), env);
+            if(v.isBool() && v.getBool()){
+                return new VBool(true);
+            }
+            else {
+                return new VBool(false);
+            }
         }
         public Val visit(EPostDecr p, Env env) {
             Val val = env.getVal(p.id_);
@@ -491,12 +506,11 @@ public class Interpreter {
                 env.updateVar(p.id_, res);
                 return val;
             }
-            else if(val.isDouble()){
+            else {
                 Val res =new VDouble(val.getDouble() - 1.0);
                 env.updateVar(p.id_, res);
                 return val;
             }
-            else throw new TypeException("Things got broken");
         }
 
         public Val visit(EPostIncr p, Env env) {
@@ -506,23 +520,19 @@ public class Interpreter {
                 env.updateVar(p.id_, res);
                 return val;
             }
-            else if(val.isDouble()){
+            else {
                 Val res =new VDouble(val.getDouble() + 1.0);
                 env.updateVar(p.id_, res);
                 return val;
             }
-            else throw new TypeException("Things got broken");
         }
         public Val visit(EPreIncr p, Env env) {
             Val val = env.getVal(p.id_);
             if (val.isInt()) {
                 env.updateVar(p.id_, new VInt(val.getInt()+1));
             }
-            else if(val.isDouble()){
-                env.updateVar(p.id_, new VDouble(val.getDouble()+1));
-            }
             else{
-                throw new TypeException("Preincr exception");
+                env.updateVar(p.id_, new VDouble(val.getDouble()+1));
             }
             val = env.getVal(p.id_);
             return val;
@@ -532,11 +542,8 @@ public class Interpreter {
             if (val.isInt()) {
                 env.updateVar(p.id_, new VInt(val.getInt()-1));
             }
-            else if(val.isDouble()){
+            else {
                 env.updateVar(p.id_, new VDouble(val.getDouble() - 1.0));
-            }
-            else{
-                throw new TypeException("Predecr exception");
             }
             val = env.getVal(p.id_);
             return val;
@@ -548,10 +555,9 @@ public class Interpreter {
             if (u.isInt() && v.isInt()) {
                 return new VInt(u.getInt() * v.getInt());
             }
-            else if (u.isDouble() && v.isDouble()) {
+            else {
                 return new VDouble(u.getDouble() * v.getDouble());
             }
-            else throw new TypeException("Things got broken");
 
         }
         public Val visit(ETrue p , Env env) {
