@@ -211,13 +211,10 @@ public class Interpreter {
             Val functionValue = toVal(fun.type_);
 
             for(Stm stm : fun.liststm_){
-                if(fun.id_!="main"&&env.returnFlag) {
-                    break;
-                }
                 Val res = stm.accept(new StmExecuter(), env);
-//                 if(fun.id_!="main"&&env.returnFlag) {
-//                     break;
-//                 }
+                if (res != null) {
+                    return env;
+                }
             }
             return env;
         }
@@ -579,18 +576,6 @@ public class Interpreter {
             return new VBool(true);
         }
     }
-
-
-
-    //
-    // private class StmExecuter implements Stm.Visitor<Object,Env> {
-    //
-    // }
-    //
-    //
-    // private class ExpEvaluator implements Stm.Visitor<Val, Env> {
-    //
-    // }
 
 
 }
