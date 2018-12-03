@@ -1,6 +1,7 @@
 import CPP.Absyn.*;
 import java.util.*;
 public class Interpreter {
+    Scanner sc = new Scanner(System.in);
 
     private abstract class Val {
         public Boolean isInt(){return false;}
@@ -339,15 +340,11 @@ public class Interpreter {
                 else throw new TypeException("Trying to call printDouble on something that is not double.");
             }
             else if (p.id_ == "readInt") {
-                Scanner sc = new Scanner(System.in);
                 Integer i = sc.nextInt();
-                sc.close();
                 return new VInt(i);
             }
             else if (p.id_ == "readDouble") {
-                Scanner sc = new Scanner(System.in);
                 Double d = sc.nextDouble();
-                sc.close();
                 return new VDouble(d);
             }
             else {
