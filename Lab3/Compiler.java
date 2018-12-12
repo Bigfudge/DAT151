@@ -11,6 +11,7 @@ public class Compiler
       public HashMap<String,TypeCode> signature ;
       public HashMap<String, Integer> variables;
       Integer variableCount = 0;
+      Integer loopCount = 0;
 
       public Env(){
           signature = new HashMap<>();
@@ -73,8 +74,6 @@ public class Compiler
     PDefs defs = (PDefs)p;
     ListDef listOfDefs = defs.listdef_;
     //Build symbol-table for all functions and their types
-
-
 
     //Building the symbol table.
     for (Def def : listOfDefs) {
@@ -143,6 +142,12 @@ public class Compiler
             return null;
         }
         public Env visit(SWhile p , Env env) {
+            output.add("L"+loopCount.toString()+"0");
+            p.exp_.accept(new CompileExp(), env);
+            output.add("if icmpeq L"+loopCount.toString()+"1"
+            p.stm_.accept(new compileStm(), env);
+            
+            
             return null;
         }
   }
@@ -198,6 +203,8 @@ public class Compiler
           Integer reg = env.variables.get(p.id_);
           p.exp_.accept(new CompileExp(), env);
           output.add("istore_" +reg+"\n");
+          output.add("iload_" +reg+"\n");
+          output.add("pop\n");
           return null;
 
       }
@@ -228,6 +235,17 @@ public class Compiler
       }
 
       public Void visit(ELt p, Env env) {
+          p.exp_1.accept(new CompileExp(), env);
+          p.exp_2.accept(new CompileExp(), env);
+          output.add("if_icmplt label1");
+          output.add("iconst_0");
+          output.add("goto label2");
+          output.add("label1");
+          output.add("inconst_1);
+          output.add("label2");
+          output.add("inconst_0);
+          
+          
           return null;
 
       }
@@ -279,16 +297,22 @@ public class Compiler
 
       public Void visit(EPreDecr p, Env env) {
           Integer reg = env.variables.get(p.id_);
-          output.add("iload_" + reg);
-          output.add("iinc " + reg + "iconst_m1");
+          
+          output.add("iload_" + reg+"\n");
+          output.add("iconst_1\nisub\nistore_"+reg+"\n");
+          output.add("iload_" + reg+"\n");
+          
           return null;
 
       }
 
       public Void visit(EPreIncr p, Env env) {
           Integer reg = env.variables.get(p.id_);
-          output.add("iload_" + reg);
-          output.add("iinc " + reg + "iconst_1");
+         
+          output.add("iload_" + reg+"\n");
+          output.add("iconst_1\niadd\nistore_"+reg+"\n");
+          output.add("iload_" + reg+"\n");
+          
           return null;
 
       }
