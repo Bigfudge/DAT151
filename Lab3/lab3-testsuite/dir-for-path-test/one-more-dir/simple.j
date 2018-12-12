@@ -20,3 +20,10 @@
 
 .end method
 
+.method public static main()I
+.limit locals 3
+.limit stack 3
+ldc 0
+ireturn
+
+.end method

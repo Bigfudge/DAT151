@@ -8,7 +8,7 @@ public class Compiler
   // The output of the compiler is a list of strings.
   LinkedList<String> output;
   private class Env{
-      public HashMap<String,TypeCode> signature ;
+      public HashMap<String,String> signature ;
       public HashMap<String, Integer> variables;
       Integer variableCount = 0;
       Integer loopCount = 0;
@@ -19,11 +19,61 @@ public class Compiler
       }
 
       //Adds function to signatures if id does not already exist, otherwise Exception
-      public void addFun (String id, TypeCode functionDef){
-          if (signature.get(id) != null) {
-              throw new TypeException ("The function " +id+ " is already defined.");
+      public void addFun (DFun function){
+          Type functionType = function.type_;
+          String functionName = function.id_;
+          ListArg functionArgs = function.listarg_;
+
+          String type="(";
+          for (Arg arg : functionArgs) {
+              ADecl tmp = (ADecl)arg;
+              if (tmp.type_ instanceof Type_int) {
+                  type = type + "I";
+              }
+              else if (tmp.type_ instanceof Type_bool) {
+                  type = type + "Z";
+              }
+              else if (tmp.type_ instanceof Type_void) {
+                  type = type + "V";
+              }
+
           }
-          signature.put(id, functionDef);
+          type= type + ")";
+
+          if (functionType instanceof Type_int) {
+              type = type + "I";
+          }
+          else if (functionType instanceof Type_bool) {
+              type = type + "Z";
+          }
+          else if (functionType instanceof Type_void) {
+              type = type + "V";
+          }
+          signature.put(functionName, type);
+
+
+      }
+
+      public String getSignature (String id) {
+          if (signature.containsKey(id)){
+              return signature.get(id);
+          }
+          throw new RuntimeException("No such function is defined.");
+      }
+
+      public void addVar (String id){
+          variables.put(id, variableCount++);
+      }
+
+      public String getLabel(){
+          return "label_"+UUID.randomUUID().toString();
+
+      }
+      public Integer getReg(String id){
+          if (variables.containsKey(id)) {
+              return variables.get(id);
+          }
+          throw new RuntimeException("getReg: No such variable");
       }
 
   }
@@ -48,28 +98,28 @@ public class Compiler
     output = new LinkedList();
     Env env = new Env();
     // Output boilerplate
-    output.add(".class public " + name + "\n");
-    output.add(".super java/lang/Object\n");
-    output.add("\n");
-    output.add(".method public <init>()V\n");
-    output.add("  .limit locals 1\n");
-    output.add("\n");
-    output.add("  aload_0\n");
-    output.add("  invokespecial java/lang/Object/<init>()V\n");
-    output.add("  return\n");
-    output.add("\n");
-    output.add(".end method\n");
-    output.add("\n");
-    output.add(".method public static main([Ljava/lang/String;)V\n");
-    output.add("  .limit locals 1\n");
-    output.add("  .limit stack  1\n");
-    output.add("\n");
-    output.add("  invokestatic " + name + "/main()I\n");
-    output.add("  pop\n");
-    output.add("  return\n");
-    output.add("\n");
-    output.add(".end method\n");
-    output.add("\n");
+    output.add(".class public " + name);
+    output.add(".super java/lang/Object");
+    output.add("");
+    output.add(".method public <init>()V");
+    output.add("  .limit locals 1");
+    output.add("");
+    output.add("  aload_0");
+    output.add("  invokespecial java/lang/Object/<init>()V");
+    output.add("  return");
+    output.add("");
+    output.add(".end method");
+    output.add("");
+    output.add(".method public static main([Ljava/lang/String;)V");
+    output.add("  .limit locals 1");
+    output.add("  .limit stack  1");
+    output.add("");
+    output.add("  invokestatic " + name + "/main()I");
+    output.add("  pop");
+    output.add("  return");
+    output.add("");
+    output.add(".end method");
+    output.add("");
 
     PDefs defs = (PDefs)p;
     ListDef listOfDefs = defs.listdef_;
@@ -89,14 +139,14 @@ public class Compiler
     // Concatenate strings in output to .j file content.
     StringBuilder jtext = new StringBuilder();
     for (String s: output) {
-      jtext.append(s);
+      jtext.append(s+"\n");
     }
     return jtext.toString();
   }
   private class SetupSymbolTable implements Def.Visitor<Env,Env> {
       public Env visit(DFun fun, Env env) {
 
-          env.addFun(fun.id_, typeCode(fun.type_));
+          env.addFun(fun);
           return env;
       }
   }
@@ -109,12 +159,20 @@ public class Compiler
           ListStm functionStms = fun.liststm_;
 
           //Checks the deklaration of main
-          if(functionName == "main"){
-              //Checks all statement in the function
-              for (Stm st : functionStms) {
-                  st.accept(new compileStm() , env);
-              }
+        String signature =env.getSignature(functionName);
+
+          output.add(".method public static "+functionName+signature);
+          output.add(".limit locals 3");
+          output.add(".limit stack 3");
+
+          //Checks all statement in the function
+          for (Stm st : functionStms) {
+
+              st.accept(new CompileStm() , env);
+              output.add("");
           }
+          output.add(".end method");
+
 
 
           //env.deleteScope();
@@ -122,39 +180,55 @@ public class Compiler
           return env;
       }
   }
-  private class compileStm implements Stm.Visitor<Env, Env>{
+  private class CompileStm implements Stm.Visitor<Env, Env>{
         public Env visit(SDecls p, Env env) {
+            for(String id : p.listid_){
+                    env.addVar(id);
+            }
             return null;
         }
         public Env visit(SExp p, Env env) {
+            p.exp_.accept(new CompileExp(), env);
             return null;
         }
         public Env visit(SIfElse p, Env env) {
             return null;
         }
         public Env visit(SBlock p, Env env) {
+            for (Stm stm : p.liststm_){
+                stm.accept(new CompileStm(), env);
+                output.add("pop");
+            }
+
             return null;
         }
         public Env visit(SInit p, Env env) {
+            env.addVar(p.id_);
+            p.exp_.accept(new CompileExp(), env);
+            output.add("istore_"+env.getReg(p.id_));
             return null;
         }
         public Env visit(SReturn p, Env env) {
+            p.exp_.accept(new CompileExp(), env);
+            output.add("ireturn");
             return null;
         }
         public Env visit(SWhile p , Env env) {
-            output.add("L"+loopCount.toString()+"0");
+            String startLabel =  env.getLabel();
+            String endLabel = env.getLabel();
+            output.add(startLabel);
             p.exp_.accept(new CompileExp(), env);
-            output.add("if icmpeq L"+loopCount.toString()+"1"
-            p.stm_.accept(new compileStm(), env);
-            
-            
+            output.add("if icmpeq "+endLabel);
+            p.stm_.accept(new CompileStm(), env);
+            output.add("goto "+startLabel);
+
             return null;
         }
   }
   private class CompileExp implements Exp.Visitor<Void,Env> {
 
      public Void visit(EInt p, Env env) {
-         output.add("istore_"+p.integer_.toString()+"\n");
+         output.add("ldc "+p.integer_.toString());
          return null;
       }
 
@@ -163,48 +237,58 @@ public class Compiler
       }
 
       public Void visit(EFalse p, Env env) {
-          output.add("iconst_0\n");
+          output.add("iconst_0");
 
           return null;
       }
 
       public Void visit(EId p, Env env) {
           Integer register = env.variables.get(p.id_);
-          output.add("iload_"+register.toString()+"\n");
+          output.add("iload_"+register.toString());
 
           return null;
       }
 
       public Void visit(ETrue p, Env env) {
-          output.add("iconst_1\n");
+          output.add("iconst_1");
           return null;
       }
 
       public Void visit(EPlus p, Env env){
           p.exp_1.accept(new CompileExp(), env);
           p.exp_2.accept(new CompileExp(), env);
-          output.add("iadd\n");
+          output.add("iadd");
           return null;
       }
 
       public Void visit(EAnd p, Env env) {
           p.exp_1.accept(new CompileExp(), env);
           p.exp_2.accept(new CompileExp(), env);
-          output.add("iand\n");
+          output.add("iand");
           return null;
       }
 
       public Void visit(EApp p, Env env) {
-
+          if (p.id_=="readInt") {
+              output.add("invokestatic Runtime/readInt()I");
+          }
+          else if (p.id_=="printInt") {
+              for(Exp exp: p.listexp_){
+                  exp.accept(new CompileExp(), env);
+              }
+              output.add("invokestatic Runtime/printInt(I)V");
+          }
+          else{
+              output.add("invokestatic"+p.id_+env.getSignature(p.id_));
+          }
           return null;
       }
 
       public Void visit(EAss p, Env env) {
-          Integer reg = env.variables.get(p.id_);
+          Integer reg = env.getReg(p.id_);
           p.exp_.accept(new CompileExp(), env);
-          output.add("istore_" +reg+"\n");
-          output.add("iload_" +reg+"\n");
-          output.add("pop\n");
+          output.add("istore_" +reg);
+          output.add("iload_" +reg);
           return null;
 
       }
@@ -212,45 +296,96 @@ public class Compiler
       public Void visit(EDiv p, Env env) {
           p.exp_1.accept(new CompileExp(), env);
           p.exp_2.accept(new CompileExp(), env);
-          output.add("idiv\n");
+          output.add("idiv");
           return null;
 
       }
 
       public Void visit(EEq p, Env env) {
+          p.exp_1.accept(new CompileExp(), env);
+          p.exp_2.accept(new CompileExp(), env);
 
+          String label1 = env.getLabel();
+          String label2 = env.getLabel();
+          output.add("if_icmpeq "+label1);
+          output.add("iconst_0");
+          output.add("goto "+label2);
+          output.add(label1);
+          output.add("iconst_1");
+          output.add(label2);
+          output.add("iconst_0");
 
           return null;
 
       }
 
       public Void visit(EGt p, Env env) {
+          p.exp_1.accept(new CompileExp(), env);
+          p.exp_2.accept(new CompileExp(), env);
+
+          String label1 = env.getLabel();
+          String label2 = env.getLabel();
+          output.add("if_icmpgt label_"+label1);
+          output.add("iconst_0");
+          output.add("goto "+label2);
+          output.add(label1);
+          output.add("iconst_1");
+          output.add(label2);
+          output.add("iconst_0");
+
           return null;
 
       }
 
       public Void visit(EGtEq p, Env env) {
-          return null;
+          p.exp_1.accept(new CompileExp(), env);
+          p.exp_2.accept(new CompileExp(), env);
 
+          String label1 = env.getLabel();
+          String label2 = env.getLabel();
+          output.add("if_icmpge "+label1);
+          output.add("iconst_0");
+          output.add("goto "+label2);
+          output.add(label1);
+          output.add("iconst_1");
+          output.add(label2);
+          output.add("iconst_0");
+
+          return null;
       }
 
       public Void visit(ELt p, Env env) {
           p.exp_1.accept(new CompileExp(), env);
           p.exp_2.accept(new CompileExp(), env);
-          output.add("if_icmplt label1");
+
+          String label1 = env.getLabel();
+          String label2 = env.getLabel();
+          output.add("if_icmplt "+label1);
           output.add("iconst_0");
-          output.add("goto label2");
-          output.add("label1");
-          output.add("inconst_1);
-          output.add("label2");
-          output.add("inconst_0);
-          
-          
+          output.add("goto "+label2);
+          output.add(label1);
+          output.add("iconst_1");
+          output.add(label2);
+          output.add("iconst_0");
+
           return null;
 
       }
 
       public Void visit(ELtEq p, Env env) {
+          p.exp_1.accept(new CompileExp(), env);
+          p.exp_2.accept(new CompileExp(), env);
+
+          String label1 = env.getLabel();
+          String label2 = env.getLabel();
+          output.add("if_icmple "+label1);
+          output.add("iconst_0");
+          output.add("goto "+label2);
+          output.add(label1);
+          output.add("iconst_1");
+          output.add(label2);
+          output.add("iconst_0");
+
           return null;
 
       }
@@ -258,13 +393,26 @@ public class Compiler
       public Void visit(EMinus p, Env env) {
           p.exp_1.accept(new CompileExp(), env);
           p.exp_2.accept(new CompileExp(), env);
-          output.add("isub\n");
+          output.add("isub");
 
           return null;
 
       }
 
       public Void visit(ENEq p, Env env) {
+          p.exp_1.accept(new CompileExp(), env);
+          p.exp_2.accept(new CompileExp(), env);
+
+          String label1 = env.getLabel();
+          String label2 = env.getLabel();
+          output.add("if_icmpne "+label1);
+          output.add("iconst_0");
+          output.add("goto "+label2);
+          output.add(label1);
+          output.add("iconst_1");
+          output.add(label2);
+          output.add("iconst_0");
+
           return null;
 
       }
@@ -272,7 +420,7 @@ public class Compiler
       public Void visit(EOr p, Env env) {
           p.exp_1.accept(new CompileExp(), env);
           p.exp_2.accept(new CompileExp(), env);
-          output.add("ior\n");
+          output.add("ior");
 
           return null;
 
@@ -280,8 +428,12 @@ public class Compiler
 
       public Void visit(EPostDecr p, Env env) {
           Integer reg = env.variables.get(p.id_);
-          output.add("iinc " + reg + "iconst_m1");
+
           output.add("iload_" + reg);
+          output.add("iload_" + reg);
+          output.add("iconst_1");
+          output.add("iadd");
+          output.add("istore_"+reg);
 
           return null;
 
@@ -289,30 +441,39 @@ public class Compiler
 
       public Void visit(EPostIncr p, Env env) {
           Integer reg = env.variables.get(p.id_);
-          output.add("iinc " + reg + "iconst_1");
+
           output.add("iload_" + reg);
+          output.add("iload_" + reg);
+          output.add("iconst_1");
+          output.add("iadd");
+          output.add("istore_" + reg);
+
           return null;
 
       }
 
       public Void visit(EPreDecr p, Env env) {
           Integer reg = env.variables.get(p.id_);
-          
-          output.add("iload_" + reg+"\n");
-          output.add("iconst_1\nisub\nistore_"+reg+"\n");
-          output.add("iload_" + reg+"\n");
-          
+
+          output.add("iload_" + reg);
+          output.add("iconst_1");
+          output.add("isub");
+          output.add("istore_"+reg);
+          output.add("iload_" + reg);
+
           return null;
 
       }
 
       public Void visit(EPreIncr p, Env env) {
           Integer reg = env.variables.get(p.id_);
-         
-          output.add("iload_" + reg+"\n");
-          output.add("iconst_1\niadd\nistore_"+reg+"\n");
-          output.add("iload_" + reg+"\n");
-          
+
+          output.add("iload_" + reg);
+          output.add("iconst_1");
+          output.add("iadd");
+          output.add("istore_"+reg);
+          output.add("iload_" + reg);
+
           return null;
 
       }
@@ -320,7 +481,7 @@ public class Compiler
       public Void visit(ETimes p, Env env) {
           p.exp_1.accept(new CompileExp(), env);
           p.exp_2.accept(new CompileExp(), env);
-          output.add("imul\n");
+          output.add("imul");
 
           return null;
 

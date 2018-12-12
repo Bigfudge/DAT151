@@ -1,4 +1,4 @@
-.class public bool_return
+.class public core006
 .super java/lang/Object
 
 .method public <init>()V
@@ -14,9 +14,25 @@
   .limit locals 1
   .limit stack  1
 
-  invokestatic bool_return/main()I
+  invokestatic core006/main()I
   pop
   return
 
 .end method
 
+.method public static main()I
+.limit locals 3
+.limit stack 3
+ldc 45
+istore_0
+iload_0
+pop
+ldc 36
+ldc 67
+iadd
+istore_1
+iload_1
+pop
+ldc 0
+ireturn
+.end method

@@ -20,3 +20,22 @@
 
 .end method
 
+.method public static main()I
+.limit locals 3
+.limit stack 3
+
+ldc 6
+istore_2
+iload_2
+istore_1
+iload_1
+
+iload_2
+iload_1
+iadd
+invokestatic Runtime/printInt(I)V
+
+ldc 0
+ireturn
+
+.end method

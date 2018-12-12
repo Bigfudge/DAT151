@@ -20,3 +20,52 @@
 
 .end method
 
+.method public static niam()I
+.limit locals 3
+.limit stack 3
+ldc 99
+ireturn
+pop
+pop
+pop
+pop
+pop
+pop
+ldc 2
+invokestatic Runtime/printInt(I)V
+pop
+pop
+pop
+pop
+pop
+
+ldc 1
+invokestatic Runtime/printInt(I)V
+
+.end method
+.method public static main()I
+.limit locals 3
+.limit stack 3
+invokestaticniam()I
+invokestatic Runtime/printInt(I)V
+pop
+ldc 0
+ireturn
+pop
+pop
+pop
+pop
+pop
+pop
+ldc 3
+invokestatic Runtime/printInt(I)V
+pop
+pop
+pop
+pop
+pop
+
+ldc 4
+invokestatic Runtime/printInt(I)V
+
+.end method

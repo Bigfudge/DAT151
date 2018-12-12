@@ -20,3 +20,21 @@
 
 .end method
 
+.method public static printBool(Z)V
+.limit locals 3
+.limit stack 3
+
+.end method
+.method public static main()I
+.limit locals 3
+.limit stack 3
+invokestaticprintBool(Z)V
+
+invokestaticprintBool(Z)V
+
+invokestaticprintBool(Z)V
+
+ldc 0
+ireturn
+
+.end method

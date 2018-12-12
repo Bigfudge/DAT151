@@ -32,19 +32,19 @@ istore_1
 ldc 1
 istore_2
 
-label_ed9e1544-2efd-41df-9ab6-ce611a68d4ea
+label_58b40af6-e6e4-4593-a8c9-327ea7b845ed
 iload_2
 iload_0
 ldc 1
 iadd
-if_icmplt label_cc245b87-b08a-4af4-8e99-68846a1fe929
+if_icmplt label_4e60735b-32fe-4f94-adbd-bb0e2026d43a
 iconst_0
-goto label_79a2e7d1-e71b-4808-bbd7-7ef209c630d8
-label_cc245b87-b08a-4af4-8e99-68846a1fe929
+goto label_3d365fd4-1e66-4dc1-986e-4286037b997c
+label_4e60735b-32fe-4f94-adbd-bb0e2026d43a
 iconst_1
-label_79a2e7d1-e71b-4808-bbd7-7ef209c630d8
+label_3d365fd4-1e66-4dc1-986e-4286037b997c
 iconst_0
-if icmpeq label_58ee4dae-7c1e-40a3-8783-8bc66d3dd7fa
+if icmpeq label_079e7779-8f6a-4be6-ac2e-3eb672df6e34
 iload_2
 iload_1
 imul
@@ -57,7 +57,7 @@ iadd
 istore_2
 iload_2
 pop
-goto label_ed9e1544-2efd-41df-9ab6-ce611a68d4ea
+goto label_58b40af6-e6e4-4593-a8c9-327ea7b845ed
 
 iload_1
 invokestatic Runtime/printInt(I)V

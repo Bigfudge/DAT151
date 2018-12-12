@@ -20,3 +20,33 @@
 
 .end method
 
+.method public static f()I
+.limit locals 3
+.limit stack 3
+ldc 2
+istore_0
+
+
+iload_0
+ireturn
+
+.end method
+.method public static main()I
+.limit locals 3
+.limit stack 3
+ldc 1
+istore_1
+
+iload_1
+invokestatic Runtime/printInt(I)V
+
+invokestaticf()I
+invokestatic Runtime/printInt(I)V
+
+iload_1
+invokestatic Runtime/printInt(I)V
+
+ldc 0
+ireturn
+
+.end method

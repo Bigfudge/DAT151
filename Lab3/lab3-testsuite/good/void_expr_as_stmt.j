@@ -20,3 +20,19 @@
 
 .end method
 
+.method public static main()I
+.limit locals 3
+.limit stack 3
+invokestaticfoo()V
+
+ldc 0
+ireturn
+
+.end method
+.method public static foo()V
+.limit locals 3
+.limit stack 3
+ldc 1
+invokestatic Runtime/printInt(I)V
+
+.end method

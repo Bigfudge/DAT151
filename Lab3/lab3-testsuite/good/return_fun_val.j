@@ -20,3 +20,17 @@
 
 .end method
 
+.method public static main()I
+.limit locals 3
+.limit stack 3
+invokestatictest()I
+ireturn
+
+.end method
+.method public static test()I
+.limit locals 3
+.limit stack 3
+ldc 32
+ireturn
+
+.end method

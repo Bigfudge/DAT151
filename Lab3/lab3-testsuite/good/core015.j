@@ -20,3 +20,22 @@
 
 .end method
 
+.method public static main()I
+.limit locals 3
+.limit stack 3
+invokestaticev(I)I
+invokestatic Runtime/printInt(I)V
+
+ldc 0
+ireturn
+
+.end method
+.method public static ev(I)I
+.limit locals 3
+.limit stack 3
+
+
+iload_0
+ireturn
+
+.end method
