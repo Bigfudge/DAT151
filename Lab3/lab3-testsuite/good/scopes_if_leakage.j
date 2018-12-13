@@ -29,12 +29,12 @@ istore_0
 
 iload_0
 iconst_1
-if_icmpeq label_b1586d92-69ce-43c6-bf2c-f6d173a7628a
+if_icmpeq label_11ce4456-d4eb-4dc2-8ff6-f907b54bc7b0
 iconst_0
-goto label_431f150a-e367-4fb2-9edb-32371f6fd1a1
-label_b1586d92-69ce-43c6-bf2c-f6d173a7628a
+goto label_2628a344-40fd-4755-b945-b7debe591ca9
+label_11ce4456-d4eb-4dc2-8ff6-f907b54bc7b0
 iconst_1
-label_431f150a-e367-4fb2-9edb-32371f6fd1a1
+label_2628a344-40fd-4755-b945-b7debe591ca9
 iconst_0
 
 iload_0
@@ -43,12 +43,12 @@ istore_1
 
 iload_0
 iconst_1
-if_icmpeq label_a0a57982-34f3-4830-b0f9-ae59f1d9239c
+if_icmpeq label_54f907c8-0890-41a5-b2ec-b2c5e3e322b4
 iconst_0
-goto label_c76ab455-a5b9-41df-a642-0e5039cb9f07
-label_a0a57982-34f3-4830-b0f9-ae59f1d9239c
+goto label_f5d00b65-8114-4286-96e5-b4025f8ae29d
+label_54f907c8-0890-41a5-b2ec-b2c5e3e322b4
 iconst_1
-label_c76ab455-a5b9-41df-a642-0e5039cb9f07
+label_f5d00b65-8114-4286-96e5-b4025f8ae29d
 iconst_0
 
 iload_0

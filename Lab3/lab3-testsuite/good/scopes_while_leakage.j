@@ -29,33 +29,33 @@ istore_0
 ldc 0
 istore_1
 
-label_deba99f6-920e-4824-b911-f23e2b88678c
+label_1b62cc87-3272-419b-a1d3-1b67d0128816
 iload_1
 iload_1
 iconst_1
 iadd
 istore_1
 ldc 1
-if_icmplt label_30191d43-b27e-4b83-a9cd-3062ae39110d
+if_icmplt label_7f45b5d9-be2e-4a49-847d-842fb7c5349d
 iconst_0
-goto label_ccecc3be-8f63-446f-a097-f8b2565025be
-label_30191d43-b27e-4b83-a9cd-3062ae39110d
+goto label_3e9d8483-c449-4b5c-a421-248c546b1eee
+label_7f45b5d9-be2e-4a49-847d-842fb7c5349d
 iconst_1
-label_ccecc3be-8f63-446f-a097-f8b2565025be
+label_3e9d8483-c449-4b5c-a421-248c546b1eee
 iconst_0
-if icmpeq label_ad3b37ef-2eb1-4868-96ca-25faf2d17ee7
+if icmpeq label_f2283ce8-a301-4e93-bf8d-219ce4aa55bc
 ldc 1
 istore_2
-goto label_deba99f6-920e-4824-b911-f23e2b88678c
+goto label_1b62cc87-3272-419b-a1d3-1b67d0128816
 
 iload_2
 iconst_1
-if_icmpeq label_b8f46c85-43fe-42f9-9844-bdb6342954b1
+if_icmpeq label_9ea78aeb-b873-4372-a4a0-138f54287fd5
 iconst_0
-goto label_c9df5bae-a28c-4ce0-8b66-1b7cd64a2a5b
-label_b8f46c85-43fe-42f9-9844-bdb6342954b1
+goto label_a2ffafbb-f674-4523-9fca-beb72fdee683
+label_9ea78aeb-b873-4372-a4a0-138f54287fd5
 iconst_1
-label_c9df5bae-a28c-4ce0-8b66-1b7cd64a2a5b
+label_a2ffafbb-f674-4523-9fca-beb72fdee683
 iconst_0
 
 iload_2

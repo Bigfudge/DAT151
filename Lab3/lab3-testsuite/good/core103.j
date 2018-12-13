@@ -26,17 +26,17 @@
 ldc 4
 istore_0
 
-label_c60e64e7-9fe6-420f-9d08-29d6379110f0
+label_f693a358-f6b0-44be-a775-7e0c534c5c72
 iload_0
 ldc 6
-if_icmplt label_cd92174a-02b3-464f-8486-d0f4a4f150ff
+if_icmplt label_8100e5e1-7b64-4b89-abf2-6973c2b9f721
 iconst_0
-goto label_60a6ea46-5dcb-4bdf-be64-af09f5b73265
-label_cd92174a-02b3-464f-8486-d0f4a4f150ff
+goto label_d44da46d-ad24-4849-991b-77f9c775885c
+label_8100e5e1-7b64-4b89-abf2-6973c2b9f721
 iconst_1
-label_60a6ea46-5dcb-4bdf-be64-af09f5b73265
+label_d44da46d-ad24-4849-991b-77f9c775885c
 iconst_0
-if icmpeq label_64a63ef0-5aaa-42c9-bcb7-d497245e4d43
+if icmpeq label_7d8ede39-bf4c-488c-b2b5-e21e5d008b85
 ldc 0
 istore_1
 pop
@@ -55,7 +55,7 @@ iconst_1
 iadd
 istore_0
 pop
-goto label_c60e64e7-9fe6-420f-9d08-29d6379110f0
+goto label_f693a358-f6b0-44be-a775-7e0c534c5c72
 
 
 iload_0

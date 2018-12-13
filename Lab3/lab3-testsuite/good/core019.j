@@ -36,17 +36,17 @@ pop
 iload_1
 invokestatic Runtime/printInt(I)V
 
-label_6ec63865-88f6-4fce-bc40-0aa898a4abbc
+label_b9c23bb6-7850-490b-8e2d-0adb2f72256a
 iload_1
 ldc 76
-if_icmpgt label_label_c57edced-2a68-4e90-92ab-08a5ad518b26
+if_icmpgt label_label_fde7c4e9-160c-4ced-bad2-a491f13afd96
 iconst_0
-goto label_fb75aaa0-6c2e-45cb-878a-2adf5b94ca49
-label_c57edced-2a68-4e90-92ab-08a5ad518b26
+goto label_1da9d6b6-d475-48b2-8985-27235c8d877d
+label_fde7c4e9-160c-4ced-bad2-a491f13afd96
 iconst_1
-label_fb75aaa0-6c2e-45cb-878a-2adf5b94ca49
+label_1da9d6b6-d475-48b2-8985-27235c8d877d
 iconst_0
-if icmpeq label_bff85d40-3e9b-4a37-b68c-577aea83adef
+if icmpeq label_7ed6f5d6-7030-4717-b60d-4acf6322fbc2
 iload_1
 iload_1
 iconst_1
@@ -62,7 +62,7 @@ pop
 iload_2
 invokestatic Runtime/printInt(I)V
 pop
-goto label_6ec63865-88f6-4fce-bc40-0aa898a4abbc
+goto label_b9c23bb6-7850-490b-8e2d-0adb2f72256a
 
 iload_2
 invokestatic Runtime/printInt(I)V

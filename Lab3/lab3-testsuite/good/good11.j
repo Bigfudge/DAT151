@@ -30,19 +30,19 @@ ldc 0
 istore_1
 
 
-label_20af54a8-08c5-4554-bac0-e08e0278c532
+label_c43daa39-7ae6-4f32-ae35-0a1736656a72
 invokestatic Runtime/readInt()I
 istore_2
 iload_2
 ldc 0
-if_icmpne label_5946c6fd-c7da-4ac3-955f-33a1d961baa9
+if_icmpne label_ec1da4a3-f09a-4178-bdf7-1301718102c8
 iconst_0
-goto label_4c009b00-e187-4178-bfa8-390030879ad8
-label_5946c6fd-c7da-4ac3-955f-33a1d961baa9
+goto label_792a2a3a-ce6a-47a7-94ab-490350f082ef
+label_ec1da4a3-f09a-4178-bdf7-1301718102c8
 iconst_1
-label_4c009b00-e187-4178-bfa8-390030879ad8
+label_792a2a3a-ce6a-47a7-94ab-490350f082ef
 iconst_0
-if icmpeq label_c8631d87-5a37-4974-8aa2-850ce076cfe3
+if icmpeq label_ca208004-3ecc-4ed0-ad18-00e57bfb4ae4
 iload_0
 iload_2
 iadd
@@ -55,7 +55,7 @@ iconst_1
 iadd
 istore_1
 pop
-goto label_20af54a8-08c5-4554-bac0-e08e0278c532
+goto label_c43daa39-7ae6-4f32-ae35-0a1736656a72
 
 iload_0
 iload_1

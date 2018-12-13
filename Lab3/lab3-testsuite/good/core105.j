@@ -26,24 +26,24 @@
 ldc 5
 istore_0
 
-label_d86d47c1-84c5-4899-b2fc-27152140a162
+label_57a149ae-61df-4161-8933-cca8867e59fa
 iload_0
 ldc 3
-if_icmpgt label_label_c5f7a987-f25c-47c7-b7a3-7c179cc97da9
+if_icmpgt label_label_6fdd0ea0-7ec6-432f-a8f7-40e1a2423c5e
 iconst_0
-goto label_082ac215-1daf-4e46-b5e0-4977d22fff02
-label_c5f7a987-f25c-47c7-b7a3-7c179cc97da9
+goto label_5300d7f1-fa07-4f12-be84-869c5bb2a36c
+label_6fdd0ea0-7ec6-432f-a8f7-40e1a2423c5e
 iconst_1
-label_082ac215-1daf-4e46-b5e0-4977d22fff02
+label_5300d7f1-fa07-4f12-be84-869c5bb2a36c
 iconst_0
-if icmpeq label_a3430e5d-80f6-4360-8c0c-af1639b98ab5
+if icmpeq label_c4886626-e815-4356-8c9a-5beead9c07a1
 iload_0
 iload_0
 iconst_1
 iadd
 istore_0
 invokestatic Runtime/printInt(I)V
-goto label_d86d47c1-84c5-4899-b2fc-27152140a162
+goto label_57a149ae-61df-4161-8933-cca8867e59fa
 
 iload_0
 ireturn

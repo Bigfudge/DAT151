@@ -42,7 +42,7 @@ public class lab3 {
       writer.close();
 
       // Call jasmin to create .class file.
-      String[] jasminCall = new String[]{"jasmin", "-d", dir, jFile};
+      String[] jasminCall = new String[]{"java", "-jar", "jasmin.jar", "-d", dir, jFile};
       Process process = java.lang.Runtime.getRuntime().exec(jasminCall);
       int exitValue = process.waitFor();
       if (exitValue != 0) {

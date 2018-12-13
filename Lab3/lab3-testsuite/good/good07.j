@@ -31,17 +31,17 @@ ldc 2
 idiv
 istore_1
 
-label_e44a809c-0982-4c16-8c52-25900d67df50
+label_0ea6a4a5-0e4b-4163-9121-88c6d99e1abf
 iload_1
 ldc 1
-if_icmpgt label_label_8492e67a-0c62-415f-b2da-df210c5f19f6
+if_icmpgt label_label_26b4fbfe-d323-4dce-832f-4bb2a9b8f441
 iconst_0
-goto label_e42271d8-b9e2-4906-9257-354cfe8425c6
-label_8492e67a-0c62-415f-b2da-df210c5f19f6
+goto label_80b73d8f-44b1-4073-a216-c865e96048d0
+label_26b4fbfe-d323-4dce-832f-4bb2a9b8f441
 iconst_1
-label_e42271d8-b9e2-4906-9257-354cfe8425c6
+label_80b73d8f-44b1-4073-a216-c865e96048d0
 iconst_0
-if icmpeq label_8142d4ee-b7df-47ea-9394-c2a06a518259
+if icmpeq label_607a6609-6fb7-488d-8431-327859fcb351
 pop
 iload_1
 iload_1
@@ -49,7 +49,7 @@ iconst_1
 iadd
 istore_1
 pop
-goto label_e44a809c-0982-4c16-8c52-25900d67df50
+goto label_0ea6a4a5-0e4b-4163-9121-88c6d99e1abf
 
 ldc 0
 ireturn

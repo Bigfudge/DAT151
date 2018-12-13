@@ -39,17 +39,17 @@ iload_2
 iload_0
 invokestatic Runtime/printInt(I)V
 
-label_fc84164e-292d-403e-8cbd-a29496a91824
+label_af428db1-14af-4a75-8cf3-1f7855d82185
 iload_1
 iload_2
-if_icmplt label_45992d4c-cecd-4cc9-ab73-dacacbce73b3
+if_icmplt label_a4f4d817-de44-42cb-a447-7ea21895cfae
 iconst_0
-goto label_8d341843-2f79-493b-9b5c-a6a40818a71c
-label_45992d4c-cecd-4cc9-ab73-dacacbce73b3
+goto label_57a53e9f-529e-481d-976b-7a4aed6c8cb8
+label_a4f4d817-de44-42cb-a447-7ea21895cfae
 iconst_1
-label_8d341843-2f79-493b-9b5c-a6a40818a71c
+label_57a53e9f-529e-481d-976b-7a4aed6c8cb8
 iconst_0
-if icmpeq label_5ff0a1e3-46f1-40c6-94d1-c363ceb59580
+if icmpeq label_4e6bb9ee-bee2-46d5-bb48-f6e6031c32a4
 iload_1
 invokestatic Runtime/printInt(I)V
 pop
@@ -65,7 +65,7 @@ isub
 istore_0
 iload_0
 pop
-goto label_fc84164e-292d-403e-8cbd-a29496a91824
+goto label_af428db1-14af-4a75-8cf3-1f7855d82185
 
 ldc 0
 ireturn

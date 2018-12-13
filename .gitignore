@@ -21,6 +21,10 @@ src/
 
 *.bak
 
+### Behövde modda lab3.java för att köra på arch
+
+DAT151/Lab3/lab3.java
+
 ### Java ###
 # Compiled class file
 *.class
