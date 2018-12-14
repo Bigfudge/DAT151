@@ -28,33 +28,19 @@ iconst_0
 istore_0
 
 iconst_0
-<<<<<<< HEAD
-if_icmpeq label_1b9fe117-551f-4416-997c-4220437765e4
+if_icmpeq label_8755c648-ee5d-429e-9fc1-ab7d9ff078aa:
 iconst_1
 istore_0
-goto label_ef41fc61-9cba-4b2a-acad-0d7819f139dd
-label_1b9fe117-551f-4416-997c-4220437765e4
+goto label_453786db-870f-4284-a35c-68c3404ba5b1:
+label_8755c648-ee5d-429e-9fc1-ab7d9ff078aa:
 iconst_0
-label_ef41fc61-9cba-4b2a-acad-0d7819f139dd
-=======
-if_icmpne label_14560a7a-8a1d-4fc6-a487-8023771fec72:
-ldc 0
-goto label_a35add1b-2bb3-4267-b889-ccf03203e5b6:
-label_14560a7a-8a1d-4fc6-a487-8023771fec72:
-iconst_1
-istore_1
-label_a35add1b-2bb3-4267-b889-ccf03203e5b6:
->>>>>>> master
+label_453786db-870f-4284-a35c-68c3404ba5b1:
 
-iload_1
-iload_1
+iload_0
+iload_0
 iconst_1
 iadd
-<<<<<<< HEAD
 istore_0
-=======
-istore_1
->>>>>>> master
 istore_2
 
 iconst_0

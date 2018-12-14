@@ -37,43 +37,23 @@ iload_0
 iconst_1
 iadd
 istore_0
-<<<<<<< HEAD
-if_icmpeq label_36d9870e-bd40-482b-8b90-fbb14d2fdd3f
+if_icmpeq label_11a842c9-9231-4c78-937f-a2bac4785427:
 iconst_0
-goto label_dcd52446-c76c-4d18-8c27-ac42f13f434e
-label_36d9870e-bd40-482b-8b90-fbb14d2fdd3f
+goto label_5d7c61b4-c0a8-4aa3-94b2-5beb44302b80:
+label_11a842c9-9231-4c78-937f-a2bac4785427:
 iconst_1
-label_dcd52446-c76c-4d18-8c27-ac42f13f434e
+label_5d7c61b4-c0a8-4aa3-94b2-5beb44302b80:
 iconst_0
-if_icmpeq label_140246a4-60bb-45b2-8f44-74e5fd47d808
+if_icmpeq label_156aeea2-d122-4f88-bb8e-b21069e557b9:
 iconst_0
 invokestatic Runtime/printInt(I)V
-goto label_10aac5b9-897a-431f-96d1-8c00481d56ce
-label_140246a4-60bb-45b2-8f44-74e5fd47d808
+goto label_b869d092-f331-4054-a7ba-323126a118e5:
+label_156aeea2-d122-4f88-bb8e-b21069e557b9:
 iload_0
 invokestatic Runtime/printInt(I)V
-label_10aac5b9-897a-431f-96d1-8c00481d56ce
+label_b869d092-f331-4054-a7ba-323126a118e5:
 
 iconst_0
-=======
-if_icmpeq label_1c2e75f3-773e-4228-a75c-ab94ee54df0f:
-iconst_0
-goto label_d476c9cd-ac84-4843-a082-3e3c1ef53c5a:
-label_1c2e75f3-773e-4228-a75c-ab94ee54df0f:
-iconst_1
-label_d476c9cd-ac84-4843-a082-3e3c1ef53c5a:
-iconst_0
-if_icmpne label_5cfc6f6e-0b24-4e68-ab16-ce1d69e9c56a:
-iload_0
-invokestatic Runtime/printInt(I)V
-goto label_22979a00-f922-4a0a-8ea9-6ab9bc995b2e:
-label_5cfc6f6e-0b24-4e68-ab16-ce1d69e9c56a:
-ldc 0
-invokestatic Runtime/printInt(I)V
-label_22979a00-f922-4a0a-8ea9-6ab9bc995b2e:
-
-ldc 0
->>>>>>> master
 ireturn
 
 .end method
