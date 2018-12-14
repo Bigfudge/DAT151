@@ -22,47 +22,51 @@
 .end method
 
 .method public static main()I
-.limit locals 3
-.limit stack 3
+.limit locals 1000
+.limit stack 1000
 ldc 50
-istore_0
+istore 0
+iload 0
 
-iload_0
-iload_0
+iload 0
+iload 0
 iconst_1
 iadd
-istore_0
-iload_0
-iload_0
+istore 0
+iload 0
+iload 0
 iconst_1
 iadd
-istore_0
+istore 0
 iadd
-istore_1
+istore 1
+iload 1
 
-iload_1
+iload 1
 invokestatic Runtime/printInt(I)V
 
-iload_0
+iload 0
 invokestatic Runtime/printInt(I)V
 
 ldc 10
-istore_0
-iload_0
-iload_0
-iload_0
+istore 0
+iload 0
+iload 0
+iload 0
 iconst_1
 iadd
-istore_0
+istore 0
 iadd
-iload_0
+iload 0
 iadd
 invokestatic Runtime/printInt(I)V
 
-iload_0
+iload 0
 invokestatic Runtime/printInt(I)V
 
 iconst_0
 ireturn
+iconst_0
+areturn
 
 .end method

@@ -22,59 +22,67 @@
 .end method
 
 .method public static ff()Z
-.limit locals 3
-.limit stack 3
+.limit locals 1000
+.limit stack 1000
 iconst_0
 invokestatic Runtime/printInt(I)V
 
 iconst_0
-ireturn
+areturn
 
 .end method
 .method public static tt()Z
-.limit locals 3
-.limit stack 3
+.limit locals 1000
+.limit stack 1000
 iconst_1
 invokestatic Runtime/printInt(I)V
 
 iconst_1
-ireturn
+areturn
 
 .end method
 .method public static main()I
-.limit locals 3
-.limit stack 3
+.limit locals 1000
+.limit stack 1000
 iconst_1
-istore_0
+istore 0
+iload 0
 
 iconst_0
-istore_1
+istore 1
+iload 1
 
-iload_1
-invokestaticff()Z
+iload 1
+invokestatic ff()Z
 nop
 iand
-istore_2
+istore 2
+iload 2
 
-iload_0
-invokestaticff()Z
+iload 0
+invokestatic ff()Z
 nop
 ior
-istore_3
+istore 3
+iload 3
 
-iload_-1
-invokestatictt()Z
+iload 0
+invokestatic tt()Z
 nop
 iand
-istore_0
+istore 4
+iload 4
 
-iload_-1
-invokestatictt()Z
+iload 1
+invokestatic tt()Z
 nop
 ior
-istore_1
+istore 5
+iload 5
 
 iconst_0
 ireturn
+iconst_0
+areturn
 
 .end method

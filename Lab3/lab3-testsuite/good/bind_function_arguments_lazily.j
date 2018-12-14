@@ -22,28 +22,36 @@
 .end method
 
 .method public static snd(II)I
-.limit locals 3
-.limit stack 3
-iload_-1
-ireturn
+.limit locals 1000
+.limit stack 1000
+iconst_0
+istore 0
+iconst_0
+istore 1
+iload 1
+areturn
 
 .end method
 .method public static main()I
-.limit locals 3
-.limit stack 3
+.limit locals 1000
+.limit stack 1000
 iconst_0
-istore_0
+istore 2
+iload 2
 
 iconst_1
-iload_0
-invokestaticsnd(II)I
+iload 2
+invokestatic snd(II)I
 nop
-istore_1
+istore 3
+iload 3
 
-iload_1
+iload 3
 invokestatic Runtime/printInt(I)V
 
-iload_1
+iload 3
 ireturn
+iload 3
+areturn
 
 .end method

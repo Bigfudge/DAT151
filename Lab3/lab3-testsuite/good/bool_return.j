@@ -22,36 +22,40 @@
 .end method
 
 .method public static c(I)Z
-.limit locals 3
-.limit stack 3
-iload_-1
-iload_-1
-if_icmplt label_d7e69a30-b3c4-4928-b7d3-34363cde68c5:
+.limit locals 1000
+.limit stack 1000
 iconst_0
-goto label_4a680396-7114-4446-9eaa-57d5ff03f4bb:
-label_d7e69a30-b3c4-4928-b7d3-34363cde68c5:
+istore 0
+iload 0
+iload 0
+if_icmplt L1
+iconst_0
+goto L2
+L1:
 iconst_1
-label_4a680396-7114-4446-9eaa-57d5ff03f4bb:
+L2:
 iconst_0
-ireturn
+areturn
 
 .end method
 .method public static main()I
-.limit locals 3
-.limit stack 3
+.limit locals 1000
+.limit stack 1000
 iconst_0
-invokestaticc(I)Z
+invokestatic c(I)Z
 nop
-if_icmpeq label_2ab83c40-432c-42dd-9dfa-a7ab04bbb870:
+if_icmpeq L3
 iconst_0
 invokestatic Runtime/printInt(I)V
-goto label_6d19fb19-35ab-4630-b78e-9507e0ee6437:
-label_2ab83c40-432c-42dd-9dfa-a7ab04bbb870:
+goto L4
+L3:
 iconst_1
 invokestatic Runtime/printInt(I)V
-label_6d19fb19-35ab-4630-b78e-9507e0ee6437:
+L4:
 
 iconst_0
 ireturn
+iconst_0
+areturn
 
 .end method

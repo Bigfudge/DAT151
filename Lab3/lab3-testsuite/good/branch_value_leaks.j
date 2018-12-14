@@ -22,28 +22,33 @@
 .end method
 
 .method public static main()I
-.limit locals 3
-.limit stack 3
+.limit locals 1000
+.limit stack 1000
 iconst_0
-istore_0
+istore 0
+iload 0
 
 iconst_0
-if_icmpeq label_8755c648-ee5d-429e-9fc1-ab7d9ff078aa:
+if_icmpeq L1
 iconst_1
-istore_0
-goto label_453786db-870f-4284-a35c-68c3404ba5b1:
-label_8755c648-ee5d-429e-9fc1-ab7d9ff078aa:
+istore 1
+iload 1
+goto L2
+L1:
 iconst_0
-label_453786db-870f-4284-a35c-68c3404ba5b1:
+L2:
 
-iload_0
-iload_0
+iload 1
+iload 1
 iconst_1
 iadd
-istore_0
-istore_2
+istore 1
+istore 2
+iload 2
 
 iconst_0
 ireturn
+iconst_0
+areturn
 
 .end method

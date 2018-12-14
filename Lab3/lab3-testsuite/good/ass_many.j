@@ -22,21 +22,29 @@
 .end method
 
 .method public static main()I
-.limit locals 3
-.limit stack 3
+.limit locals 1000
+.limit stack 1000
+iconst_0
+istore 0
+iconst_0
+istore 1
+iconst_0
+istore 2
 
 ldc 6
-istore_2
-iload_2
-istore_1
-iload_1
+istore 2
+iload 2
+istore 1
+iload 1
 
-iload_2
-iload_1
+iload 2
+iload 1
 iadd
 invokestatic Runtime/printInt(I)V
 
 iconst_0
 ireturn
+iconst_0
+areturn
 
 .end method

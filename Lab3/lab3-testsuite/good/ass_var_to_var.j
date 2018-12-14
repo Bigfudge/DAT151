@@ -22,15 +22,19 @@
 .end method
 
 .method public static main()I
-.limit locals 3
-.limit stack 3
+.limit locals 1000
+.limit stack 1000
 iconst_0
-istore_0
+istore 0
+iload 0
 
-iload_0
-istore_1
+iload 0
+istore 1
+iload 1
 
 iconst_0
 ireturn
+iconst_0
+areturn
 
 .end method

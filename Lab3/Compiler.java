@@ -9,13 +9,16 @@ public class Compiler
   LinkedList<String> output;
   private class Env{
       public HashMap<String,String> signature ;
-      public String[] variables;
+      //public String[] variables;
+      public HashMap<String, Integer> variables;
       Integer variableCount = 0;
       Integer loopCount = 0;
+      Integer labelCounter=0;
 
       public Env(){
           signature = new HashMap<>();
-          variables = new String[4];
+         // variables = new String[4];
+         variables=new HashMap<>();
       }
 
       //Adds function to signatures if id does not already exist, otherwise Exception
@@ -62,15 +65,30 @@ public class Compiler
       }
 
       public void addVar (String id){
-          variables[variableCount++%4]=id;
+        //   if(!Arrays.asList(variables).contains(id)){
+        //       variables[variableCount++%4]=id;
+        //   }
+        //   return;
+        variables.put(id,variableCount);
+        variableCount++;
       }
 
       public String getLabel(){
-          return "label_"+UUID.randomUUID().toString()+":";
+          //return "label_"+UUID.randomUUID().toString()+":";
+          labelCounter++;
+          return("L"+labelCounter.toString());
 
       }
       public Integer getReg(String id){
-          return(Arrays.asList(variables).indexOf(id));
+        //   if (Arrays.asList(variables).contains(id)) {
+        //       return(Arrays.asList(variables).indexOf(id));
+        //   }
+        //   return -2;
+            if (variables.containsKey(id)) {
+                return(variables.get(id));
+
+            }
+            throw new RuntimeException("Saker gick fel");
       }
 
   }
@@ -160,15 +178,29 @@ public class Compiler
         String signature =env.getSignature(functionName);
 
           output.add(".method public static "+functionName+signature);
-          output.add(".limit locals 3");
-          output.add(".limit stack 3");
-
+          output.add(".limit locals 1000");
+          output.add(".limit stack 1000");
+          for(Arg arg : functionArgs){
+              ADecl tmp = (ADecl)arg;
+              env.addVar(tmp.id_);
+              output.add("iconst_0");
+              output.add("istore "+env.getReg(tmp.id_).toString());
+          }
           //Checks all statement in the function
           for (Stm st : functionStms) {
+              if(functionName=="main" && st instanceof SReturn){
+                  SReturn tmp = (SReturn)st;
+                  tmp.exp_.accept(new CompileExp(), env);
+                  output.add("ireturn");
+              }
 
               st.accept(new CompileStm() , env);
               output.add("");
           }
+          if(functionType instanceof Type_void){
+              output.add("return");
+          }
+
           output.add(".end method");
 
 
@@ -182,6 +214,9 @@ public class Compiler
         public Env visit(SDecls p, Env env) {
             for(String id : p.listid_){
                     env.addVar(id);
+                    output.add("iconst_0");
+                    output.add("istore "+env.getReg(id));
+
             }
             return null;
         }
@@ -197,10 +232,10 @@ public class Compiler
             output.add("if_icmpeq "+trueLabel);
             p.stm_2.accept(new CompileStm(), env);
             output.add("goto "+endLabel);
-            output.add(trueLabel);
+            output.add(trueLabel+":");
             p.stm_1.accept(new CompileStm(),env);
 
-            output.add(endLabel);
+            output.add(endLabel+":");
 
             return null;
         }
@@ -216,24 +251,25 @@ public class Compiler
         public Env visit(SInit p, Env env) {
             env.addVar(p.id_);
             p.exp_.accept(new CompileExp(), env);
-            output.add("istore_"+env.getReg(p.id_));
+            output.add("istore "+env.getReg(p.id_));
+            output.add("iload "+ env.getReg(p.id_));
             return null;
         }
         public Env visit(SReturn p, Env env) {
             p.exp_.accept(new CompileExp(), env);
             //System.out.println("this?");
-            output.add("ireturn");
+            output.add("areturn");
             return null;
         }
         public Env visit(SWhile p , Env env) {
             String startLabel =  env.getLabel();
             String endLabel = env.getLabel();
-            output.add(startLabel);
+            output.add(startLabel+":");
             p.exp_.accept(new CompileExp(), env);
             output.add("if_icmpeq "+endLabel);
             p.stm_.accept(new CompileStm(), env);
             output.add("goto "+startLabel);
-            output.add(endLabel);
+            output.add(endLabel+":");
             return null;
         }
   }
@@ -261,7 +297,7 @@ public class Compiler
 
       public Void visit(EId p, Env env) {
           Integer register = env.getReg(p.id_);
-          output.add("iload_"+register.toString());
+          output.add("iload "+register.toString());
 
           return null;
       }
@@ -299,7 +335,8 @@ public class Compiler
               for (Exp exp : p.listexp_ ) {
                   exp.accept(new CompileExp(), env);
               }
-              output.add("invokestatic"+p.id_+env.getSignature(p.id_));
+
+              output.add("invokestatic "+p.id_+env.getSignature(p.id_));
               output.add("nop");
           }
           return null;
@@ -308,8 +345,8 @@ public class Compiler
       public Void visit(EAss p, Env env) {
           Integer reg = env.getReg(p.id_);
           p.exp_.accept(new CompileExp(), env);
-          output.add("istore_" +reg);
-          output.add("iload_" +reg);
+          output.add("istore " +reg);
+          output.add("iload " +reg);
           return null;
 
       }
@@ -331,9 +368,9 @@ public class Compiler
           output.add("if_icmpeq "+label1);
           output.add("iconst_0");
           output.add("goto "+label2);
-          output.add(label1);
+          output.add(label1+":");
           output.add("iconst_1");
-          output.add(label2);
+          output.add(label2+":");
           output.add("iconst_0");
 
           return null;
@@ -349,9 +386,9 @@ public class Compiler
           output.add("if_icmpgt label_"+label1);
           output.add("iconst_0");
           output.add("goto "+label2);
-          output.add(label1);
+          output.add(label1+":");
           output.add("iconst_1");
-          output.add(label2);
+          output.add(label2+":");
           output.add("iconst_0");
 
           return null;
@@ -367,9 +404,9 @@ public class Compiler
           output.add("if_icmpge "+label1);
           output.add("iconst_0");
           output.add("goto "+label2);
-          output.add(label1);
+          output.add(label1+":");
           output.add("iconst_1");
-          output.add(label2);
+          output.add(label2+":");
           output.add("iconst_0");
 
           return null;
@@ -384,9 +421,9 @@ public class Compiler
           output.add("if_icmplt "+label1);
           output.add("iconst_0");
           output.add("goto "+label2);
-          output.add(label1);
+          output.add(label1+":");
           output.add("iconst_1");
-          output.add(label2);
+          output.add(label2+":");
           output.add("iconst_0");
 
           return null;
@@ -402,9 +439,9 @@ public class Compiler
           output.add("if_icmple "+label1);
           output.add("iconst_0");
           output.add("goto "+label2);
-          output.add(label1);
+          output.add(label1+":");
           output.add("iconst_1");
-          output.add(label2);
+          output.add(label2+":");
           output.add("iconst_0");
 
           return null;
@@ -429,9 +466,9 @@ public class Compiler
           output.add("if_icmpne "+label1);
           output.add("iconst_0");
           output.add("goto "+label2);
-          output.add(label1);
+          output.add(label1+":");
           output.add("iconst_1");
-          output.add(label2);
+          output.add(label2+":");
           output.add("iconst_0");
 
           return null;
@@ -450,11 +487,11 @@ public class Compiler
       public Void visit(EPostDecr p, Env env) {
           Integer reg = env.getReg(p.id_);
 
-          output.add("iload_" + reg);
-          output.add("iload_" + reg);
+          output.add("iload " + reg);
+          output.add("iload " + reg);
           output.add("iconst_1");
           output.add("iadd");
-          output.add("istore_"+reg);
+          output.add("istore "+reg);
 
           return null;
 
@@ -463,11 +500,11 @@ public class Compiler
       public Void visit(EPostIncr p, Env env) {
           Integer reg = env.getReg(p.id_);
 
-          output.add("iload_" + reg);
-          output.add("iload_" + reg);
+          output.add("iload " + reg);
+          output.add("iload " + reg);
           output.add("iconst_1");
           output.add("iadd");
-          output.add("istore_" + reg);
+          output.add("istore " + reg);
 
           return null;
 
@@ -476,11 +513,11 @@ public class Compiler
       public Void visit(EPreDecr p, Env env) {
           Integer reg = env.getReg(p.id_);
 
-          output.add("iload_" + reg);
+          output.add("iload " + reg);
           output.add("iconst_1");
           output.add("isub");
-          output.add("istore_"+reg);
-          output.add("iload_" + reg);
+          output.add("istore "+reg);
+          output.add("iload " + reg);
 
           return null;
 
@@ -489,11 +526,11 @@ public class Compiler
       public Void visit(EPreIncr p, Env env) {
           Integer reg = env.getReg(p.id_);
 
-          output.add("iload_" + reg);
+          output.add("iload " + reg);
           output.add("iconst_1");
           output.add("iadd");
-          output.add("istore_"+reg);
-          output.add("iload_" + reg);
+          output.add("istore "+reg);
+          output.add("iload " + reg);
 
           return null;
 
