@@ -26,23 +26,23 @@
 ldc 17
 istore_0
 
-label_76fe7a15-9c66-47b1-b399-ad83535c32c5
+label_6bcb3ab7-829b-4ac2-9eb8-57651ac50a2e
 iload_0
 ldc 0
-if_icmpgt label_label_45f52522-ab62-4383-88b3-112cccc51ebe
+if_icmpgt label_label_b55dbdb7-474c-49eb-a80f-54c8edb41bf5
 iconst_0
-goto label_7e7b1f27-8857-4b64-8bf3-699681acd4fe
-label_45f52522-ab62-4383-88b3-112cccc51ebe
+goto label_364d29fa-5ebf-4788-809d-83fb1b42502f
+label_b55dbdb7-474c-49eb-a80f-54c8edb41bf5
 iconst_1
-label_7e7b1f27-8857-4b64-8bf3-699681acd4fe
+label_364d29fa-5ebf-4788-809d-83fb1b42502f
 iconst_0
-if icmpeq label_ad4c13aa-ad59-4689-a91b-b3b3b4a4c768
+if icmpeq label_290daf09-0be6-4041-925f-bdc03aaeece8
 iload_0
 ldc 2
 isub
 istore_0
 iload_0
-goto label_76fe7a15-9c66-47b1-b399-ad83535c32c5
+goto label_6bcb3ab7-829b-4ac2-9eb8-57651ac50a2e
 
 
 .end method

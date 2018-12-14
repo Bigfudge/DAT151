@@ -26,13 +26,18 @@
 ldc 0
 istore_0
 
+<<<<<<< Updated upstream
 label_9ff373c3-c174-480b-9305-1b9fdf5c9535
+=======
+label_829b837d-da26-4bd8-ab20-077abd86b7b2
+>>>>>>> Stashed changes
 iload_0
 iload_0
 iconst_1
 iadd
 istore_0
 ldc 5
+<<<<<<< Updated upstream
 if_icmplt label_9e9116ef-187a-445f-9a87-50a780932c08
 iconst_0
 goto label_aea1f93f-7eba-46e2-800a-3435019f3611
@@ -45,6 +50,20 @@ ldc 71
 ireturn
 pop
 goto label_9ff373c3-c174-480b-9305-1b9fdf5c9535
+=======
+if_icmplt label_0f6ca4a3-d816-45cc-a4e2-5da4fc12f155
+iconst_0
+goto label_31f50935-834d-4b8f-b44a-fa99d844f148
+label_0f6ca4a3-d816-45cc-a4e2-5da4fc12f155
+iconst_1
+label_31f50935-834d-4b8f-b44a-fa99d844f148
+iconst_0
+if icmpeq label_f3de8925-ebe9-4297-b5c0-bde03faf48da
+ldc 71
+ireturn
+pop
+goto label_829b837d-da26-4bd8-ab20-077abd86b7b2
+>>>>>>> Stashed changes
 
 ldc 52
 ireturn
