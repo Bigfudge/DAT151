@@ -27,6 +27,7 @@
 ldc 17
 istore_0
 
+<<<<<<< HEAD
 label_05af4cd8-c0e1-4ec6-906e-abdd23cd86be:
 iload_0
 ldc 0
@@ -38,13 +39,30 @@ iconst_1
 label_bc3ab52d-2a42-468a-bdaa-a4b391e972d2:
 iconst_0
 if_icmpeq label_a5665de3-5279-4042-bfa0-2b8239bef313:
+=======
+label_6bcb3ab7-829b-4ac2-9eb8-57651ac50a2e
+iload_0
+ldc 0
+if_icmpgt label_label_b55dbdb7-474c-49eb-a80f-54c8edb41bf5
+iconst_0
+goto label_364d29fa-5ebf-4788-809d-83fb1b42502f
+label_b55dbdb7-474c-49eb-a80f-54c8edb41bf5
+iconst_1
+label_364d29fa-5ebf-4788-809d-83fb1b42502f
+iconst_0
+if icmpeq label_290daf09-0be6-4041-925f-bdc03aaeece8
+>>>>>>> 66cf894e8174941ea8c4559decd289cc05335d2a
 iload_0
 ldc 2
 isub
 istore_0
 iload_0
+<<<<<<< HEAD
 goto label_05af4cd8-c0e1-4ec6-906e-abdd23cd86be:
 label_a5665de3-5279-4042-bfa0-2b8239bef313:
+=======
+goto label_6bcb3ab7-829b-4ac2-9eb8-57651ac50a2e
+>>>>>>> 66cf894e8174941ea8c4559decd289cc05335d2a
 
 iload_0
 ldc 0
