@@ -3,6 +3,7 @@
 
 .method public <init>()V
   .limit locals 1
+  .limit stack  1
 
   aload_0
   invokespecial java/lang/Object/<init>()V
@@ -26,6 +27,7 @@
 iconst_4
 istore_0
 
+<<<<<<< HEAD
 label_a5aecd58-14ac-48c5-9885-0e47a6549707
 iload_0
 ldc 6
@@ -38,23 +40,61 @@ label_6f5de7b2-5d89-4437-8060-40ee04b7a0bb
 iconst_0
 if icmpeq label_bd7ccfa2-f649-4c31-b36a-aa1de30c5849
 iconst_0
+=======
+<<<<<<< HEAD
+label_235447ce-9d31-41c2-aa7e-2aeb0a51eedd:
+=======
+<<<<<<< Updated upstream
+label_f693a358-f6b0-44be-a775-7e0c534c5c72
+>>>>>>> 66cf894e8174941ea8c4559decd289cc05335d2a
+iload_0
+ldc 6
+if_icmplt label_bc9a9cb5-8f10-45eb-a268-c62492c3528f:
+iconst_0
+goto label_8031cbd9-b09b-45db-8dba-9e072ad9f2ac:
+label_bc9a9cb5-8f10-45eb-a268-c62492c3528f:
+iconst_1
+label_8031cbd9-b09b-45db-8dba-9e072ad9f2ac:
+iconst_0
+<<<<<<< HEAD
+if_icmpeq label_37125078-17e0-4244-8719-0798be7928c2:
+=======
+if icmpeq label_7d8ede39-bf4c-488c-b2b5-e21e5d008b85
+=======
+label_af8d4ea2-e756-40fe-aece-1d0e754c722d
+iload_0
+ldc 6
+if_icmplt label_16a0f847-2ed9-4d63-909d-082d002ddb8b
+iconst_0
+goto label_62e6f711-3c81-4e0e-9f51-c3fd6fdbd374
+label_16a0f847-2ed9-4d63-909d-082d002ddb8b
+iconst_1
+label_62e6f711-3c81-4e0e-9f51-c3fd6fdbd374
+iconst_0
+if icmpeq label_2e9ff9ee-7881-4236-b891-409bc6fc1f86
+>>>>>>> Stashed changes
+>>>>>>> 66cf894e8174941ea8c4559decd289cc05335d2a
+ldc 0
+>>>>>>> master
 istore_1
-pop
 iload_1
 iload_1
 iconst_1
 iadd
 istore_1
-pop
 iload_1
 invokestatic Runtime/printInt(I)V
-pop
 iload_0
 iload_0
 iconst_1
 iadd
 istore_0
+<<<<<<< HEAD
+goto label_235447ce-9d31-41c2-aa7e-2aeb0a51eedd:
+label_37125078-17e0-4244-8719-0798be7928c2:
+=======
 pop
+<<<<<<< HEAD
 goto label_a5aecd58-14ac-48c5-9885-0e47a6549707
 label_bd7ccfa2-f649-4c31-b36a-aa1de30c5849
 
@@ -68,20 +108,48 @@ iconst_1
 label_45c72c31-5b1a-47db-92b3-31042c26a9c7
 iconst_0
 if_icmpeq label_4150f448-2bc1-4cdb-88b0-875655e789cf
+=======
+<<<<<<< Updated upstream
+goto label_f693a358-f6b0-44be-a775-7e0c534c5c72
+=======
+goto label_af8d4ea2-e756-40fe-aece-1d0e754c722d
+>>>>>>> Stashed changes
+>>>>>>> 66cf894e8174941ea8c4559decd289cc05335d2a
+
+iload_0
+ldc 7
+if_icmplt label_8a958cc0-4ff6-40ab-b861-9224bf7e3234:
+iconst_0
+goto label_3dc909fe-5d59-42e3-8835-8024c1bed32f:
+label_8a958cc0-4ff6-40ab-b861-9224bf7e3234:
+iconst_1
+label_3dc909fe-5d59-42e3-8835-8024c1bed32f:
+iconst_0
+if_icmpne label_46828f3d-c679-4351-83cb-4eb791f297e8:
+>>>>>>> master
 iload_0
 iload_0
 iconst_1
 iadd
 istore_0
+<<<<<<< HEAD
 pop
 goto label_40a5ed52-1a70-46de-a457-9425d9cf4d82
 label_4150f448-2bc1-4cdb-88b0-875655e789cf
+=======
+goto label_5a60ff36-492f-41b0-b51b-d15c933100ec:
+label_46828f3d-c679-4351-83cb-4eb791f297e8:
+>>>>>>> master
 iload_0
 iload_0
 iconst_1
 iadd
 istore_0
+<<<<<<< HEAD
 label_40a5ed52-1a70-46de-a457-9425d9cf4d82
+=======
+label_5a60ff36-492f-41b0-b51b-d15c933100ec:
+>>>>>>> master
 
 iload_0
 invokestatic Runtime/printInt(I)V

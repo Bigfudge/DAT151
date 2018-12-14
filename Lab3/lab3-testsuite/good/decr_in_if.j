@@ -3,6 +3,7 @@
 
 .method public <init>()V
   .limit locals 1
+  .limit stack  1
 
   aload_0
   invokespecial java/lang/Object/<init>()V
@@ -31,6 +32,7 @@ iload_0
 iconst_1
 iadd
 istore_0
+<<<<<<< HEAD
 iconst_0
 if_icmpge label_c4499111-8ff4-4b1f-8f3d-28e22cc37f6e
 iconst_0
@@ -45,6 +47,22 @@ goto label_2c720be9-a3b8-4a14-8bb0-bae7d9c2104c
 label_1a150906-0fd1-4304-b53b-ba4468bc4518
 iconst_0
 label_2c720be9-a3b8-4a14-8bb0-bae7d9c2104c
+=======
+ldc 0
+if_icmpge label_e4492e3f-84e2-4d93-9031-c80f37e3b3b3:
+iconst_0
+goto label_9244cbd1-2df3-4efb-881b-497c0893d25f:
+label_e4492e3f-84e2-4d93-9031-c80f37e3b3b3:
+iconst_1
+label_9244cbd1-2df3-4efb-881b-497c0893d25f:
+iconst_0
+if_icmpne label_3a39adbd-6406-4890-a759-8c7297f35a2d:
+ldc 0
+goto label_52d3c462-d2e4-4fc9-b21f-92bc54d951b7:
+label_3a39adbd-6406-4890-a759-8c7297f35a2d:
+ldc 0
+label_52d3c462-d2e4-4fc9-b21f-92bc54d951b7:
+>>>>>>> master
 
 iload_0
 invokestatic Runtime/printInt(I)V

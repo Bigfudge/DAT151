@@ -1,8 +1,9 @@
-.class public core015
+.class public core109
 .super java/lang/Object
 
 .method public <init>()V
   .limit locals 1
+  .limit stack  1
 
   aload_0
   invokespecial java/lang/Object/<init>()V
@@ -14,7 +15,7 @@
   .limit locals 1
   .limit stack  1
 
-  invokestatic core015/main()I
+  invokestatic core109/main()I
   pop
   return
 
@@ -23,6 +24,7 @@
 .method public static main()I
 .limit locals 3
 .limit stack 3
+<<<<<<< HEAD:Lab3/lab3-testsuite/good/core015.j
 ldc 17
 invokestaticev(I)I
 nop
@@ -75,6 +77,13 @@ nop
 istore_0
 iload_0
 label_df49a100-0991-4056-94c0-13dba7748629
+=======
+ldc 4
+istore_0
+
+iload_0
+invokestatic Runtime/printInt(I)V
+>>>>>>> master:Lab3/core109.j
 
 iload_0
 ireturn

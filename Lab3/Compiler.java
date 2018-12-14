@@ -66,7 +66,7 @@ public class Compiler
       }
 
       public String getLabel(){
-          return "label_"+UUID.randomUUID().toString();
+          return "label_"+UUID.randomUUID().toString()+":";
 
       }
       public Integer getReg(String id){
@@ -100,6 +100,7 @@ public class Compiler
     output.add("");
     output.add(".method public <init>()V");
     output.add("  .limit locals 1");
+    output.add("  .limit stack  1");
     output.add("");
     output.add("  aload_0");
     output.add("  invokespecial java/lang/Object/<init>()V");
@@ -206,7 +207,8 @@ public class Compiler
         public Env visit(SBlock p, Env env) {
             for (Stm stm : p.liststm_){
                 stm.accept(new CompileStm(), env);
-                output.add("pop");
+                //Verkar inte riktigt funka.
+                //output.add("pop");
             }
 
             return null;
@@ -219,6 +221,7 @@ public class Compiler
         }
         public Env visit(SReturn p, Env env) {
             p.exp_.accept(new CompileExp(), env);
+            //System.out.println("this?");
             output.add("ireturn");
             return null;
         }
@@ -227,7 +230,7 @@ public class Compiler
             String endLabel = env.getLabel();
             output.add(startLabel);
             p.exp_.accept(new CompileExp(), env);
-            output.add("if icmpeq "+endLabel);
+            output.add("if_icmpeq "+endLabel);
             p.stm_.accept(new CompileStm(), env);
             output.add("goto "+startLabel);
             output.add(endLabel);
