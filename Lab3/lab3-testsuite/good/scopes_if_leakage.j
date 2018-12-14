@@ -26,53 +26,53 @@
 iconst_1
 istore_0
 
+iconst_1
+if_icmpeq label_94bc1de8-8683-4760-b46d-1f52a1f990b0
+iconst_0
+istore_0
+goto label_82052acc-136c-4389-a16e-eabf6c349519
+label_94bc1de8-8683-4760-b46d-1f52a1f990b0
+iconst_1
+istore_0
+label_82052acc-136c-4389-a16e-eabf6c349519
 
 iload_0
 iconst_1
-<<<<<<< Updated upstream
-if_icmpeq label_11ce4456-d4eb-4dc2-8ff6-f907b54bc7b0
+if_icmpeq label_1dc06bc3-1721-48a7-b6e1-45223a4f1392
 iconst_0
-goto label_2628a344-40fd-4755-b945-b7debe591ca9
-label_11ce4456-d4eb-4dc2-8ff6-f907b54bc7b0
+goto label_6c9f1065-98da-4664-b3a6-f8b2d551d3f6
+label_1dc06bc3-1721-48a7-b6e1-45223a4f1392
 iconst_1
-label_2628a344-40fd-4755-b945-b7debe591ca9
-=======
-if_icmpeq label_cee5886f-0962-444e-8d4c-c7dd437cf3e4
-iconst_0
-goto label_453abc16-9df8-4ec3-a831-6526aeb21c26
-label_cee5886f-0962-444e-8d4c-c7dd437cf3e4
-iconst_1
-label_453abc16-9df8-4ec3-a831-6526aeb21c26
->>>>>>> Stashed changes
+label_6c9f1065-98da-4664-b3a6-f8b2d551d3f6
 iconst_0
 
 iload_0
-istore_1
+istore_3
 
+iconst_0
+if_icmpeq label_5eef0861-efd5-4833-a230-9e7f51771a63
+iconst_0
+istore_0
+goto label_de3cf206-cf86-4b60-b460-bb9fdd95e0b8
+label_5eef0861-efd5-4833-a230-9e7f51771a63
+iconst_1
+istore_0
+label_de3cf206-cf86-4b60-b460-bb9fdd95e0b8
 
 iload_0
 iconst_1
-<<<<<<< Updated upstream
-if_icmpeq label_54f907c8-0890-41a5-b2ec-b2c5e3e322b4
+if_icmpeq label_935cd6c1-7d1f-4bb9-a09b-a9f9d1534354
 iconst_0
-goto label_f5d00b65-8114-4286-96e5-b4025f8ae29d
-label_54f907c8-0890-41a5-b2ec-b2c5e3e322b4
+goto label_1b0a615b-bdfa-475c-820b-cb34de2d4599
+label_935cd6c1-7d1f-4bb9-a09b-a9f9d1534354
 iconst_1
-label_f5d00b65-8114-4286-96e5-b4025f8ae29d
-=======
-if_icmpeq label_59fd4e43-098d-47ea-b4a8-ca6ed6ad9355
-iconst_0
-goto label_d8435585-815a-4ba3-a7f7-07b904c182d7
-label_59fd4e43-098d-47ea-b4a8-ca6ed6ad9355
-iconst_1
-label_d8435585-815a-4ba3-a7f7-07b904c182d7
->>>>>>> Stashed changes
+label_1b0a615b-bdfa-475c-820b-cb34de2d4599
 iconst_0
 
 iload_0
 istore_2
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

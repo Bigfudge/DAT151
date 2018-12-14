@@ -24,7 +24,7 @@
 .limit locals 3
 .limit stack 3
 
-ldc 1
+iconst_1
 istore_0
 iload_0
 
@@ -39,31 +39,17 @@ iload_2
 iload_0
 invokestatic Runtime/printInt(I)V
 
-<<<<<<< Updated upstream
-label_af428db1-14af-4a75-8cf3-1f7855d82185
+label_d267edfb-166b-4177-81d5-654bbb3f3111
 iload_1
 iload_2
-if_icmplt label_a4f4d817-de44-42cb-a447-7ea21895cfae
+if_icmplt label_986ddb8a-c5c1-4d42-b990-159dd44541c8
 iconst_0
-goto label_57a53e9f-529e-481d-976b-7a4aed6c8cb8
-label_a4f4d817-de44-42cb-a447-7ea21895cfae
+goto label_f047ef9c-937a-4e12-a7f1-824b9e157aed
+label_986ddb8a-c5c1-4d42-b990-159dd44541c8
 iconst_1
-label_57a53e9f-529e-481d-976b-7a4aed6c8cb8
+label_f047ef9c-937a-4e12-a7f1-824b9e157aed
 iconst_0
-if icmpeq label_4e6bb9ee-bee2-46d5-bb48-f6e6031c32a4
-=======
-label_0c190928-985c-4509-9ac7-fb19935ba81b
-iload_1
-iload_2
-if_icmplt label_67514498-e8c1-4985-958b-3bda0dd89cd9
-iconst_0
-goto label_1341c4a4-6e3a-447e-b397-375a54bd75ad
-label_67514498-e8c1-4985-958b-3bda0dd89cd9
-iconst_1
-label_1341c4a4-6e3a-447e-b397-375a54bd75ad
-iconst_0
-if icmpeq label_6fd7f201-e979-4d0a-b42d-86b70e7e62e8
->>>>>>> Stashed changes
+if icmpeq label_a61d8390-6da1-4fd8-b07a-7c638872e2ad
 iload_1
 invokestatic Runtime/printInt(I)V
 pop
@@ -79,13 +65,10 @@ isub
 istore_0
 iload_0
 pop
-<<<<<<< Updated upstream
-goto label_af428db1-14af-4a75-8cf3-1f7855d82185
-=======
-goto label_0c190928-985c-4509-9ac7-fb19935ba81b
->>>>>>> Stashed changes
+goto label_d267edfb-166b-4177-81d5-654bbb3f3111
+label_a61d8390-6da1-4fd8-b07a-7c638872e2ad
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

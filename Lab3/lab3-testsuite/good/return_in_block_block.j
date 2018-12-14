@@ -31,7 +31,7 @@ pop
 pop
 pop
 pop
-ldc 2
+iconst_2
 invokestatic Runtime/printInt(I)V
 pop
 pop
@@ -39,7 +39,7 @@ pop
 pop
 pop
 
-ldc 1
+iconst_1
 invokestatic Runtime/printInt(I)V
 
 .end method
@@ -47,9 +47,10 @@ invokestatic Runtime/printInt(I)V
 .limit locals 3
 .limit stack 3
 invokestaticniam()I
+nop
 invokestatic Runtime/printInt(I)V
 pop
-ldc 0
+iconst_0
 ireturn
 pop
 pop
@@ -57,7 +58,7 @@ pop
 pop
 pop
 pop
-ldc 3
+iconst_3
 invokestatic Runtime/printInt(I)V
 pop
 pop
@@ -65,7 +66,7 @@ pop
 pop
 pop
 
-ldc 4
+iconst_4
 invokestatic Runtime/printInt(I)V
 
 .end method

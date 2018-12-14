@@ -23,7 +23,7 @@
 .method public static main()I
 .limit locals 3
 .limit stack 3
-ldc 4
+iconst_4
 istore_0
 
 iload_0

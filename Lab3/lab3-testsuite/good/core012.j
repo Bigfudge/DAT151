@@ -45,11 +45,11 @@ imul
 invokestatic Runtime/printInt(I)V
 
 ldc 45
-ldc 2
+iconst_2
 idiv
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

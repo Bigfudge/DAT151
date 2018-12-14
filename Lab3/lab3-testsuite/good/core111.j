@@ -24,11 +24,11 @@
 .limit locals 3
 .limit stack 3
 invokestatic Runtime/readInt()I
-ldc 1
+iconst_1
 isub
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

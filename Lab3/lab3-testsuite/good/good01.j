@@ -23,10 +23,10 @@
 .method public static main()I
 .limit locals 3
 .limit stack 3
-ldc 1
+iconst_1
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

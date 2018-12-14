@@ -40,7 +40,7 @@ invokestatic Runtime/printInt(I)V
 iload_1
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

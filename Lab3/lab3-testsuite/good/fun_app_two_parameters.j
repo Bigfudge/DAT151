@@ -23,14 +23,17 @@
 .method public static abc(ZI)I
 .limit locals 3
 .limit stack 3
-ldc 0
+iconst_0
 ireturn
 
 .end method
 .method public static main()I
 .limit locals 3
 .limit stack 3
+iconst_1
+iconst_0
 invokestaticabc(ZI)I
+nop
 ireturn
 
 .end method

@@ -24,12 +24,13 @@
 .limit locals 3
 .limit stack 3
 invokestaticfoo()I
+nop
 istore_0
 
 iload_0
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

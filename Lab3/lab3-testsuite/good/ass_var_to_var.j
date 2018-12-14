@@ -23,13 +23,13 @@
 .method public static main()I
 .limit locals 3
 .limit stack 3
-ldc 0
+iconst_0
 istore_0
 
 iload_0
 istore_1
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

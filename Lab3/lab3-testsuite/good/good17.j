@@ -39,14 +39,14 @@ iload_1
 invokestatic Runtime/printInt(I)V
 
 pop
-ldc 4
-istore_2
-iload_2
+iconst_4
+istore_1
+iload_1
 pop
-iload_2
+iload_1
 invokestatic Runtime/printInt(I)V
 pop
-iload_2
+iload_1
 istore_0
 iload_0
 pop
@@ -57,10 +57,10 @@ pop
 iload_0
 invokestatic Runtime/printInt(I)V
 
-iload_2
+iload_1
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

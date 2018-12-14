@@ -23,6 +23,15 @@
 .method public static g()I
 .limit locals 3
 .limit stack 3
+iconst_1
+if_icmpeq label_6cd74f2b-725b-4e12-9ab1-1e3f5cc78b37
+ldc 11
+ireturn
+goto label_c20e6327-aed1-4af4-9454-54579d50c956
+label_6cd74f2b-725b-4e12-9ab1-1e3f5cc78b37
+ldc 12
+ireturn
+label_c20e6327-aed1-4af4-9454-54579d50c956
 
 ldc 10
 ireturn
@@ -32,9 +41,10 @@ ireturn
 .limit locals 3
 .limit stack 3
 invokestaticg()I
+nop
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

@@ -24,6 +24,7 @@
 .limit locals 3
 .limit stack 3
 invokestatictest()I
+nop
 ireturn
 
 .end method

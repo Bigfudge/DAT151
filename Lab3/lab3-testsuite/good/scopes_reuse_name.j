@@ -23,136 +23,136 @@
 .method public static main()I
 .limit locals 3
 .limit stack 3
-ldc 0
+iconst_0
 istore_0
 
+iconst_1
+if_icmpeq label_c68c1164-06ea-4114-8cc5-7c9b0a267f52
+goto label_9218ef76-73ac-4dbe-aee5-a80fac6ede16
+label_c68c1164-06ea-4114-8cc5-7c9b0a267f52
+iconst_1
+istore_0
+pop
+label_9218ef76-73ac-4dbe-aee5-a80fac6ede16
 
 iload_0
 invokestatic Runtime/printInt(I)V
 
+iconst_1
+if_icmpeq label_ff5fd00b-6a68-4f57-ba1c-a3c4ae3c4bc1
+goto label_687d15f9-6de5-4c60-a6f5-5f217b2cbe43
+label_ff5fd00b-6a68-4f57-ba1c-a3c4ae3c4bc1
+pop
+iconst_2
+istore_0
+iload_0
+pop
+label_687d15f9-6de5-4c60-a6f5-5f217b2cbe43
 
 iload_0
 invokestatic Runtime/printInt(I)V
 
+iconst_0
+if_icmpeq label_5b25cb61-c06a-4fba-89bb-3ddf24602d6f
+iconst_3
+istore_0
+pop
+goto label_032fef9a-cf1b-4859-b07d-dea2527b62fd
+label_5b25cb61-c06a-4fba-89bb-3ddf24602d6f
+label_032fef9a-cf1b-4859-b07d-dea2527b62fd
 
 iload_0
 invokestatic Runtime/printInt(I)V
 
+iconst_0
+if_icmpeq label_43556752-dd72-4872-b8a5-d246b90f3f35
+pop
+iconst_4
+istore_0
+iload_0
+pop
+goto label_045b91ed-8337-493f-85ca-01c92f2b8021
+label_43556752-dd72-4872-b8a5-d246b90f3f35
+label_045b91ed-8337-493f-85ca-01c92f2b8021
 
 iload_0
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 istore_1
 pop
-<<<<<<< Updated upstream
-label_0acf5b6f-f2ab-4e85-aa40-bbb1f3ce3efc
-=======
-label_8ba81861-a470-4a70-b745-082553628cbe
->>>>>>> Stashed changes
+label_6e902e45-0ca4-4bfc-9766-0796dc934d12
 iload_1
 iload_1
 iconst_1
 iadd
 istore_1
-ldc 1
-<<<<<<< Updated upstream
-if_icmplt label_07bd8d30-0023-43af-9d4c-a9677f8c7038
-iconst_0
-goto label_e1e27a59-5503-43a5-87ab-86a26b7cfcea
-label_07bd8d30-0023-43af-9d4c-a9677f8c7038
 iconst_1
-label_e1e27a59-5503-43a5-87ab-86a26b7cfcea
+if_icmplt label_e43d7791-6fb1-4145-9a8f-fc0c758526e2
 iconst_0
-if icmpeq label_df0483de-386e-4caf-b03c-850fed494531
-ldc 5
-istore_2
-pop
-goto label_0acf5b6f-f2ab-4e85-aa40-bbb1f3ce3efc
-=======
-if_icmplt label_c43cadb7-34b9-459b-b81f-6fcf01ba592d
-iconst_0
-goto label_3e5750fe-a494-45d0-b1cc-445e1f30f78e
-label_c43cadb7-34b9-459b-b81f-6fcf01ba592d
+goto label_e9c34f49-e8f8-40d5-8ac6-5b68f7dced33
+label_e43d7791-6fb1-4145-9a8f-fc0c758526e2
 iconst_1
-label_3e5750fe-a494-45d0-b1cc-445e1f30f78e
+label_e9c34f49-e8f8-40d5-8ac6-5b68f7dced33
 iconst_0
-if icmpeq label_10513637-99a0-4609-bde5-8dd90be16d6b
-ldc 5
-istore_2
+if icmpeq label_4353833d-8e2a-432b-812d-20807ded9cbe
+iconst_5
+istore_0
 pop
-goto label_8ba81861-a470-4a70-b745-082553628cbe
->>>>>>> Stashed changes
+goto label_6e902e45-0ca4-4bfc-9766-0796dc934d12
+label_4353833d-8e2a-432b-812d-20807ded9cbe
 pop
-iload_2
+iload_0
 invokestatic Runtime/printInt(I)V
 pop
 
-ldc 0
-istore_3
+iconst_0
+istore_1
 pop
-<<<<<<< Updated upstream
-label_257e0b09-8144-473d-88f9-6b0afb135f59
-=======
-label_919bc55f-3f6c-440c-8573-1765e9256363
->>>>>>> Stashed changes
-iload_3
-iload_3
+label_acd7753c-e05e-4660-bc0c-8433b8eb63f6
+iload_1
+iload_1
 iconst_1
 iadd
-istore_3
-ldc 1
-<<<<<<< Updated upstream
-if_icmplt label_750acdb8-e6df-4f6e-8cdb-9efa9e51b824
-iconst_0
-goto label_d8bf1ee7-430a-4b54-b501-97de20f311fc
-label_750acdb8-e6df-4f6e-8cdb-9efa9e51b824
+istore_1
 iconst_1
-label_d8bf1ee7-430a-4b54-b501-97de20f311fc
+if_icmplt label_112932c0-0319-46cf-a677-ef3f2f9e12e7
 iconst_0
-if icmpeq label_27e5cf04-c1bd-4a2d-8316-8955b34e0736
-=======
-if_icmplt label_0e7b79da-8d8d-467d-950c-24470ac66050
-iconst_0
-goto label_14a49864-cfd5-4b8c-9911-2dfe2572907b
-label_0e7b79da-8d8d-467d-950c-24470ac66050
+goto label_b30f27f6-83e9-4d66-8ad6-11947013817a
+label_112932c0-0319-46cf-a677-ef3f2f9e12e7
 iconst_1
-label_14a49864-cfd5-4b8c-9911-2dfe2572907b
+label_b30f27f6-83e9-4d66-8ad6-11947013817a
 iconst_0
-if icmpeq label_c6f09268-6de3-42f8-a9ec-8eac9182c88a
->>>>>>> Stashed changes
+if icmpeq label_73df4550-816d-463c-b816-20f4168a0195
 pop
 ldc 6
-istore_4
-iload_4
+istore_0
+iload_0
 pop
-<<<<<<< Updated upstream
-goto label_257e0b09-8144-473d-88f9-6b0afb135f59
-=======
-goto label_919bc55f-3f6c-440c-8573-1765e9256363
->>>>>>> Stashed changes
+goto label_acd7753c-e05e-4660-bc0c-8433b8eb63f6
+label_73df4550-816d-463c-b816-20f4168a0195
 pop
-iload_4
+iload_0
 invokestatic Runtime/printInt(I)V
 pop
 
 ldc 7
-istore_5
+istore_0
 pop
 
-iload_5
+iload_0
 invokestatic Runtime/printInt(I)V
 
 pop
 ldc 8
-istore_6
-iload_6
+istore_0
+iload_0
 pop
 
-iload_6
+iload_0
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

@@ -23,45 +23,28 @@
 .method public static main()I
 .limit locals 3
 .limit stack 3
-ldc 5
+iconst_5
 istore_0
 
-<<<<<<< Updated upstream
-label_57a149ae-61df-4161-8933-cca8867e59fa
+label_25469551-9c58-4ae8-a272-5a033d8e8e9c
 iload_0
-ldc 3
-if_icmpgt label_label_6fdd0ea0-7ec6-432f-a8f7-40e1a2423c5e
+iconst_3
+if_icmpgt label_label_6e7b83ac-6323-4227-8aeb-2099a0052eed
 iconst_0
-goto label_5300d7f1-fa07-4f12-be84-869c5bb2a36c
-label_6fdd0ea0-7ec6-432f-a8f7-40e1a2423c5e
+goto label_e5bca108-3e54-4874-b820-5122edd2dd57
+label_6e7b83ac-6323-4227-8aeb-2099a0052eed
 iconst_1
-label_5300d7f1-fa07-4f12-be84-869c5bb2a36c
+label_e5bca108-3e54-4874-b820-5122edd2dd57
 iconst_0
-if icmpeq label_c4886626-e815-4356-8c9a-5beead9c07a1
-=======
-label_ac7d6153-fb52-45a9-8014-7221e211824c
-iload_0
-ldc 3
-if_icmpgt label_label_f10635bf-9987-4836-9762-4423810ace5f
-iconst_0
-goto label_8188707a-b626-452f-86d0-79f0e846f563
-label_f10635bf-9987-4836-9762-4423810ace5f
-iconst_1
-label_8188707a-b626-452f-86d0-79f0e846f563
-iconst_0
-if icmpeq label_cbffc3b1-a5d7-4eda-bd23-ab36be4500bb
->>>>>>> Stashed changes
+if icmpeq label_d76cc8f9-62f1-4e4c-9db2-38eca40647fd
 iload_0
 iload_0
 iconst_1
 iadd
 istore_0
 invokestatic Runtime/printInt(I)V
-<<<<<<< Updated upstream
-goto label_57a149ae-61df-4161-8933-cca8867e59fa
-=======
-goto label_ac7d6153-fb52-45a9-8014-7221e211824c
->>>>>>> Stashed changes
+goto label_25469551-9c58-4ae8-a272-5a033d8e8e9c
+label_d76cc8f9-62f1-4e4c-9db2-38eca40647fd
 
 iload_0
 ireturn

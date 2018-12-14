@@ -26,7 +26,7 @@
 ldc 24
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

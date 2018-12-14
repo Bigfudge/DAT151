@@ -26,69 +26,43 @@
 iconst_1
 istore_0
 
-ldc 0
+iconst_0
 istore_1
 
-<<<<<<< Updated upstream
-label_1b62cc87-3272-419b-a1d3-1b67d0128816
-=======
-label_605f474e-26cc-472d-9dd8-cd054139f497
->>>>>>> Stashed changes
+label_0f2ebe9f-db9f-44c4-b488-676257ccfad3
 iload_1
 iload_1
 iconst_1
 iadd
 istore_1
-ldc 1
-<<<<<<< Updated upstream
-if_icmplt label_7f45b5d9-be2e-4a49-847d-842fb7c5349d
-iconst_0
-goto label_3e9d8483-c449-4b5c-a421-248c546b1eee
-label_7f45b5d9-be2e-4a49-847d-842fb7c5349d
 iconst_1
-label_3e9d8483-c449-4b5c-a421-248c546b1eee
+if_icmplt label_eefeebc5-9715-4cf4-8c63-4ae1d0244296
 iconst_0
-if icmpeq label_f2283ce8-a301-4e93-bf8d-219ce4aa55bc
-ldc 1
-istore_2
-goto label_1b62cc87-3272-419b-a1d3-1b67d0128816
+goto label_4b6c4aae-434f-4e15-ab17-e9fd114cd4b6
+label_eefeebc5-9715-4cf4-8c63-4ae1d0244296
+iconst_1
+label_4b6c4aae-434f-4e15-ab17-e9fd114cd4b6
+iconst_0
+if icmpeq label_089fd9ac-94e2-4733-ba9a-c1fcff57d3b8
+iconst_1
+istore_0
+goto label_0f2ebe9f-db9f-44c4-b488-676257ccfad3
+label_089fd9ac-94e2-4733-ba9a-c1fcff57d3b8
 
-iload_2
+iload_0
 iconst_1
-if_icmpeq label_9ea78aeb-b873-4372-a4a0-138f54287fd5
+if_icmpeq label_69a34cdb-1dec-4e92-bc55-cad96119199f
 iconst_0
-goto label_a2ffafbb-f674-4523-9fca-beb72fdee683
-label_9ea78aeb-b873-4372-a4a0-138f54287fd5
+goto label_bbb58cb3-f64b-4aca-b8be-19a809f12428
+label_69a34cdb-1dec-4e92-bc55-cad96119199f
 iconst_1
-label_a2ffafbb-f674-4523-9fca-beb72fdee683
-=======
-if_icmplt label_9d361226-5e4e-423d-a799-f875aa9c2b36
-iconst_0
-goto label_886e19ba-bbbe-4f65-89ec-f0aaace89b51
-label_9d361226-5e4e-423d-a799-f875aa9c2b36
-iconst_1
-label_886e19ba-bbbe-4f65-89ec-f0aaace89b51
-iconst_0
-if icmpeq label_7c8470d6-d4f1-4a54-bab7-d8128a6617bf
-ldc 1
-istore_2
-goto label_605f474e-26cc-472d-9dd8-cd054139f497
-
-iload_2
-iconst_1
-if_icmpeq label_b2ae1c9d-985f-4b79-86ed-ac564acbd605
-iconst_0
-goto label_6c7aebbe-a9d1-42a1-a5d8-a40be249e15c
-label_b2ae1c9d-985f-4b79-86ed-ac564acbd605
-iconst_1
-label_6c7aebbe-a9d1-42a1-a5d8-a40be249e15c
->>>>>>> Stashed changes
+label_bbb58cb3-f64b-4aca-b8be-19a809f12428
 iconst_0
 
-iload_2
+iload_0
 istore_3
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

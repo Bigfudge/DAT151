@@ -23,7 +23,7 @@
 .method public static main()I
 .limit locals 3
 .limit stack 3
-ldc 1
+iconst_1
 istore_0
 
 iload_0
@@ -36,21 +36,12 @@ iconst_1
 iadd
 istore_0
 ldc 45
-<<<<<<< Updated upstream
-if_icmpne label_06f93766-020f-4fcd-b91d-e40af82290c9
+if_icmpne label_31bfe432-c5f4-4ee3-a0b4-1f734bb0f54d
 iconst_0
-goto label_1224da06-8d3c-4289-9db1-d89cff4a59a3
-label_06f93766-020f-4fcd-b91d-e40af82290c9
+goto label_4c496d48-dd30-4886-be75-6a164a82597d
+label_31bfe432-c5f4-4ee3-a0b4-1f734bb0f54d
 iconst_1
-label_1224da06-8d3c-4289-9db1-d89cff4a59a3
-=======
-if_icmpne label_46ddce52-10fb-429e-a50b-5bdb9318ced1
-iconst_0
-goto label_c1134846-b133-44a3-8057-3c0968a3ef04
-label_46ddce52-10fb-429e-a50b-5bdb9318ced1
-iconst_1
-label_c1134846-b133-44a3-8057-3c0968a3ef04
->>>>>>> Stashed changes
+label_4c496d48-dd30-4886-be75-6a164a82597d
 iconst_0
 ior
 
@@ -63,22 +54,13 @@ iload_0
 iconst_1
 iadd
 istore_0
-ldc 0
-<<<<<<< Updated upstream
-if_icmpge label_212244dd-6abf-4b3d-99be-3770555cf1c1
 iconst_0
-goto label_e7d576c6-d1a6-4696-bbf4-cadaf91c2f89
-label_212244dd-6abf-4b3d-99be-3770555cf1c1
-iconst_1
-label_e7d576c6-d1a6-4696-bbf4-cadaf91c2f89
-=======
-if_icmpge label_52378b7e-be85-4b76-9bf8-8e69eb1353f5
+if_icmpge label_d37bcdd5-317a-4b2d-ae0e-74846fa3eb6e
 iconst_0
-goto label_81aaff9f-ef8a-4e0f-b9c5-b0be596e2b51
-label_52378b7e-be85-4b76-9bf8-8e69eb1353f5
+goto label_bec0577b-11ff-4083-acf6-5a8d5f1b9656
+label_d37bcdd5-317a-4b2d-ae0e-74846fa3eb6e
 iconst_1
-label_81aaff9f-ef8a-4e0f-b9c5-b0be596e2b51
->>>>>>> Stashed changes
+label_bec0577b-11ff-4083-acf6-5a8d5f1b9656
 iconst_0
 ior
 
@@ -91,22 +73,13 @@ iload_0
 iconst_1
 iadd
 istore_0
-ldc 0
-<<<<<<< Updated upstream
-if_icmplt label_97de2674-cf67-4844-a436-e8c09b3644b2
 iconst_0
-goto label_9e1746c1-5352-4d30-b914-baa3d9ef8f5c
-label_97de2674-cf67-4844-a436-e8c09b3644b2
-iconst_1
-label_9e1746c1-5352-4d30-b914-baa3d9ef8f5c
-=======
-if_icmplt label_34a0d6d8-2e8b-43dc-b242-f9c819974142
+if_icmplt label_e5280eb5-1fd2-4bf3-8446-f479d61f9cb0
 iconst_0
-goto label_f4a03681-6c7d-47b0-a625-c7410e6f1aac
-label_34a0d6d8-2e8b-43dc-b242-f9c819974142
+goto label_15d53c42-d580-487c-afb7-b4325a93aee6
+label_e5280eb5-1fd2-4bf3-8446-f479d61f9cb0
 iconst_1
-label_f4a03681-6c7d-47b0-a625-c7410e6f1aac
->>>>>>> Stashed changes
+label_15d53c42-d580-487c-afb7-b4325a93aee6
 iconst_0
 iand
 
@@ -119,33 +92,53 @@ iload_0
 iconst_1
 iadd
 istore_0
-ldc 0
-<<<<<<< Updated upstream
-if_icmpgt label_label_35a8a4ae-491a-476a-a0fb-b2eebed5eccb
 iconst_0
-goto label_82c5a631-898b-4676-a224-f5ec6439477b
-label_35a8a4ae-491a-476a-a0fb-b2eebed5eccb
-iconst_1
-label_82c5a631-898b-4676-a224-f5ec6439477b
-=======
-if_icmpgt label_label_77eebcfc-5884-49b9-917f-0cbe21282867
+if_icmpgt label_label_cd08ce9a-1325-482e-ad08-0f0bb15c074a
 iconst_0
-goto label_9f8eb283-0e15-4592-a2d3-286643a76795
-label_77eebcfc-5884-49b9-917f-0cbe21282867
+goto label_47530bf6-3c87-4020-9b8a-a1bf247f7a2f
+label_cd08ce9a-1325-482e-ad08-0f0bb15c074a
 iconst_1
-label_9f8eb283-0e15-4592-a2d3-286643a76795
->>>>>>> Stashed changes
+label_47530bf6-3c87-4020-9b8a-a1bf247f7a2f
 iconst_0
 iand
 
 iload_0
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 istore_1
 
+ldc 34
+ldc 6
+if_icmplt label_8895c175-0ca8-4441-ace1-3ee31f67ea6d
+iconst_0
+goto label_5fa64179-e2de-488c-834e-c691265df21d
+label_8895c175-0ca8-4441-ace1-3ee31f67ea6d
+iconst_1
+label_5fa64179-e2de-488c-834e-c691265df21d
+iconst_0
+iload_1
+iconst_0
+if_icmplt label_ff0b18f2-6286-46d5-9926-88b8a47c864b
+iconst_0
+goto label_c99efe7c-a295-44f1-adb6-06d15919f4ae
+label_ff0b18f2-6286-46d5-9926-88b8a47c864b
+iconst_1
+label_c99efe7c-a295-44f1-adb6-06d15919f4ae
+iconst_0
+iand
+if_icmpeq label_23ca94d1-1934-46a3-8320-0a22cd335673
+ldc 42
+invokestatic Runtime/printInt(I)V
+pop
+goto label_7379cc00-d5c1-4294-8237-be1c190a49b3
+label_23ca94d1-1934-46a3-8320-0a22cd335673
+iload_0
+invokestatic Runtime/printInt(I)V
+pop
+label_7379cc00-d5c1-4294-8237-be1c190a49b3
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

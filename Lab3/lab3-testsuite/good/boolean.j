@@ -23,7 +23,7 @@
 .method public static ff()Z
 .limit locals 3
 .limit stack 3
-ldc 0
+iconst_0
 invokestatic Runtime/printInt(I)V
 
 iconst_0
@@ -33,7 +33,7 @@ ireturn
 .method public static tt()Z
 .limit locals 3
 .limit stack 3
-ldc 1
+iconst_1
 invokestatic Runtime/printInt(I)V
 
 iconst_1
@@ -51,25 +51,29 @@ istore_1
 
 iload_1
 invokestaticff()Z
+nop
 iand
 istore_2
 
 iload_0
 invokestaticff()Z
+nop
 ior
 istore_3
 
-iload_0
+iload_-1
 invokestatictt()Z
+nop
 iand
-istore_4
+istore_0
 
-iload_1
+iload_-1
 invokestatictt()Z
+nop
 ior
-istore_5
+istore_1
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

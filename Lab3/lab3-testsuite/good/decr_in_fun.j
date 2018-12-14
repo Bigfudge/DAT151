@@ -23,21 +23,23 @@
 .method public static f(I)I
 .limit locals 3
 .limit stack 3
-iload_null
+iload_-1
 iconst_1
 isub
-istore_null
-iload_null
+istore_-1
+iload_-1
 ireturn
 
 .end method
 .method public static main()I
 .limit locals 3
 .limit stack 3
+iconst_0
 invokestaticf(I)I
+nop
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

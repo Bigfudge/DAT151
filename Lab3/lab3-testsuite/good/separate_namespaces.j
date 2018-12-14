@@ -23,14 +23,14 @@
 .method public static x(Z)I
 .limit locals 3
 .limit stack 3
-ldc 0
+iconst_0
 ireturn
 
 .end method
 .method public static main()I
 .limit locals 3
 .limit stack 3
-ldc 5
+iconst_5
 istore_0
 
 iload_0

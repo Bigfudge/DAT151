@@ -9,13 +9,13 @@ public class Compiler
   LinkedList<String> output;
   private class Env{
       public HashMap<String,String> signature ;
-      public HashMap<String, Integer> variables;
+      public String[] variables;
       Integer variableCount = 0;
       Integer loopCount = 0;
 
       public Env(){
           signature = new HashMap<>();
-          variables = new HashMap<>();
+          variables = new String[4];
       }
 
       //Adds function to signatures if id does not already exist, otherwise Exception
@@ -62,7 +62,7 @@ public class Compiler
       }
 
       public void addVar (String id){
-          variables.put(id, variableCount++);
+          variables[variableCount++%4]=id;
       }
 
       public String getLabel(){
@@ -70,10 +70,7 @@ public class Compiler
 
       }
       public Integer getReg(String id){
-          if (variables.containsKey(id)) {
-              return variables.get(id);
-          }
-          throw new RuntimeException("getReg: No such variable");
+          return(Arrays.asList(variables).indexOf(id));
       }
 
   }
@@ -192,6 +189,18 @@ public class Compiler
             return null;
         }
         public Env visit(SIfElse p, Env env) {
+            String trueLabel = env.getLabel();
+            String endLabel = env.getLabel();
+
+            p.exp_.accept(new CompileExp(), env);
+            output.add("if_icmpeq "+trueLabel);
+            p.stm_2.accept(new CompileStm(), env);
+            output.add("goto "+endLabel);
+            output.add(trueLabel);
+            p.stm_1.accept(new CompileStm(),env);
+
+            output.add(endLabel);
+
             return null;
         }
         public Env visit(SBlock p, Env env) {
@@ -221,14 +230,19 @@ public class Compiler
             output.add("if icmpeq "+endLabel);
             p.stm_.accept(new CompileStm(), env);
             output.add("goto "+startLabel);
-
+            output.add(endLabel);
             return null;
         }
   }
   private class CompileExp implements Exp.Visitor<Void,Env> {
 
      public Void visit(EInt p, Env env) {
-         output.add("ldc "+p.integer_.toString());
+         if (p.integer_ <= 5) {
+             output.add("iconst_"+p.integer_.toString());
+         }
+         else{
+             output.add("ldc "+p.integer_.toString());
+         }
          return null;
       }
 
@@ -243,7 +257,7 @@ public class Compiler
       }
 
       public Void visit(EId p, Env env) {
-          Integer register = env.variables.get(p.id_);
+          Integer register = env.getReg(p.id_);
           output.add("iload_"+register.toString());
 
           return null;
@@ -279,7 +293,11 @@ public class Compiler
               output.add("invokestatic Runtime/printInt(I)V");
           }
           else{
+              for (Exp exp : p.listexp_ ) {
+                  exp.accept(new CompileExp(), env);
+              }
               output.add("invokestatic"+p.id_+env.getSignature(p.id_));
+              output.add("nop");
           }
           return null;
       }
@@ -427,7 +445,7 @@ public class Compiler
       }
 
       public Void visit(EPostDecr p, Env env) {
-          Integer reg = env.variables.get(p.id_);
+          Integer reg = env.getReg(p.id_);
 
           output.add("iload_" + reg);
           output.add("iload_" + reg);
@@ -440,7 +458,7 @@ public class Compiler
       }
 
       public Void visit(EPostIncr p, Env env) {
-          Integer reg = env.variables.get(p.id_);
+          Integer reg = env.getReg(p.id_);
 
           output.add("iload_" + reg);
           output.add("iload_" + reg);
@@ -453,7 +471,7 @@ public class Compiler
       }
 
       public Void visit(EPreDecr p, Env env) {
-          Integer reg = env.variables.get(p.id_);
+          Integer reg = env.getReg(p.id_);
 
           output.add("iload_" + reg);
           output.add("iconst_1");
@@ -466,7 +484,7 @@ public class Compiler
       }
 
       public Void visit(EPreIncr p, Env env) {
-          Integer reg = env.variables.get(p.id_);
+          Integer reg = env.getReg(p.id_);
 
           output.add("iload_" + reg);
           output.add("iconst_1");

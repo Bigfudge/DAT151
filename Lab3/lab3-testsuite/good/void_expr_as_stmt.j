@@ -24,15 +24,16 @@
 .limit locals 3
 .limit stack 3
 invokestaticfoo()V
+nop
 
-ldc 0
+iconst_0
 ireturn
 
 .end method
 .method public static foo()V
 .limit locals 3
 .limit stack 3
-ldc 1
+iconst_1
 invokestatic Runtime/printInt(I)V
 
 .end method

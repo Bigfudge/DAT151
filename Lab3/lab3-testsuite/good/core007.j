@@ -29,7 +29,7 @@ istore_0
 iload_0
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 ireturn
 
 .end method

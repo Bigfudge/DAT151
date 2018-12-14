@@ -26,40 +26,25 @@
 invokestatic Runtime/readInt()I
 istore_0
 
-ldc 1
+iconst_1
 istore_1
 
-ldc 1
+iconst_1
 istore_2
 
-<<<<<<< Updated upstream
-label_727d5fd4-11e7-427c-b205-2c515aac52f8
-=======
-label_d244aec5-4219-4d85-b98e-19a006010b79
->>>>>>> Stashed changes
+label_545c4b0e-3f52-44e4-ad64-ae8de6437fc9
 iload_2
 iload_0
-ldc 1
+iconst_1
 iadd
-<<<<<<< Updated upstream
-if_icmplt label_d5ea73a6-04e6-4088-b475-4a5002304041
+if_icmplt label_826ba856-d1dd-4b52-8625-da7b9f1f582b
 iconst_0
-goto label_b9aa95c2-2d1f-4318-a978-b55c0bead4a5
-label_d5ea73a6-04e6-4088-b475-4a5002304041
+goto label_fb2838cf-091c-4614-8c6e-edfa23c43066
+label_826ba856-d1dd-4b52-8625-da7b9f1f582b
 iconst_1
-label_b9aa95c2-2d1f-4318-a978-b55c0bead4a5
+label_fb2838cf-091c-4614-8c6e-edfa23c43066
 iconst_0
-if icmpeq label_a4d4ee4c-2048-4548-99b0-f6419bc4b465
-=======
-if_icmplt label_588054dc-8cfe-4963-9e90-d9ab90a59c35
-iconst_0
-goto label_1109802f-2f52-4802-b918-96d7ebf55306
-label_588054dc-8cfe-4963-9e90-d9ab90a59c35
-iconst_1
-label_1109802f-2f52-4802-b918-96d7ebf55306
-iconst_0
-if icmpeq label_7077ec75-ff5c-4b8c-877d-8339a1062399
->>>>>>> Stashed changes
+if icmpeq label_9195ca94-14b9-4daa-b772-8a21b365526f
 iload_2
 iload_1
 imul
@@ -72,16 +57,13 @@ iadd
 istore_2
 iload_2
 pop
-<<<<<<< Updated upstream
-goto label_727d5fd4-11e7-427c-b205-2c515aac52f8
-=======
-goto label_d244aec5-4219-4d85-b98e-19a006010b79
->>>>>>> Stashed changes
+goto label_545c4b0e-3f52-44e4-ad64-ae8de6437fc9
+label_9195ca94-14b9-4daa-b772-8a21b365526f
 
 iload_1
 invokestatic Runtime/printInt(I)V
 
-ldc 0
+iconst_0
 ireturn
 
 .end method
