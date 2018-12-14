@@ -3,6 +3,7 @@
 
 .method public <init>()V
   .limit locals 1
+  .limit stack  1
 
   aload_0
   invokespecial java/lang/Object/<init>()V
@@ -38,21 +39,16 @@ iload_1
 iload_1
 invokestatic Runtime/printInt(I)V
 
-pop
 ldc 4
 istore_2
 iload_2
-pop
 iload_2
 invokestatic Runtime/printInt(I)V
-pop
 iload_2
 istore_0
 iload_0
-pop
 iload_0
 invokestatic Runtime/printInt(I)V
-pop
 
 iload_0
 invokestatic Runtime/printInt(I)V

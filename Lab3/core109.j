@@ -1,8 +1,9 @@
-.class public core015
+.class public core109
 .super java/lang/Object
 
 .method public <init>()V
   .limit locals 1
+  .limit stack  1
 
   aload_0
   invokespecial java/lang/Object/<init>()V
@@ -14,7 +15,7 @@
   .limit locals 1
   .limit stack  1
 
-  invokestatic core015/main()I
+  invokestatic core109/main()I
   pop
   return
 
@@ -23,17 +24,11 @@
 .method public static main()I
 .limit locals 3
 .limit stack 3
-invokestaticev(I)I
+ldc 4
+istore_0
+
+iload_0
 invokestatic Runtime/printInt(I)V
-
-ldc 0
-ireturn
-
-.end method
-.method public static ev(I)I
-.limit locals 3
-.limit stack 3
-
 
 iload_0
 ireturn

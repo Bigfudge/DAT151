@@ -3,6 +3,7 @@
 
 .method public <init>()V
   .limit locals 1
+  .limit stack  1
 
   aload_0
   invokespecial java/lang/Object/<init>()V
@@ -25,19 +26,8 @@
 .limit stack 3
 ldc 99
 ireturn
-pop
-pop
-pop
-pop
-pop
-pop
 ldc 2
 invokestatic Runtime/printInt(I)V
-pop
-pop
-pop
-pop
-pop
 
 ldc 1
 invokestatic Runtime/printInt(I)V
@@ -48,22 +38,10 @@ invokestatic Runtime/printInt(I)V
 .limit stack 3
 invokestaticniam()I
 invokestatic Runtime/printInt(I)V
-pop
 ldc 0
 ireturn
-pop
-pop
-pop
-pop
-pop
-pop
 ldc 3
 invokestatic Runtime/printInt(I)V
-pop
-pop
-pop
-pop
-pop
 
 ldc 4
 invokestatic Runtime/printInt(I)V

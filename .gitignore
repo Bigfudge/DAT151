@@ -20,6 +20,7 @@ src/
 ### Min fkin dator byggde massa backup filer, rätt säker på att vi inte behöver dem.
 
 *.bak
+*.j
 
 ### Behövde modda lab3.java för att köra på arch
 

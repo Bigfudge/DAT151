@@ -3,6 +3,7 @@
 
 .method public <init>()V
   .limit locals 1
+  .limit stack  1
 
   aload_0
   invokespecial java/lang/Object/<init>()V
@@ -30,32 +31,31 @@ ldc 0
 istore_1
 
 
-label_c43daa39-7ae6-4f32-ae35-0a1736656a72
+label_df962501-ce5d-49ef-8f8a-6b0117ccbd29:
 invokestatic Runtime/readInt()I
 istore_2
 iload_2
 ldc 0
-if_icmpne label_ec1da4a3-f09a-4178-bdf7-1301718102c8
+if_icmpne label_ef2022d8-ecbb-40db-8d8c-532227d59f1a:
 iconst_0
-goto label_792a2a3a-ce6a-47a7-94ab-490350f082ef
-label_ec1da4a3-f09a-4178-bdf7-1301718102c8
+goto label_06f06cfb-6e0a-49b8-9007-3f1a174b1b9d:
+label_ef2022d8-ecbb-40db-8d8c-532227d59f1a:
 iconst_1
-label_792a2a3a-ce6a-47a7-94ab-490350f082ef
+label_06f06cfb-6e0a-49b8-9007-3f1a174b1b9d:
 iconst_0
-if icmpeq label_ca208004-3ecc-4ed0-ad18-00e57bfb4ae4
+if_icmpeq label_96e97f6b-c57e-4562-b28b-11dca52ab1a0:
 iload_0
 iload_2
 iadd
 istore_0
 iload_0
-pop
 iload_1
 iload_1
 iconst_1
 iadd
 istore_1
-pop
-goto label_c43daa39-7ae6-4f32-ae35-0a1736656a72
+goto label_df962501-ce5d-49ef-8f8a-6b0117ccbd29:
+label_96e97f6b-c57e-4562-b28b-11dca52ab1a0:
 
 iload_0
 iload_1

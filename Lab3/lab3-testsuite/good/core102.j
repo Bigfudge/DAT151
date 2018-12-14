@@ -3,6 +3,7 @@
 
 .method public <init>()V
   .limit locals 1
+  .limit stack  1
 
   aload_0
   invokespecial java/lang/Object/<init>()V
@@ -23,7 +24,7 @@
 .method public static main()I
 .limit locals 3
 .limit stack 3
-label_dc228304-36a9-4491-8896-9190ed93726e
+label_86ed41d2-f47c-4838-823c-fb864d32ac46:
 ldc 2
 ldc 5
 ldc 6
@@ -34,15 +35,16 @@ iadd
 ldc 67
 isub
 ldc 5
-if_icmpgt label_label_bd582a53-18fa-45a2-8cda-a8423e210629
+if_icmpgt label_label_e08af777-abcf-40a0-96d9-921306b6b458:
 iconst_0
-goto label_a810ab98-2659-487f-b4bd-dab18e044264
-label_bd582a53-18fa-45a2-8cda-a8423e210629
+goto label_8f37588b-5328-4c48-a7ab-e379cb4da982:
+label_e08af777-abcf-40a0-96d9-921306b6b458:
 iconst_1
-label_a810ab98-2659-487f-b4bd-dab18e044264
+label_8f37588b-5328-4c48-a7ab-e379cb4da982:
 iconst_0
-if icmpeq label_7301e5d5-9bbd-4439-91e9-6aa0d32dfdef
-goto label_dc228304-36a9-4491-8896-9190ed93726e
+if_icmpeq label_d99d06bc-911e-4c2a-95b9-4310e1e57319:
+goto label_86ed41d2-f47c-4838-823c-fb864d32ac46:
+label_d99d06bc-911e-4c2a-95b9-4310e1e57319:
 
 ldc 0
 ireturn

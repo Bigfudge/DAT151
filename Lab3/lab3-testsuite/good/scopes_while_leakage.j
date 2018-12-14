@@ -3,6 +3,7 @@
 
 .method public <init>()V
   .limit locals 1
+  .limit stack  1
 
   aload_0
   invokespecial java/lang/Object/<init>()V
@@ -29,33 +30,34 @@ istore_0
 ldc 0
 istore_1
 
-label_1b62cc87-3272-419b-a1d3-1b67d0128816
+label_4ef6201a-cf16-4490-a8ab-4d842e8566ca:
 iload_1
 iload_1
 iconst_1
 iadd
 istore_1
 ldc 1
-if_icmplt label_7f45b5d9-be2e-4a49-847d-842fb7c5349d
+if_icmplt label_8dca857c-c634-4da7-8910-bfa810d69799:
 iconst_0
-goto label_3e9d8483-c449-4b5c-a421-248c546b1eee
-label_7f45b5d9-be2e-4a49-847d-842fb7c5349d
+goto label_1db2f05c-2f07-49da-aaa2-409af985881f:
+label_8dca857c-c634-4da7-8910-bfa810d69799:
 iconst_1
-label_3e9d8483-c449-4b5c-a421-248c546b1eee
+label_1db2f05c-2f07-49da-aaa2-409af985881f:
 iconst_0
-if icmpeq label_f2283ce8-a301-4e93-bf8d-219ce4aa55bc
+if_icmpeq label_e8500eb5-4ff7-4d62-8dbe-c97542a201c7:
 ldc 1
 istore_2
-goto label_1b62cc87-3272-419b-a1d3-1b67d0128816
+goto label_4ef6201a-cf16-4490-a8ab-4d842e8566ca:
+label_e8500eb5-4ff7-4d62-8dbe-c97542a201c7:
 
 iload_2
 iconst_1
-if_icmpeq label_9ea78aeb-b873-4372-a4a0-138f54287fd5
+if_icmpeq label_7acc837c-0640-4437-acbc-a877e35f75b7:
 iconst_0
-goto label_a2ffafbb-f674-4523-9fca-beb72fdee683
-label_9ea78aeb-b873-4372-a4a0-138f54287fd5
+goto label_f9d76be3-83e5-4379-8bd2-0a6f35ebb0fc:
+label_7acc837c-0640-4437-acbc-a877e35f75b7:
 iconst_1
-label_a2ffafbb-f674-4523-9fca-beb72fdee683
+label_f9d76be3-83e5-4379-8bd2-0a6f35ebb0fc:
 iconst_0
 
 iload_2

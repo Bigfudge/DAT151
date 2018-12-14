@@ -3,6 +3,7 @@
 
 .method public <init>()V
   .limit locals 1
+  .limit stack  1
 
   aload_0
   invokespecial java/lang/Object/<init>()V
@@ -26,25 +27,25 @@
 ldc 0
 istore_0
 
-label_9ff373c3-c174-480b-9305-1b9fdf5c9535
+label_61c05fad-8cd3-4640-b59f-ad4b1da77936:
 iload_0
 iload_0
 iconst_1
 iadd
 istore_0
 ldc 5
-if_icmplt label_9e9116ef-187a-445f-9a87-50a780932c08
+if_icmplt label_1705e281-5f90-4280-aedc-3d0934ecf6fe:
 iconst_0
-goto label_aea1f93f-7eba-46e2-800a-3435019f3611
-label_9e9116ef-187a-445f-9a87-50a780932c08
+goto label_a1925e80-8103-4a56-b610-1164cb884562:
+label_1705e281-5f90-4280-aedc-3d0934ecf6fe:
 iconst_1
-label_aea1f93f-7eba-46e2-800a-3435019f3611
+label_a1925e80-8103-4a56-b610-1164cb884562:
 iconst_0
-if icmpeq label_d64f3d5c-3c05-41da-8d76-c798fdb3c7e8
+if_icmpeq label_d2d4fa17-fe55-4976-aff9-1257c3b233fa:
 ldc 71
 ireturn
-pop
-goto label_9ff373c3-c174-480b-9305-1b9fdf5c9535
+goto label_61c05fad-8cd3-4640-b59f-ad4b1da77936:
+label_d2d4fa17-fe55-4976-aff9-1257c3b233fa:
 
 ldc 52
 ireturn

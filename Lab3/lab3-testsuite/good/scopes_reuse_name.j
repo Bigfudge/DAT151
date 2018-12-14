@@ -3,6 +3,7 @@
 
 .method public <init>()V
   .limit locals 1
+  .limit stack  1
 
   aload_0
   invokespecial java/lang/Object/<init>()V
@@ -26,92 +27,112 @@
 ldc 0
 istore_0
 
-
-iload_0
-invokestatic Runtime/printInt(I)V
-
-
-iload_0
-invokestatic Runtime/printInt(I)V
-
-
-iload_0
-invokestatic Runtime/printInt(I)V
-
-
-iload_0
-invokestatic Runtime/printInt(I)V
-
-ldc 0
-istore_1
-pop
-label_0acf5b6f-f2ab-4e85-aa40-bbb1f3ce3efc
-iload_1
-iload_1
 iconst_1
-iadd
-istore_1
+if_icmpne label_60089c03-c2d8-4286-a4f2-1e1f96fc7f4f:
 ldc 1
-if_icmplt label_07bd8d30-0023-43af-9d4c-a9677f8c7038
-iconst_0
-goto label_e1e27a59-5503-43a5-87ab-86a26b7cfcea
-label_07bd8d30-0023-43af-9d4c-a9677f8c7038
+istore_1
+goto label_32814549-7e43-4a08-a24d-2ca1ee4d7f7a:
+label_60089c03-c2d8-4286-a4f2-1e1f96fc7f4f:
+label_32814549-7e43-4a08-a24d-2ca1ee4d7f7a:
+
+iload_1
+invokestatic Runtime/printInt(I)V
+
 iconst_1
-label_e1e27a59-5503-43a5-87ab-86a26b7cfcea
-iconst_0
-if icmpeq label_df0483de-386e-4caf-b03c-850fed494531
-ldc 5
+if_icmpne label_16cb7101-9165-4833-8713-692b5f08801b:
+ldc 2
 istore_2
-pop
-goto label_0acf5b6f-f2ab-4e85-aa40-bbb1f3ce3efc
-pop
+iload_2
+goto label_b4f9b9ea-05e9-4960-92f3-302e10422c5e:
+label_16cb7101-9165-4833-8713-692b5f08801b:
+label_b4f9b9ea-05e9-4960-92f3-302e10422c5e:
+
 iload_2
 invokestatic Runtime/printInt(I)V
-pop
 
-ldc 0
-istore_3
-pop
-label_257e0b09-8144-473d-88f9-6b0afb135f59
-iload_3
-iload_3
-iconst_1
-iadd
-istore_3
-ldc 1
-if_icmplt label_750acdb8-e6df-4f6e-8cdb-9efa9e51b824
 iconst_0
-goto label_d8bf1ee7-430a-4b54-b501-97de20f311fc
-label_750acdb8-e6df-4f6e-8cdb-9efa9e51b824
-iconst_1
-label_d8bf1ee7-430a-4b54-b501-97de20f311fc
+if_icmpne label_cdbfbc12-f38f-4afd-a1bb-e6f71a299e0d:
+goto label_aec38d64-f57e-4e16-b94b-2f7a3b1faef2:
+label_cdbfbc12-f38f-4afd-a1bb-e6f71a299e0d:
+ldc 3
+istore_3
+label_aec38d64-f57e-4e16-b94b-2f7a3b1faef2:
+
+iload_3
+invokestatic Runtime/printInt(I)V
+
 iconst_0
-if icmpeq label_27e5cf04-c1bd-4a2d-8316-8955b34e0736
-pop
-ldc 6
+if_icmpne label_98691694-43b5-49c6-83bf-041efbc2d53b:
+goto label_483c50f2-75d4-49b0-aa2c-442b8b8f769a:
+label_98691694-43b5-49c6-83bf-041efbc2d53b:
+ldc 4
 istore_4
 iload_4
-pop
-goto label_257e0b09-8144-473d-88f9-6b0afb135f59
-pop
+label_483c50f2-75d4-49b0-aa2c-442b8b8f769a:
+
 iload_4
 invokestatic Runtime/printInt(I)V
-pop
 
-ldc 7
+ldc 0
 istore_5
-pop
-
+label_d5ecb04c-d657-47db-a378-8261f2123541:
 iload_5
+iload_5
+iconst_1
+iadd
+istore_5
+ldc 1
+if_icmplt label_00ca116b-2e3c-4dd2-807b-ddc904ae70dd:
+iconst_0
+goto label_1a3250df-2b8e-4d92-905f-930d8a0aa2a1:
+label_00ca116b-2e3c-4dd2-807b-ddc904ae70dd:
+iconst_1
+label_1a3250df-2b8e-4d92-905f-930d8a0aa2a1:
+iconst_0
+if_icmpeq label_538f1b67-bf81-4b38-9437-c225acf91267:
+ldc 5
+istore_6
+goto label_d5ecb04c-d657-47db-a378-8261f2123541:
+label_538f1b67-bf81-4b38-9437-c225acf91267:
+iload_6
 invokestatic Runtime/printInt(I)V
 
-pop
-ldc 8
-istore_6
-iload_6
-pop
+ldc 0
+istore_7
+label_e1b1f82e-8218-447b-90a6-8b0cd0e73101:
+iload_7
+iload_7
+iconst_1
+iadd
+istore_7
+ldc 1
+if_icmplt label_743a4b90-5194-4f91-bc25-dd19057ba5f1:
+iconst_0
+goto label_cf1b7dc3-21f0-4184-baff-fa109e68ac91:
+label_743a4b90-5194-4f91-bc25-dd19057ba5f1:
+iconst_1
+label_cf1b7dc3-21f0-4184-baff-fa109e68ac91:
+iconst_0
+if_icmpeq label_e7fef9ff-e0eb-486c-88fd-75cb6b1d4360:
+ldc 6
+istore_8
+iload_8
+goto label_e1b1f82e-8218-447b-90a6-8b0cd0e73101:
+label_e7fef9ff-e0eb-486c-88fd-75cb6b1d4360:
+iload_8
+invokestatic Runtime/printInt(I)V
 
-iload_6
+ldc 7
+istore_9
+
+iload_9
+invokestatic Runtime/printInt(I)V
+
+ldc 8
+istore_10
+iload_10
+
+iload_10
 invokestatic Runtime/printInt(I)V
 
 ldc 0
