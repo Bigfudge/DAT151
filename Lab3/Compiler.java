@@ -17,8 +17,7 @@ public class Compiler
       String className;
 
       public Env(){
-          signature = new HashMap<>();
-         // variables = new String[4];
+         signature = new HashMap<>();
          variables= new LinkedList<HashMap<String, Integer>>();
          className="";
       }
@@ -385,7 +384,6 @@ public class Compiler
           output.add(label1+":");
           output.add("iconst_1");
           output.add(label2+":");
-          //output.add("iconst_0");
 
           return null;
 
@@ -403,7 +401,6 @@ public class Compiler
           output.add(label1+":");
           output.add("iconst_1");
           output.add(label2+":");
-          //output.add("iconst_0");
 
           return null;
 
@@ -421,7 +418,6 @@ public class Compiler
           output.add(label1+":");
           output.add("iconst_1");
           output.add(label2+":");
-          //output.add("iconst_0");
 
           return null;
       }
@@ -438,7 +434,6 @@ public class Compiler
           output.add(label1+":");
           output.add("iconst_1");
           output.add(label2+":");
-          //output.add("iconst_0");
 
           return null;
 
@@ -456,7 +451,6 @@ public class Compiler
           output.add(label1+":");
           output.add("iconst_1");
           output.add(label2+":");
-          //output.add("iconst_0");
 
           return null;
 
@@ -483,7 +477,6 @@ public class Compiler
           output.add(label1+":");
           output.add("iconst_1");
           output.add(label2+":");
-          //output.add("iconst_0");
 
           return null;
 
