@@ -28,7 +28,6 @@ ldc 50
 istore 0
 iload 0
 iload 0
-iload 0
 iconst_1
 iadd
 istore 0
@@ -39,7 +38,6 @@ isub
 istore 0
 iadd
 istore 1
-iload 1
 iload 1
 invokestatic Runtime/printInt(I)V
 iload 0

@@ -33,12 +33,10 @@ nop
 .limit stack 500
 iconst_0
 istore 0
-iload 0
 iconst_1
 iload 0
 invokestatic bind_function_arguments_lazily/snd(II)I
 istore 1
-iload 1
 iload 1
 invokestatic Runtime/printInt(I)V
 iload 1

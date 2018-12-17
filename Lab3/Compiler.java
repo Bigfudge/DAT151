@@ -68,7 +68,7 @@ public class Compiler
 
       public void addVar (String id){
           if (variables.peek().containsKey(id)) {
-              return;
+              throw new RuntimeException("FELFELFEL");
           }
         variables.peek().put(id,variableCount);
         variableCount++;
@@ -85,7 +85,6 @@ public class Compiler
                   return(scope.get(id));
 
               }
-
           }
 
           throw new RuntimeException("getReg: Bo such variable: " + id);
@@ -161,8 +160,6 @@ public class Compiler
         def.accept(new Compile(), env);
     }
 
-    // TODO: compile AST, appending to output.
-
     // Concatenate strings in output to .j file content.
     StringBuilder jtext = new StringBuilder();
     for (String s: output) {
@@ -196,9 +193,7 @@ public class Compiler
           }
           //Checks all statement in the function
           for (Stm st : functionStms) {
-
-                st.accept(new CompileStm() , env);
-
+             st.accept(new CompileStm() , env);
           }
           if(functionType instanceof Type_void){
               output.add("return");
@@ -206,7 +201,6 @@ public class Compiler
           env.deleteScope();
           output.add("nop");
           output.add(".end method");
-
           return env;
       }
   }
@@ -220,9 +214,6 @@ public class Compiler
         public Env visit(SDecls p, Env env) {
             for(String id : p.listid_){
                     env.addVar(id);
-                    output.add("iconst_0");
-                    output.add("istore "+env.getReg(id));
-
             }
             return null;
         }
@@ -264,7 +255,6 @@ public class Compiler
             env.addVar(p.id_);
             p.exp_.accept(new CompileExp(), env);
             output.add("istore "+env.getReg(p.id_));
-            output.add("iload "+ env.getReg(p.id_));
             return null;
         }
         public Env visit(SReturn p, Env env) {
@@ -275,15 +265,15 @@ public class Compiler
         public Env visit(SWhile p , Env env) {
             String startLabel =  env.getLabel();
             String endLabel = env.getLabel();
-            env.newScope();
             output.add(startLabel+":");
             p.exp_.accept(new CompileExp(), env);
             output.add("iconst_0");
             output.add("if_icmpeq "+endLabel);
+            env.newScope();
             p.stm_.accept(new CompileStm(), env);
+            env.deleteScope();
             output.add("goto "+startLabel);
             output.add(endLabel+":");
-            env.deleteScope();
 
             return null;
         }
@@ -330,9 +320,15 @@ public class Compiler
       }
 
       public Void visit(EAnd p, Env env) {
+          String falseLabel = env.getLabel();
+          output.add("iconst_0");
           p.exp_1.accept(new CompileExp(), env);
+          output.add("ifeq "+falseLabel);
           p.exp_2.accept(new CompileExp(), env);
-          output.add("iand");
+          output.add("ifeq "+falseLabel);
+          output.add("pop");
+          output.add("iconst_1");
+          output.add(falseLabel+":");
           return null;
       }
 
@@ -494,9 +490,15 @@ public class Compiler
       }
 
       public Void visit(EOr p, Env env) {
+          String trueLabel = env.getLabel();
+          output.add("iconst_1");
           p.exp_1.accept(new CompileExp(), env);
+          output.add("ifne "+trueLabel);
           p.exp_2.accept(new CompileExp(), env);
-          output.add("ior");
+          output.add("ifne "+trueLabel);
+          output.add("pop");
+          output.add("iconst_0");
+          output.add(trueLabel+":");
 
           return null;
 
@@ -518,7 +520,7 @@ public class Compiler
       public Void visit(EPostIncr p, Env env) {
           Integer reg = env.getReg(p.id_);
 
-          output.add("iload " + reg);
+         output.add("iload " + reg);
           output.add("iload " + reg);
           output.add("iconst_1");
           output.add("iadd");

@@ -27,7 +27,6 @@
 iconst_5
 istore 0
 iload 0
-iload 0
 iconst_1
 iadd
 istore 0

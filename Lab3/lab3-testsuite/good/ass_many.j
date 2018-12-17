@@ -24,12 +24,6 @@
 .method public static main()I
 .limit locals 500
 .limit stack 500
-iconst_0
-istore 0
-iconst_0
-istore 1
-iconst_0
-istore 2
 ldc 6
 istore 2
 iload 2

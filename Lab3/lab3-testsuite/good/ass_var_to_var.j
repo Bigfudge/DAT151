@@ -27,9 +27,7 @@
 iconst_0
 istore 0
 iload 0
-iload 0
 istore 1
-iload 1
 iconst_0
 ireturn
 nop
