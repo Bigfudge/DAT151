@@ -29,7 +29,7 @@ istore 0
 iconst_0
 istore 1
 iload 1
-areturn
+return
 
 .end method
 .method public static main()I
@@ -39,10 +39,9 @@ iconst_0
 istore 2
 iload 2
 
+invokestatic snd(II)I
 iconst_1
 iload 2
-invokestatic snd(II)I
-nop
 istore 3
 iload 3
 
@@ -51,7 +50,4 @@ invokestatic Runtime/printInt(I)V
 
 iload 3
 ireturn
-iload 3
-areturn
-
 .end method

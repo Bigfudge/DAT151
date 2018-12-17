@@ -44,7 +44,4 @@ invokestatic Runtime/printInt(I)V
 
 iconst_0
 ireturn
-iconst_0
-areturn
-
 .end method

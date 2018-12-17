@@ -1,4 +1,5 @@
 int main () {
+  test();
   return test();
 }
 

@@ -35,15 +35,14 @@ L1:
 iconst_1
 L2:
 iconst_0
-areturn
+return
 
 .end method
 .method public static main()I
 .limit locals 1000
 .limit stack 1000
-iconst_0
 invokestatic c(I)Z
-nop
+iconst_0
 if_icmpeq L3
 iconst_0
 invokestatic Runtime/printInt(I)V
@@ -55,7 +54,4 @@ L4:
 
 iconst_0
 ireturn
-iconst_0
-areturn
-
 .end method

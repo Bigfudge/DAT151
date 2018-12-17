@@ -191,11 +191,14 @@ public class Compiler
               if(functionName=="main" && st instanceof SReturn){
                   SReturn tmp = (SReturn)st;
                   tmp.exp_.accept(new CompileExp(), env);
+                 // output.add(";;test");
                   output.add("ireturn");
               }
 
-              st.accept(new CompileStm() , env);
-              output.add("");
+              else {
+                st.accept(new CompileStm() , env);
+                output.add("");
+              }
           }
           if(functionType instanceof Type_void){
               output.add("return");
@@ -258,7 +261,7 @@ public class Compiler
         public Env visit(SReturn p, Env env) {
             p.exp_.accept(new CompileExp(), env);
             //System.out.println("this?");
-            output.add("areturn");
+            output.add("return");
             return null;
         }
         public Env visit(SWhile p , Env env) {
@@ -332,12 +335,12 @@ public class Compiler
               output.add("invokestatic Runtime/printInt(I)V");
           }
           else{
+              output.add("invokestatic "+p.id_+ env.getSignature(p.id_));
               for (Exp exp : p.listexp_ ) {
                   exp.accept(new CompileExp(), env);
               }
-
-              output.add("invokestatic "+p.id_+env.getSignature(p.id_));
-              output.add("nop");
+            //  output.add("invokestatic "+p.id_+ env.getSignature(p.id_));
+            //  output.add("nop");
           }
           return null;
       }

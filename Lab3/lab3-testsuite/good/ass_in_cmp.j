@@ -56,7 +56,4 @@ L2:
 
 iconst_0
 ireturn
-iconst_0
-areturn
-
 .end method

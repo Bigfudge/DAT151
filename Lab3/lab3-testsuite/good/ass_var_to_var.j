@@ -34,7 +34,4 @@ iload 1
 
 iconst_0
 ireturn
-iconst_0
-areturn
-
 .end method
