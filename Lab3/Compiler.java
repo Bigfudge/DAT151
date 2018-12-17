@@ -10,7 +10,7 @@ public class Compiler
   private class Env{
       public HashMap<String,String> signature ;
       //public String[] variables;
-      public HashMap<String, Integer> variables;
+      public LinkedList<HashMap<String, Integer>> variables;
       Integer variableCount = 0;
       Integer loopCount = 0;
       Integer labelCounter=0;
@@ -19,7 +19,7 @@ public class Compiler
       public Env(){
           signature = new HashMap<>();
          // variables = new String[4];
-         variables=new HashMap<>();
+         variables= new LinkedList<HashMap<String, Integer>>();
          className="";
       }
 
@@ -67,10 +67,10 @@ public class Compiler
       }
 
       public void addVar (String id){
-        if (variables.containsKey(id)) {
-            return;
-        }
-        variables.put(id,variableCount);
+          if (variables.peek().containsKey(id)) {
+              return;
+          }
+        variables.peek().put(id,variableCount);
         variableCount++;
       }
 
@@ -80,12 +80,23 @@ public class Compiler
 
       }
       public Integer getReg(String id){
+          for (HashMap<String, Integer> scope : variables) {
+              if (scope.containsKey(id)) {
+                  return(scope.get(id));
 
-            if (variables.containsKey(id)) {
-                return(variables.get(id));
+              }
 
-            }
-            throw new RuntimeException("getReg: Bo such variable: " + id);
+          }
+
+          throw new RuntimeException("getReg: Bo such variable: " + id);
+      }
+      public void newScope(){
+          variables.addFirst(new HashMap<String,Integer>());
+          //variableCount=0;
+      }
+      public void deleteScope(){
+         HashMap<String, Integer> deletedScope= variables.removeFirst();
+         variableCount-= deletedScope.size();
       }
 
 
@@ -111,13 +122,14 @@ public class Compiler
     output = new LinkedList();
     Env env = new Env();
     env.className=name;
+    env.newScope();
     // Output boilerplate
     output.add(".class public " + name);
     output.add(".super java/lang/Object");
     output.add("");
     output.add(".method public <init>()V");
-    output.add("  .limit locals 1");
-    output.add("  .limit stack  1");
+    output.add("  .limit locals 500");
+    output.add("  .limit stack  500");
     output.add("");
     output.add("  aload_0");
     output.add("  invokespecial java/lang/Object/<init>()V");
@@ -126,8 +138,8 @@ public class Compiler
     output.add(".end method");
     output.add("");
     output.add(".method public static main([Ljava/lang/String;)V");
-    output.add("  .limit locals 1");
-    output.add("  .limit stack  1");
+    output.add("  .limit locals 500");
+    output.add("  .limit stack  500");
     output.add("");
     output.add("  invokestatic " + name + "/main()I");
     output.add("  pop");
@@ -167,7 +179,7 @@ public class Compiler
   }
   private class Compile implements Def.Visitor<Env, Env>{
       public Env visit (DFun fun, Env env) {
-          //env.newScope();
+          env.newScope();
           Type functionType = fun.type_;
           String functionName = fun.id_;
           ListArg functionArgs = fun.listarg_;
@@ -177,38 +189,31 @@ public class Compiler
         String signature =env.getSignature(functionName);
 
           output.add(".method public static "+functionName+signature);
-          output.add(".limit locals 1000");
-          output.add(".limit stack 1000");
+          output.add(".limit locals 500");
+          output.add(".limit stack 500");
           for(Arg arg : functionArgs){
-              ADecl tmp = (ADecl)arg;
-              env.addVar(tmp.id_);
-              output.add("iconst_0");
-              output.add("istore "+env.getReg(tmp.id_).toString());
+              arg.accept(new CompileArg(), env);
           }
           //Checks all statement in the function
           for (Stm st : functionStms) {
-              if(functionName=="main" && st instanceof SReturn){
-                  SReturn tmp = (SReturn)st;
-                  tmp.exp_.accept(new CompileExp(), env);
-                  output.add("ireturn");
-              }
 
-              else {
                 st.accept(new CompileStm() , env);
-                output.add("");
-              }
+
           }
           if(functionType instanceof Type_void){
               output.add("return");
           }
-
+          env.deleteScope();
+          output.add("nop");
           output.add(".end method");
 
-
-
-          //env.deleteScope();
-
           return env;
+      }
+  }
+  private class CompileArg implements Arg.Visitor<Env, Env>{
+      public Env visit(ADecl a, Env env){
+          env.addVar(a.id_);
+          return null;
       }
   }
   private class CompileStm implements Stm.Visitor<Env, Env>{
@@ -223,7 +228,7 @@ public class Compiler
         }
         public Env visit(SExp p, Env env) {
             p.exp_.accept(new CompileExp(), env);
-            if ((output.getLast().charAt(output.getLast().length() - 1) != 'V')) {
+            if (!(output.getLast().charAt(output.getLast().length() - 1) == 'V')) {
                 output.add("pop");
             }
             return null;
@@ -235,21 +240,24 @@ public class Compiler
             p.exp_.accept(new CompileExp(), env);
             output.add("iconst_1");
             output.add("if_icmpeq "+trueLabel);
+            env.newScope();
             p.stm_2.accept(new CompileStm(), env);
+            env.deleteScope();
             output.add("goto "+endLabel);
             output.add(trueLabel+":");
+            env.newScope();
             p.stm_1.accept(new CompileStm(),env);
-
+            env.deleteScope();
             output.add(endLabel+":");
 
             return null;
         }
         public Env visit(SBlock p, Env env) {
+            env.newScope();
             for (Stm stm : p.liststm_){
                 stm.accept(new CompileStm(), env);
             }
-
-
+            env.deleteScope();
             return null;
         }
         public Env visit(SInit p, Env env) {
@@ -267,6 +275,7 @@ public class Compiler
         public Env visit(SWhile p , Env env) {
             String startLabel =  env.getLabel();
             String endLabel = env.getLabel();
+            env.newScope();
             output.add(startLabel+":");
             p.exp_.accept(new CompileExp(), env);
             output.add("iconst_0");
@@ -274,6 +283,8 @@ public class Compiler
             p.stm_.accept(new CompileStm(), env);
             output.add("goto "+startLabel);
             output.add(endLabel+":");
+            env.deleteScope();
+
             return null;
         }
   }
@@ -326,6 +337,8 @@ public class Compiler
       }
 
       public Void visit(EApp p, Env env) {
+          env.newScope();
+
           if (p.id_=="readInt") {
               output.add("invokestatic Runtime/readInt()I");
           }
@@ -334,16 +347,16 @@ public class Compiler
                   exp.accept(new CompileExp(), env);
               }
               output.add("invokestatic Runtime/printInt(I)V");
+
           }
           else{
-
               for (Exp exp : p.listexp_ ) {
                   exp.accept(new CompileExp(), env);
               }
               output.add("invokestatic "+env.className+"/"+p.id_+ env.getSignature(p.id_));
-
-
           }
+          env.deleteScope();
+
           return null;
       }
 

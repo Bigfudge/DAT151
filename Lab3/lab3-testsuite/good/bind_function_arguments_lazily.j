@@ -2,8 +2,8 @@
 .super java/lang/Object
 
 .method public <init>()V
-  .limit locals 1
-  .limit stack  1
+  .limit locals 500
+  .limit stack  500
 
   aload_0
   invokespecial java/lang/Object/<init>()V
@@ -12,8 +12,8 @@
 .end method
 
 .method public static main([Ljava/lang/String;)V
-  .limit locals 1
-  .limit stack  1
+  .limit locals 500
+  .limit stack  500
 
   invokestatic bind_function_arguments_lazily/main()I
   pop
@@ -22,32 +22,26 @@
 .end method
 
 .method public static snd(II)I
-.limit locals 1000
-.limit stack 1000
-iconst_0
-istore 0
-iconst_0
-istore 1
+.limit locals 500
+.limit stack 500
 iload 1
 ireturn
-
+nop
 .end method
 .method public static main()I
-.limit locals 1000
-.limit stack 1000
+.limit locals 500
+.limit stack 500
 iconst_0
 istore 0
 iload 0
-
 iconst_1
 iload 0
 invokestatic bind_function_arguments_lazily/snd(II)I
-istore 2
-iload 2
-
-iload 2
+istore 1
+iload 1
+iload 1
 invokestatic Runtime/printInt(I)V
-
-iload 2
+iload 1
 ireturn
+nop
 .end method
