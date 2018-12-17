@@ -29,25 +29,25 @@ istore 0
 iconst_0
 istore 1
 iload 1
-return
+ireturn
 
 .end method
 .method public static main()I
 .limit locals 1000
 .limit stack 1000
 iconst_0
+istore 0
+iload 0
+
+iconst_1
+iload 0
+invokestatic bind_function_arguments_lazily/snd(II)I
 istore 2
 iload 2
 
-invokestatic snd(II)I
-iconst_1
 iload 2
-istore 3
-iload 3
-
-iload 3
 invokestatic Runtime/printInt(I)V
 
-iload 3
+iload 2
 ireturn
 .end method

@@ -34,15 +34,15 @@ goto L2
 L1:
 iconst_1
 L2:
-iconst_0
-return
+ireturn
 
 .end method
 .method public static main()I
 .limit locals 1000
 .limit stack 1000
-invokestatic c(I)Z
 iconst_0
+invokestatic bool_return/c(I)Z
+iconst_1
 if_icmpeq L3
 iconst_0
 invokestatic Runtime/printInt(I)V

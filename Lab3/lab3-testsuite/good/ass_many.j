@@ -36,6 +36,7 @@ istore 2
 iload 2
 istore 1
 iload 1
+pop
 
 iload 2
 iload 1

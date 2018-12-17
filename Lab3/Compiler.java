@@ -14,11 +14,13 @@ public class Compiler
       Integer variableCount = 0;
       Integer loopCount = 0;
       Integer labelCounter=0;
+      String className;
 
       public Env(){
           signature = new HashMap<>();
          // variables = new String[4];
          variables=new HashMap<>();
+         className="";
       }
 
       //Adds function to signatures if id does not already exist, otherwise Exception
@@ -61,35 +63,31 @@ public class Compiler
           if (signature.containsKey(id)){
               return signature.get(id);
           }
-          throw new RuntimeException("No such function is defined.");
+          throw new RuntimeException("getSignature: No such function is defined."+id);
       }
 
       public void addVar (String id){
-        //   if(!Arrays.asList(variables).contains(id)){
-        //       variables[variableCount++%4]=id;
-        //   }
-        //   return;
+        if (variables.containsKey(id)) {
+            return;
+        }
         variables.put(id,variableCount);
         variableCount++;
       }
 
       public String getLabel(){
-          //return "label_"+UUID.randomUUID().toString()+":";
           labelCounter++;
           return("L"+labelCounter.toString());
 
       }
       public Integer getReg(String id){
-        //   if (Arrays.asList(variables).contains(id)) {
-        //       return(Arrays.asList(variables).indexOf(id));
-        //   }
-        //   return -2;
+
             if (variables.containsKey(id)) {
                 return(variables.get(id));
 
             }
-            throw new RuntimeException("Saker gick fel");
+            throw new RuntimeException("getReg: Bo such variable: " + id);
       }
+
 
   }
   public static TypeCode typeCode(Type type) {
@@ -112,6 +110,7 @@ public class Compiler
     // Initialize output
     output = new LinkedList();
     Env env = new Env();
+    env.className=name;
     // Output boilerplate
     output.add(".class public " + name);
     output.add(".super java/lang/Object");
@@ -191,7 +190,6 @@ public class Compiler
               if(functionName=="main" && st instanceof SReturn){
                   SReturn tmp = (SReturn)st;
                   tmp.exp_.accept(new CompileExp(), env);
-                 // output.add(";;test");
                   output.add("ireturn");
               }
 
@@ -225,6 +223,9 @@ public class Compiler
         }
         public Env visit(SExp p, Env env) {
             p.exp_.accept(new CompileExp(), env);
+            if ((output.getLast().charAt(output.getLast().length() - 1) != 'V')) {
+                output.add("pop");
+            }
             return null;
         }
         public Env visit(SIfElse p, Env env) {
@@ -232,6 +233,7 @@ public class Compiler
             String endLabel = env.getLabel();
 
             p.exp_.accept(new CompileExp(), env);
+            output.add("iconst_1");
             output.add("if_icmpeq "+trueLabel);
             p.stm_2.accept(new CompileStm(), env);
             output.add("goto "+endLabel);
@@ -245,9 +247,8 @@ public class Compiler
         public Env visit(SBlock p, Env env) {
             for (Stm stm : p.liststm_){
                 stm.accept(new CompileStm(), env);
-                //Verkar inte riktigt funka.
-                //output.add("pop");
             }
+
 
             return null;
         }
@@ -260,8 +261,7 @@ public class Compiler
         }
         public Env visit(SReturn p, Env env) {
             p.exp_.accept(new CompileExp(), env);
-            //System.out.println("this?");
-            output.add("return");
+            output.add("ireturn");
             return null;
         }
         public Env visit(SWhile p , Env env) {
@@ -269,6 +269,7 @@ public class Compiler
             String endLabel = env.getLabel();
             output.add(startLabel+":");
             p.exp_.accept(new CompileExp(), env);
+            output.add("iconst_0");
             output.add("if_icmpeq "+endLabel);
             p.stm_.accept(new CompileStm(), env);
             output.add("goto "+startLabel);
@@ -335,12 +336,13 @@ public class Compiler
               output.add("invokestatic Runtime/printInt(I)V");
           }
           else{
-              output.add("invokestatic "+p.id_+ env.getSignature(p.id_));
+
               for (Exp exp : p.listexp_ ) {
                   exp.accept(new CompileExp(), env);
               }
-            //  output.add("invokestatic "+p.id_+ env.getSignature(p.id_));
-            //  output.add("nop");
+              output.add("invokestatic "+env.className+"/"+p.id_+ env.getSignature(p.id_));
+
+
           }
           return null;
       }
@@ -374,7 +376,7 @@ public class Compiler
           output.add(label1+":");
           output.add("iconst_1");
           output.add(label2+":");
-          output.add("iconst_0");
+          //output.add("iconst_0");
 
           return null;
 
@@ -386,13 +388,13 @@ public class Compiler
 
           String label1 = env.getLabel();
           String label2 = env.getLabel();
-          output.add("if_icmpgt label_"+label1);
+          output.add("if_icmpgt "+label1);
           output.add("iconst_0");
           output.add("goto "+label2);
           output.add(label1+":");
           output.add("iconst_1");
           output.add(label2+":");
-          output.add("iconst_0");
+          //output.add("iconst_0");
 
           return null;
 
@@ -410,7 +412,7 @@ public class Compiler
           output.add(label1+":");
           output.add("iconst_1");
           output.add(label2+":");
-          output.add("iconst_0");
+          //output.add("iconst_0");
 
           return null;
       }
@@ -427,7 +429,7 @@ public class Compiler
           output.add(label1+":");
           output.add("iconst_1");
           output.add(label2+":");
-          output.add("iconst_0");
+          //output.add("iconst_0");
 
           return null;
 
@@ -445,7 +447,7 @@ public class Compiler
           output.add(label1+":");
           output.add("iconst_1");
           output.add(label2+":");
-          output.add("iconst_0");
+          //output.add("iconst_0");
 
           return null;
 
@@ -472,7 +474,7 @@ public class Compiler
           output.add(label1+":");
           output.add("iconst_1");
           output.add(label2+":");
-          output.add("iconst_0");
+          //output.add("iconst_0");
 
           return null;
 
@@ -493,7 +495,7 @@ public class Compiler
           output.add("iload " + reg);
           output.add("iload " + reg);
           output.add("iconst_1");
-          output.add("iadd");
+          output.add("isub");
           output.add("istore "+reg);
 
           return null;

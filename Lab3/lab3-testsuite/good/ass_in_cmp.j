@@ -44,7 +44,7 @@ goto L4
 L3:
 iconst_1
 L4:
-iconst_0
+iconst_1
 if_icmpeq L1
 iconst_0
 invokestatic Runtime/printInt(I)V

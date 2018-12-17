@@ -36,7 +36,7 @@ istore 0
 iload 0
 iload 0
 iconst_1
-iadd
+isub
 istore 0
 iadd
 istore 1
