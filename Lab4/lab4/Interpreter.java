@@ -13,15 +13,15 @@ public class Interpreter {
             signature = new HashMap<>();
             abstractions = new HashMap<>();
         }
-        
+
         public Exp getAbstract (String id) {
             return abstractions.get(id);
         }
-        
+
         public void putAbstract (String id, Exp exp) {
             abstractions.put(id, exp);
         }
-        
+
         public Func getFun(String id) {
             if (signature.get(id) != null) {
                 return signature.get(id);
@@ -43,14 +43,14 @@ public class Interpreter {
         public String name;
         public Exp expression;
         public LinkedList<String> args = new LinkedList<>();
-    
+
         public Func(String inName, Exp inExp, LinkedList<String> inArgs) {
             name = inName;
             expression = inExp;
             args = inArgs;
         }
     }
-  
+
     public Interpreter(Strategy strategy) {
         this.strategy = strategy;
     }
@@ -62,13 +62,13 @@ public class Interpreter {
             def.accept(new FunctionPutter() , env);
         }
         //Put main?
-    
+
         //Execute interpreter from main.
         Integer result = prog.main_.accept(new ExecuteInterpreter(), env);
         System.out.println(result);
-    
+
     }
-  
+
     private class FunctionPutter implements Def.Visitor<Object, Env> {
         public Object visit (DDef fun, Env env) {
             Func function = new Func (fun.ident_, fun.exp_, fun.listident_);
@@ -76,63 +76,69 @@ public class Interpreter {
             return null;
         }
     }
-    
+
     private class ExecuteInterpreter implements Main.Visitor<Integer, Env> {
         public Integer visit (DMain mainFun, Env env) {
             return mainFun.exp_.accept(new ExpEvaluator(), env);
         }
     }
-    
+
     private class ExpEvaluator implements Exp.Visitor<Integer, Env> {
-        public Integer visit(EAbs p, Env env) {
+        public String visit(EAbs p, Env env) {
             String id = p.ident_;
             env.putAbstract(id, p.exp_);
             return null;
         }
-        
-        public Integer visit(EAdd p, Env env) {
-            Integer u = p.exp_1.accept(new ExpEvaluator(), env);
-            Integer v = p.exp_2.accept(new ExpEvaluator(), env);
-            return u+v;
+
+        public String visit(EAdd p, Env env) {
+            String u = p.exp_1.accept(new ExpEvaluator(), env);
+            String v = p.exp_2.accept(new ExpEvaluator(), env);
+            return (Integer.parseInt(u)+Integer.parseInt(v)).toString();
         }
-        
-        public Integer visit(EApp p, Env env) {
+
+        public String visit(EApp p, Env env) {
+            String functionName = p.exp_1.accept(new ExpEvaluator(), env);
+
+            Func function = env.getFun(functionName);
+
+
+
             return null;
         }
-        
-        public Integer visit(EIf p, Env env) {
-            if (p.exp_1.accept(new ExpEvaluator(), env) == 1) {
+
+        public String visit(EIf p, Env env) {
+            if (p.exp_1.accept(new ExpEvaluator(), env) == "1") {
                 return p.exp_2.accept(new ExpEvaluator(), env);
             }
             else {
                 return p.exp_3.accept(new ExpEvaluator(), env);
             }
         }
-        
-        public Integer visit(EInt p, Env env) {
-            return p.integer_;
+
+        public String visit(EInt p, Env env) {
+            return p.integer_.toString();;
         }
-        
-        public Integer visit(ELt p, Env env) {
-            Integer u = p.exp_1.accept(new ExpEvaluator(), env);
-            Integer v = p.exp_2.accept(new ExpEvaluator(), env);
-            if(u < v) {
-                return 1;
+
+        public String visit(ELt p, Env env) {
+            String u = p.exp_1.accept(new ExpEvaluator(), env);
+            String v = p.exp_2.accept(new ExpEvaluator(), env);
+            if(Integer.parseInt(u) < Integer.parseInt(v)) {
+                return "1";
             }
-            return 0;
+            return "0";
         }
-        
-        public Integer visit(ESub p, Env env) {
-            Integer u = p.exp_1.accept(new ExpEvaluator(), env);
-            Integer v = p.exp_2.accept(new ExpEvaluator(), env);
-            
-            return u-v;
+
+        public String visit(ESub p, Env env) {
+            String u = p.exp_1.accept(new ExpEvaluator(), env);
+            String v = p.exp_2.accept(new ExpEvaluator(), env);
+
+            return (Integer.parseInt(u)-Integer.parseInt(v)).toString();
         }
-        
-        public Integer visit(EVar p, Env env) {
-            return null;
+
+        public String visit(EVar p, Env env) {
+            return p.ident_;
         }
     }
-    
+
 
 }
