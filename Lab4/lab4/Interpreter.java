@@ -149,9 +149,9 @@ public class Interpreter {
             String id = p.ident_;
             Exp e = sig.get(id);
             Entry tempVal = new ClosEntry(e, env);
-            e.accept(new ExpEvaluator(), new Extend(id, tempVal, env));
-            return tempVal.value();
-            
+            return e.accept(new ExpEvaluator(), new Extend(id, tempVal, env));
+
+
             //return e.accept(new ExpEvaluator(), new Extend(id, new ClosEntry(e, env), env));
         }
 
@@ -163,26 +163,30 @@ public class Interpreter {
         }
 
         public Value visit(EApp p, Environment env) {
-            Integer arg2;
-            
-            
-            Value argValue = p.exp_2.accept(new ExpEvaluator(), env);
-            
-            
-            while (!(argValue instaceof VInt)) {
-                argValue = argValue.
-                arg2 = argValue.intValue();
+            Value exp2Val = p.exp_2.accept(new ExpEvaluator(),env);
+
+            if (!(exp2Val instanceof VInt)){
+                throw new RuntimeException("Det va ingen int :(");
             }
-            
-            
+            VInt vInt = (VInt) exp2Val;
+
+            ValueEntry entry = new ValueEntry(vInt);
+
             Value function = p.exp_1.accept(new ExpEvaluator(), env);
-            
-            function.apply( b
-            
-            Value functionName = p.exp_1.accept(new ExpEvaluator(), env);
-            Function func = sig.get
-            
-            return null;
+            if(!(function instanceof VFunc)){
+                throw new RuntimeException("fel");
+            }
+            VFunc func = (VFunc)function;
+            return func.apply(entry)
+            //Lägg till strategy här
+            //Value val = p.exp_2.accept(new ExpEvaluator(), env);
+
+            //Value argValue = p.exp_2.accept(new ExpEvaluator(), env);
+
+            //Extend ex = new Extend(f.ident_, val, )
+
+
+            //return null;
         }
 
         public Value visit(EIf p, Environment env) {
@@ -216,12 +220,11 @@ public class Interpreter {
 
         public Value visit(EVar p, Environment env) {
             String id = p.ident_;
-            Exp exp = sig.get(id);
-            
+
             Entry entry = env.lookup(id);
-            
+
             return entry.value();
-            
+
             //return exp.accept(new ExpEvaluator(), new Extend(id, value, env));
         }
     }
