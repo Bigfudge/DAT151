@@ -55,7 +55,7 @@ public class Interpreter {
      this.exp = exp;
      this.env = env;
    }
-   Value value() { return exp.accept (new EvalVisitor(), env); }
+   Value value() { return exp.accept (new ExpEvaluator(), env); }
  }
 
  // Value /////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ public class Interpreter {
         }
 
         public Value apply (Entry e) {
-            throw RuntimeException ("cannot apply integer value ot argument");
+            throw new RuntimeException ("cannot apply integer value ot argument");
         }
     }
 
@@ -85,7 +85,7 @@ public class Interpreter {
         final Environment env;
 
 
-        public Func(String inName, Exp inExp, Environment inEnv) {
+        public VFunc(String inName, Exp inExp, Environment inEnv) {
             name = inName;
             expression = inExp;
             env = inEnv;
@@ -96,7 +96,7 @@ public class Interpreter {
         }
 
         public Value apply (Entry e) {
-            return expression.accept(new ExpEvaluator(),
+            return expression.accept(new ExpEvaluator(), env);
         }
     }
 
@@ -144,25 +144,29 @@ public class Interpreter {
         }
       }
 
-    private class ExpEvaluator implements Exp.Visitor<Integer, Env> {
-        public Value visit(EAbs p, Env env) {
+    private class ExpEvaluator implements Exp.Visitor<Value, Environment> {
+        public Value visit(EAbs p, Environment env) {
             String id = p.ident_;
             Exp e = sig.get(id);
-            return e.accept(new ExpEvaluator(), env);
+            Entry tempVal = new ClosEntry(e, env);
+            e.accept(new ExpEvaluator(), new Extend(id, tempVal, env));
+            return tempVal.value();
+            
+            //return e.accept(new ExpEvaluator(), new Extend(id, new ClosEntry(e, env), env));
         }
 
-        public Value visit(EAdd p, Env env) {
+        public Value visit(EAdd p, Environment env) {
             Value u = p.exp_1.accept(new ExpEvaluator(), env);
             Value v = p.exp_2.accept(new ExpEvaluator(), env);
 
             return new VInt(u.intValue()+v.intValue());
         }
 
-        public Value visit(EApp p, Env env) {
+        public Value visit(EApp p, Environment env) {
             return null;
         }
 
-        public Value visit(EIf p, Env env) {
+        public Value visit(EIf p, Environment env) {
             if (p.exp_1.accept(new ExpEvaluator(), env).intValue() == 1) {
                 return p.exp_2.accept(new ExpEvaluator(), env);
             }
@@ -171,11 +175,11 @@ public class Interpreter {
             }
         }
 
-        public Value visit(EInt p, Env env) {
+        public Value visit(EInt p, Environment env) {
             return new VInt(p.integer_);
         }
 
-        public Value visit(ELt p, Env env) {
+        public Value visit(ELt p, Environment env) {
             Value u = p.exp_1.accept(new ExpEvaluator(), env);
             Value v = p.exp_2.accept(new ExpEvaluator(), env);
             if(u.intValue() < v.intValue()) {
@@ -184,14 +188,14 @@ public class Interpreter {
             return new VInt(0);
         }
 
-        public Value visit(ESub p, Env env) {
+        public Value visit(ESub p, Environment env) {
             Value u = p.exp_1.accept(new ExpEvaluator(), env);
             Value v = p.exp_2.accept(new ExpEvaluator(), env);
 
             return new VInt(u.intValue()-v.intValue());
         }
 
-        public Value visit(EVar p, Env env) {
+        public Value visit(EVar p, Environment env) {
             return null;
         }
     }
