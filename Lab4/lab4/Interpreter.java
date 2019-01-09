@@ -38,16 +38,44 @@ public class Interpreter {
         }
 
     }
-
-    private class Func {
-        public String name;
-        public Exp expression;
-        public LinkedList<String> args = new LinkedList<>();
     
-        public Func(String inName, Exp inExp, LinkedList<String> inArgs) {
+    abstract class Value {
+        abstract public int intValue();
+        abstract public Value apply(Entry e);
+    }
+    
+    private class VInt extends Value {
+        final int val;
+        public VInt (int i) {val = i;}
+        
+        public int intValue() {
+            return val;
+        }
+        
+        public Value apply (Entry e) {
+            throw RuntimeException ("cannot apply integer value ot argument");
+        }
+    }
+    
+
+    private class VFunc {
+        final String name;
+        final Exp expression;
+        final Environment env;
+        
+    
+        public Func(String inName, Exp inExp, Environment inEnv) {
             name = inName;
             expression = inExp;
-            args = inArgs;
+            env = inEnv;
+        }
+        
+        public int intValue() {
+            throw new RuntimeException("Fun.intValue() is not possible");
+        }
+        
+        public Value apply (Entry e) {
+            return expression.accept(new ExpEvaluator(), 
         }
     }
   
@@ -130,6 +158,8 @@ public class Interpreter {
         }
         
         public Integer visit(EVar p, Env env) {
+            Function func = env.getFun(p.ident_);
+            Integer funcResult = func.expression.acceot(new ExpEvaluator(), env);
             return null;
         }
     }
