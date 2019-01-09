@@ -96,7 +96,7 @@ public class Interpreter {
         }
 
         public Value apply (Entry e) {
-            return expression.accept(new ExpEvaluator(), env);
+            return expression.accept(new ExpEvaluator(), new Extend(name, e, env));
         }
     }
 
@@ -163,6 +163,25 @@ public class Interpreter {
         }
 
         public Value visit(EApp p, Environment env) {
+            Integer arg2;
+            
+            
+            Value argValue = p.exp_2.accept(new ExpEvaluator(), env);
+            
+            
+            while (!(argValue instaceof VInt)) {
+                argValue = argValue.
+                arg2 = argValue.intValue();
+            }
+            
+            
+            Value function = p.exp_1.accept(new ExpEvaluator(), env);
+            
+            function.apply( b
+            
+            Value functionName = p.exp_1.accept(new ExpEvaluator(), env);
+            Function func = sig.get
+            
             return null;
         }
 
@@ -196,7 +215,14 @@ public class Interpreter {
         }
 
         public Value visit(EVar p, Environment env) {
-            return null;
+            String id = p.ident_;
+            Exp exp = sig.get(id);
+            
+            Entry entry = env.lookup(id);
+            
+            return entry.value();
+            
+            //return exp.accept(new ExpEvaluator(), new Extend(id, value, env));
         }
     }
 
