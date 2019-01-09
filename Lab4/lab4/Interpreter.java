@@ -105,6 +105,7 @@ public class Interpreter {
     }
 
     public void interpret(Program p) {
+        System.out.println("Program");
         System.out.println(p.accept(new ProgramVisitor(), null).intValue());
       }
 
@@ -113,7 +114,10 @@ public class Interpreter {
         public Value visit(Fun.Absyn.Prog p, Void arg)
         {
           // build signature
-          for (Def d: p.listdef_) d.accept(new DefVisitor(), null);
+          for (Def d: p.listdef_){
+            System.out.println("Building signature");
+            d.accept(new DefVisitor(), null);
+          }
           // execute main expression
           return p.main_.accept(new MainVisitor(), null);
         }
@@ -146,6 +150,7 @@ public class Interpreter {
 
     private class ExpEvaluator implements Exp.Visitor<Value, Environment> {
         public Value visit(EAbs p, Environment env) {
+            System.out.println("Printy boy EAbs");
             String id = p.ident_;
             Exp e = sig.get(id);
             Entry tempVal = new ClosEntry(e, env);
@@ -163,6 +168,7 @@ public class Interpreter {
         }
 
         public Value visit(EApp p, Environment env) {
+            System.out.println("Printy boy EApp");
             Value exp2Val = p.exp_2.accept(new ExpEvaluator(),env);
 
             if (!(exp2Val instanceof VInt)){
@@ -174,11 +180,11 @@ public class Interpreter {
 
             Value function = p.exp_1.accept(new ExpEvaluator(), env);
             if(!(function instanceof VFunc)){
-                throw new RuntimeException("fel");
+                throw new RuntimeException("Trying to call a function that is not defined");
             }
             VFunc func = (VFunc)function;
-            return func.apply(entry)
-            //Lägg till strategy här
+            return func.apply(entry);
+            //Lagg till strategy har
             //Value val = p.exp_2.accept(new ExpEvaluator(), env);
 
             //Value argValue = p.exp_2.accept(new ExpEvaluator(), env);
@@ -219,11 +225,22 @@ public class Interpreter {
         }
 
         public Value visit(EVar p, Environment env) {
+            System.out.println("Printy boy EVar");
             String id = p.ident_;
 
-            Entry entry = env.lookup(id);
-
-            return entry.value();
+            Value value = env.lookup(id);
+            
+            if(value != null) {
+                if(value instanceof VInt) {
+                    return value;
+                }
+                VFunc fun = (VFunc) value;
+                return fun.expression.accept(new ExpEvaluator(), env);
+            }
+            
+            Exp exp = sig.get(id);
+            
+            return exp.accept(new ExpEvaluator(), env);
 
             //return exp.accept(new ExpEvaluator(), new Extend(id, value, env));
         }
