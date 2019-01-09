@@ -32,7 +32,7 @@ except ``"`` unless preceded by ``\``.
 
 
 
-QuaConstId literals are recognized by the regular expression
+Id literals are recognized by the regular expression
 `````letter (letter | digit | '_')*`````
 
 
@@ -55,7 +55,7 @@ The symbols used in Cpp are the following:
   | < | > | <= | >=
   | == | != | && | ||
   | -= | += | ? | :
-  | , | :: | & | 
+  | & | , | :: | 
 
 ===Comments===
 Single-line comments begin with //, #.Multiple-line comments are  enclosed with /* and */.
@@ -70,7 +70,7 @@ All other symbols are terminals.
   | //Def// | -> | //Type// //Id// ``(`` //[Arg]// ``)`` ``{`` //[Stm1]// ``}`` 
   |  |  **|**  | //Type// //Id// ``(`` //[Arg]// ``)`` ``;`` 
   |  |  **|**  | //Stm3// 
-  |  |  **|**  | ``using`` //Id// ``;`` 
+  |  |  **|**  | ``using`` //QualifiedConstant// ``;`` 
   | //Arg// | -> | //Type// 
   |  |  **|**  | ``const`` //Type// 
   |  |  **|**  | //Type// //Id// 
@@ -94,21 +94,19 @@ All other symbols are terminals.
   | //Stm// | -> | ``{`` //[Stm1]// ``}`` 
   |  |  **|**  | ``;`` 
   |  |  **|**  | //Stm1// 
-  | //Point// | -> | ``(`` //[Exp]// ``)`` 
-  |  |  **|**  | ``[`` //Exp// ``]`` 
-  | //Exp16// | -> | //Integer// 
+  | //Exp15// | -> | //Integer// 
   |  |  **|**  | //Double// 
   |  |  **|**  | //[String]// 
   |  |  **|**  | //Char// 
   |  |  **|**  | ``true`` 
   |  |  **|**  | ``false`` 
-  |  |  **|**  | //Id// 
-  |  |  **|**  | //Id// //[Point]// 
+  |  |  **|**  | //QualifiedConstant// 
   |  |  **|**  | ``(`` //Exp// ``)`` 
-  | //Exp15// | -> | //Exp15// ``.`` //Exp16// 
-  |  |  **|**  | //Exp15// ``->`` //Exp16// 
-  |  |  **|**  | //Exp16// 
-  | //Exp14// | -> | //Exp14// ``++`` 
+  | //Exp14// | -> | //Exp14// ``(`` //[Exp]// ``)`` 
+  |  |  **|**  | //Exp14// ``[`` //Exp// ``]`` 
+  |  |  **|**  | //Exp14// ``.`` //Exp15// 
+  |  |  **|**  | //Exp14// ``->`` //Exp15// 
+  |  |  **|**  | //Exp14// ``++`` 
   |  |  **|**  | //Exp14// ``--`` 
   |  |  **|**  | //Exp15// 
   | //Exp13// | -> | ``++`` //Exp13// 
@@ -141,43 +139,37 @@ All other symbols are terminals.
   | //Exp2// | -> | //Exp3// ``=`` //Exp2// 
   |  |  **|**  | //Exp3// ``-=`` //Exp2// 
   |  |  **|**  | //Exp3// ``+=`` //Exp2// 
-  |  |  **|**  | //Exp3// ``?`` //Exp3// ``:`` //Exp3// 
+  |  |  **|**  | //Exp2// ``?`` //Exp3// ``:`` //Exp3// 
   |  |  **|**  | //Exp3// 
   | //Exp1// | -> | ``throw`` //Exp1// 
   |  |  **|**  | //Exp2// 
-  | //Exp// | -> | //Exp1// 
-  | //Exp5// | -> | //Exp6// 
-  | //Exp6// | -> | //Exp7// 
-  | //Exp7// | -> | //Exp8// 
-  | //Id// | -> | //Id1// 
-  |  |  **|**  | //[QuaConstId]// 
-  | //Id1// | -> | ``(`` //Id// ``)`` 
-  | //Type// | -> | //Type1// 
-  |  |  **|**  | //Type1// ``&`` 
-  | //Type1// | -> | ``(`` //Type// ``)`` 
+  | //Type// | -> | //Type// ``&`` 
   |  |  **|**  | ``bool`` 
   |  |  **|**  | ``double`` 
   |  |  **|**  | ``int`` 
   |  |  **|**  | ``void`` 
   |  |  **|**  | ``char`` 
-  |  |  **|**  | //Id// 
+  |  |  **|**  | //QualifiedConstant// 
+  |  |  **|**  | //Type1// 
+  | //QuaConstElem// | -> | //Id// 
+  | //QualifiedConstant// | -> | //[QuaConstElem]// 
+  | //Exp// | -> | //Exp1// 
+  | //Exp5// | -> | //Exp6// 
+  | //Exp6// | -> | //Exp7// 
+  | //Exp7// | -> | //Exp8// 
+  | //Type1// | -> | ``(`` //Type// ``)`` 
   | //[Exp]// | -> | **eps**
   |  |  **|**  | //Exp// 
   |  |  **|**  | //Exp// ``,`` //[Exp]// 
   | //[Arg]// | -> | **eps**
   |  |  **|**  | //Arg// 
   |  |  **|**  | //Arg// ``,`` //[Arg]// 
-  | //[Id]// | -> | **eps**
-  |  |  **|**  | //Id// 
-  |  |  **|**  | //Id// ``,`` //[Id]// 
   | //[Decl]// | -> | //Decl// 
   |  |  **|**  | //Decl// ``,`` //[Decl]// 
-  | //[QuaConstId]// | -> | //QuaConstId// 
-  |  |  **|**  | //QuaConstId// ``::`` //[QuaConstId]// 
   | //[String]// | -> | //String// 
   |  |  **|**  | //String// //[String]// 
-  | //[Point]// | -> | //Point// 
-  |  |  **|**  | //Point// //[Point]// 
+  | //[QuaConstElem]// | -> | //QuaConstElem// 
+  |  |  **|**  | //QuaConstElem// ``::`` //[QuaConstElem]// 
   | //[Def]// | -> | **eps**
   |  |  **|**  | //Def// //[Def]// 
   | //[Stm1]// | -> | **eps**

@@ -7,90 +7,105 @@ module AbsCpp where
 
 
 
-newtype QuaConstId = QuaConstId String
-  deriving (Eq, Ord, Show, Read)
+newtype Id = Id String deriving (Eq, Ord, Show, Read)
 data Program = PDefs [Def]
   deriving (Eq, Ord, Show, Read)
 
 data Def
-    = DFunStm Type Id [Arg] [Stm]
-    | DFun Type Id [Arg]
-    | DDecl Stm
-    | DUsing Id
+    = DFun Type Id [Arg] [Stm]
+    | DFunEmpty Type Id [Arg]
+    | DUsing QualifiedConstant
+    | DTypeDef Type Id
+    | DVariable Decl
   deriving (Eq, Ord, Show, Read)
 
 data Arg
-    = AType Type
-    | ATypeConst Type
-    | ATypeId Type Id
-    | AExp Type Id Exp
+    = AFunc Type
+    | ADecl Type Id
     | AConst Type Id
+    | AConstType Type
+    | AInitConst Type Id Exp
+    | AInit Type Id Exp
   deriving (Eq, Ord, Show, Read)
 
-data Decl = Decl Id | DeclExp Id Exp
+data IDecl = DeclId Id | IDeclAss Id Exp
+  deriving (Eq, Ord, Show, Read)
+
+data Decl = ConstDecl Type [IDecl] | NoConstDecl Type [IDecl]
   deriving (Eq, Ord, Show, Read)
 
 data Stm
-    = SDeclConst Type [Decl]
-    | STypedef Type Id
-    | SDecl Type [Decl]
+    = STypeDef Type Id
     | SExp Exp
+    | SDecl Decl
     | SReturn Exp
     | SWhile Exp Stm
-    | SDoWhile Stm Exp Stm
-    | SFor Stm Exp Exp Stm
-    | SIf Exp Stm
-    | SIfElse Exp Stm Stm
+    | SDoWhile Stm Exp
     | SBlock [Stm]
-    | SEnd
-  deriving (Eq, Ord, Show, Read)
-
-data Point = PFun [Exp] | PIndex Exp
+    | SIfElse Exp Stm Stm
+    | SIf Exp Stm
+    | SFor Decl Exp Exp Stm
+    | SFuncConst Type Id Exp
   deriving (Eq, Ord, Show, Read)
 
 data Exp
-    = EInt Integer
-    | EDouble Double
+    = EConst QualifiedConstant
     | EString [String]
-    | EChar Char
+    | EInt Integer
+    | EDouble Double
     | ETrue
+    | EChar Char
     | EFalse
-    | EId Id
-    | ECall Id [Point]
-    | EStut Exp Exp
-    | EPro Exp Exp
+    | EIndex Exp Exp
+    | EApp Exp [Exp]
+    | Emem Exp Exp
     | EPIncr Exp
     | EPDecr Exp
+    | EPointer Exp Exp
+    | ENot Exp
+    | EDRef Exp
     | EIncr Exp
     | EDecr Exp
-    | EDere Exp
-    | ENege Exp
-    | EMul Exp Exp
+    | ETimes Exp Exp
     | EDiv Exp Exp
     | EMod Exp Exp
-    | EAdd Exp Exp
-    | ESub Exp Exp
-    | ELShift Exp Exp
-    | ERShift Exp Exp
+    | EPlus Exp Exp
+    | EMinus Exp Exp
+    | ELshift Exp Exp
+    | ERshift Exp Exp
     | ELt Exp Exp
     | EGt Exp Exp
-    | ELEq Exp Exp
-    | EGEq Exp Exp
+    | ELtEq Exp Exp
+    | EGtWq Exp Exp
     | EEq Exp Exp
     | ENEq Exp Exp
     | EAnd Exp Exp
     | EOr Exp Exp
     | EAss Exp Exp
-    | EAssDec Exp Exp
-    | EAssInc Exp Exp
-    | ECond Exp Exp Exp
+    | EaDec Exp Exp
+    | EaInc Exp Exp
+    | EIfElse Exp Exp Exp
     | EThrow Exp
   deriving (Eq, Ord, Show, Read)
 
-data Id = IId [QuaConstId]
+data Type
+    = Tbool
+    | Tdouble
+    | TFloat
+    | Tint
+    | Tvoid
+    | TChar
+    | TList QualifiedConstant
+    | TRef Type
   deriving (Eq, Ord, Show, Read)
 
-data Type
-    = TAddr Type | Tbool | Tdouble | Tint | Tvoid | Tchar | TId Id
+data Types = TypeListElem Type
+  deriving (Eq, Ord, Show, Read)
+
+data QualifiedConstElem
+    = QualifiedConstElemId Id | QualifiedConstElemInstance Id [Types]
+  deriving (Eq, Ord, Show, Read)
+
+data QualifiedConstant = QualifiedConstElems [QualifiedConstElem]
   deriving (Eq, Ord, Show, Read)
 
