@@ -57,7 +57,7 @@ data Tok =
  | TV !String         -- identifiers
  | TD !String         -- double precision float literals
  | TC !String         -- character literals
- | T_Id !String
+ | T_QuaConstId !String
 
  deriving (Eq,Show,Ord)
 
@@ -95,7 +95,7 @@ prToken t = case t of
   PT _ (TD s)   -> s
   PT _ (TC s)   -> s
   Err _         -> "#error"
-  PT _ (T_Id s) -> s
+  PT _ (T_QuaConstId s) -> s
 
 
 data BTree = N | B String Tok BTree BTree deriving (Show)
@@ -192,7 +192,7 @@ utf8Encode = map fromIntegral . go . ord
                         ]
 
 alex_action_4 =  tok (\p s -> PT p (eitherResIdent (TV . share) s)) 
-alex_action_5 =  tok (\p s -> PT p (eitherResIdent (T_Id . share) s)) 
+alex_action_5 =  tok (\p s -> PT p (eitherResIdent (T_QuaConstId . share) s)) 
 alex_action_6 =  tok (\p s -> PT p (eitherResIdent (TV . share) s)) 
 alex_action_7 =  tok (\p s -> PT p (TL $ share $ unescapeInitTail s)) 
 alex_action_8 =  tok (\p s -> PT p (TC $ share s))  

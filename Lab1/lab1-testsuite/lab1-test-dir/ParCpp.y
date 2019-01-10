@@ -16,6 +16,8 @@ import ErrM
 %name pStm2 Stm2
 %name pStm1 Stm1
 %name pStm Stm
+%name pAssociative Associative
+%name pExp16 Exp16
 %name pExp15 Exp15
 %name pExp14 Exp14
 %name pExp13 Exp13
@@ -29,17 +31,20 @@ import ErrM
 %name pExp2 Exp2
 %name pExp1 Exp1
 %name pType Type
-%name pQuaConstElem QuaConstElem
-%name pQualifiedConstant QualifiedConstant
+%name pType1 Type1
+%name pId Id
 %name pExp Exp
 %name pExp5 Exp5
 %name pExp6 Exp6
 %name pExp7 Exp7
+%name pId1 Id1
 %name pListExp ListExp
 %name pListArg ListArg
+%name pListId ListId
 %name pListDecl ListDecl
+%name pListQuaConstId ListQuaConstId
 %name pListString ListString
-%name pListQuaConstElem ListQuaConstElem
+%name pListAssociative ListAssociative
 %name pListDef ListDef
 %name pListStm1 ListStm1
 -- no lexer declaration
@@ -103,7 +108,7 @@ L_integ  { PT _ (TI $$) }
 L_doubl  { PT _ (TD $$) }
 L_charac { PT _ (TC $$) }
 L_quoted { PT _ (TL $$) }
-L_Id { PT _ (T_Id $$) }
+L_QuaConstId { PT _ (T_QuaConstId $$) }
 
 
 %%
@@ -112,7 +117,7 @@ Integer :: { Integer } : L_integ  { (read ( $1)) :: Integer }
 Double  :: { Double }  : L_doubl  { (read ( $1)) :: Double }
 Char    :: { Char }    : L_charac { (read ( $1)) :: Char }
 String  :: { String }  : L_quoted {  $1 }
-Id    :: { Id} : L_Id { Id ($1)}
+QuaConstId    :: { QuaConstId} : L_QuaConstId { QuaConstId ($1)}
 
 Program :: { Program }
 Program : ListDef { AbsCpp.PDefs (reverse $1) }
@@ -120,7 +125,7 @@ Def :: { Def }
 Def : Type Id '(' ListArg ')' '{' ListStm1 '}' { AbsCpp.DFunStm $1 $2 $4 (reverse $7) }
     | Type Id '(' ListArg ')' ';' { AbsCpp.DFun $1 $2 $4 }
     | Stm3 { AbsCpp.DDecl $1 }
-    | 'using' QualifiedConstant ';' { AbsCpp.DUsing $2 }
+    | 'using' Id ';' { AbsCpp.DUsing $2 }
 Arg :: { Arg }
 Arg : Type { AbsCpp.AType $1 }
     | 'const' Type { AbsCpp.ATypeConst $2 }
@@ -148,21 +153,25 @@ Stm :: { Stm }
 Stm : '{' ListStm1 '}' { AbsCpp.SBlock (reverse $2) }
     | ';' { AbsCpp.SEnd }
     | Stm1 { $1 }
-Exp15 :: { Exp }
-Exp15 : Integer { AbsCpp.EInt $1 }
+Associative :: { Associative }
+Associative : '(' ListExp ')' { AbsCpp.PFun $2 }
+            | '[' Exp ']' { AbsCpp.PIndex $2 }
+Exp16 :: { Exp }
+Exp16 : Integer { AbsCpp.EInt $1 }
       | Double { AbsCpp.EDouble $1 }
       | ListString { AbsCpp.EString $1 }
       | Char { AbsCpp.EChar $1 }
       | 'true' { AbsCpp.ETrue }
       | 'false' { AbsCpp.EFalse }
-      | QualifiedConstant { AbsCpp.EId $1 }
+      | Id { AbsCpp.EId $1 }
+      | Id ListAssociative { AbsCpp.ECall $1 $2 }
       | '(' Exp ')' { $2 }
+Exp15 :: { Exp }
+Exp15 : Exp15 '.' Exp16 { AbsCpp.EStut $1 $3 }
+      | Exp15 '->' Exp16 { AbsCpp.EPro $1 $3 }
+      | Exp16 { $1 }
 Exp14 :: { Exp }
-Exp14 : Exp14 '(' ListExp ')' { AbsCpp.EFun $1 $3 }
-      | Exp14 '[' Exp ']' { AbsCpp.EIndex $1 $3 }
-      | Exp14 '.' Exp15 { AbsCpp.EStut $1 $3 }
-      | Exp14 '->' Exp15 { AbsCpp.EPro $1 $3 }
-      | Exp14 '++' { AbsCpp.EPIncr $1 }
+Exp14 : Exp14 '++' { AbsCpp.EPIncr $1 }
       | Exp14 '--' { AbsCpp.EPDecr $1 }
       | Exp15 { $1 }
 Exp13 :: { Exp }
@@ -202,22 +211,22 @@ Exp2 :: { Exp }
 Exp2 : Exp3 '=' Exp2 { AbsCpp.EAss $1 $3 }
      | Exp3 '-=' Exp2 { AbsCpp.EAssDec $1 $3 }
      | Exp3 '+=' Exp2 { AbsCpp.EAssInc $1 $3 }
-     | Exp2 '?' Exp3 ':' Exp3 { AbsCpp.ECond $1 $3 $5 }
+     | Exp3 '?' Exp3 ':' Exp3 { AbsCpp.ECond $1 $3 $5 }
      | Exp3 { $1 }
 Exp1 :: { Exp }
 Exp1 : 'throw' Exp1 { AbsCpp.EThrow $2 } | Exp2 { $1 }
 Type :: { Type }
-Type : Type '&' { AbsCpp.TAddr $1 }
-     | 'bool' { AbsCpp.TBool }
-     | 'double' { AbsCpp.TDouble }
-     | 'int' { AbsCpp.TInt }
-     | 'void' { AbsCpp.TVoid }
-     | 'char' { AbsCpp.TChar }
-     | QualifiedConstant { AbsCpp.TId $1 }
-QuaConstElem :: { QuaConstElem }
-QuaConstElem : Id { AbsCpp.QuaConstId $1 }
-QualifiedConstant :: { QualifiedConstant }
-QualifiedConstant : ListQuaConstElem { AbsCpp.QuaConstElems $1 }
+Type : Type1 '&' { AbsCpp.TAddr $1 } | Type1 { $1 }
+Type1 :: { Type }
+Type1 : 'bool' { AbsCpp.TBool }
+      | 'double' { AbsCpp.TDouble }
+      | 'int' { AbsCpp.TInt }
+      | 'void' { AbsCpp.TVoid }
+      | 'char' { AbsCpp.TChar }
+      | Id { AbsCpp.TId $1 }
+      | '(' Type ')' { $2 }
+Id :: { Id }
+Id : ListQuaConstId { AbsCpp.IId $1 } | Id1 { $1 }
 Exp :: { Exp }
 Exp : Exp1 { $1 }
 Exp5 :: { Exp }
@@ -226,6 +235,8 @@ Exp6 :: { Exp }
 Exp6 : Exp7 { $1 }
 Exp7 :: { Exp }
 Exp7 : Exp8 { $1 }
+Id1 :: { Id }
+Id1 : '(' Id ')' { $2 }
 ListExp :: { [Exp] }
 ListExp : {- empty -} { [] }
         | Exp { (:[]) $1 }
@@ -234,13 +245,20 @@ ListArg :: { [Arg] }
 ListArg : {- empty -} { [] }
         | Arg { (:[]) $1 }
         | Arg ',' ListArg { (:) $1 $3 }
+ListId :: { [Id] }
+ListId : {- empty -} { [] }
+       | Id { (:[]) $1 }
+       | Id ',' ListId { (:) $1 $3 }
 ListDecl :: { [Decl] }
 ListDecl : Decl { (:[]) $1 } | Decl ',' ListDecl { (:) $1 $3 }
+ListQuaConstId :: { [QuaConstId] }
+ListQuaConstId : QuaConstId { (:[]) $1 }
+               | QuaConstId '::' ListQuaConstId { (:) $1 $3 }
 ListString :: { [String] }
 ListString : String { (:[]) $1 } | String ListString { (:) $1 $2 }
-ListQuaConstElem :: { [QuaConstElem] }
-ListQuaConstElem : QuaConstElem { (:[]) $1 }
-                 | QuaConstElem '::' ListQuaConstElem { (:) $1 $3 }
+ListAssociative :: { [Associative] }
+ListAssociative : Associative { (:[]) $1 }
+                | Associative ListAssociative { (:) $1 $2 }
 ListDef :: { [Def] }
 ListDef : {- empty -} { [] } | ListDef Def { flip (:) $1 $2 }
 ListStm1 :: { [Stm] }

@@ -41,6 +41,7 @@ s <:> t = s ++ [classpathSeparator] ++ t
 -- | Run the class file with class path extended by the directory
 --   of the class file.
 
+stack = ["-Xms500m","-Xmx2000m", "-Xss100m"]
 main :: IO ()
 main = do
   args      <- getArgs
@@ -48,6 +49,6 @@ main = do
   className <- getClassName
   classPath <- fromMaybe "" <$> lookupEnv "CLASSPATH"
   let cp      = dir <:> classPath
-      cmdArgs = ["-cp",cp,className] ++ args
+      cmdArgs = stack ++["-cp",cp,className] ++ args
       -- cmdLine = showCommandForUser javaProg cmdArgs
   callProcess javaProg cmdArgs

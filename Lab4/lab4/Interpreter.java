@@ -4,7 +4,7 @@ import Fun.Absyn.*;
 public class Interpreter {
 
     final Strategy strategy;
-    final Map<String,Exp> sig  = new TreeMap();
+    final TreeMap<String,Exp> sig  = new TreeMap();
 
 // Environment ///////////////////////////////////////////////////////
 
@@ -14,7 +14,8 @@ public class Interpreter {
 
  class Empty extends Environment {
    Value lookup (String x) {
-     throw new RuntimeException ("Unbound variable: " + x);
+     return null;
+     //throw new RuntimeException ("Unbound variable: " + x);
    }
  }
 
@@ -74,7 +75,7 @@ public class Interpreter {
         }
 
         public Value apply (Entry e) {
-            throw new RuntimeException ("cannot apply integer value ot argument");
+            throw new RuntimeException ("cannot apply integer value to argument");
         }
     }
 
@@ -113,9 +114,15 @@ public class Interpreter {
         public Value visit(Fun.Absyn.Prog p, Void arg)
         {
           // build signature
-          for (Def d: p.listdef_) d.accept(new DefVisitor(), null);
+          for (Def d: p.listdef_){
+            d.accept(new DefVisitor(), null);
+          }
           // execute main expression
-          return p.main_.accept(new MainVisitor(), null);
+          //return new VInt(0);
+          Value result = p.main_.accept(new MainVisitor(), null);
+          if (!(result instanceof VInt)) 
+            throw new RuntimeException("Main does not return an int");
+          return result;
         }
       }
 
@@ -147,9 +154,19 @@ public class Interpreter {
     private class ExpEvaluator implements Exp.Visitor<Value, Environment> {
         public Value visit(EAbs p, Environment env) {
             String id = p.ident_;
-            Exp e = sig.get(id);
-            Entry tempVal = new ClosEntry(e, env);
-            return e.accept(new ExpEvaluator(), new Extend(id, tempVal, env));
+            ClosEntry entry = new ClosEntry(p.exp_, env);
+            Environment newEnv = new Extend(id, new ClosEntry(p.exp_, env), env);
+            
+          //  Value val = env.lookup(id);
+          //  if (val == null) {
+          //      throw new RuntimeException("hejhej");
+          //  }
+            return new VFunc(id, p.exp_, newEnv);
+            //return p.exp_.accept(new ExpEvaluator(), newEnv);
+            //return val;
+            //Entry tempVal = new ClosEntry(e, env);
+            //return new VFunc(id, e, new Extend(id, tempVal, env));
+            //return e.accept(new ExpEvaluator(), new Extend(id, tempVal, env));
 
 
             //return e.accept(new ExpEvaluator(), new Extend(id, new ClosEntry(e, env), env));
@@ -163,30 +180,30 @@ public class Interpreter {
         }
 
         public Value visit(EApp p, Environment env) {
-            Value exp2Val = p.exp_2.accept(new ExpEvaluator(),env);
-
-            if (!(exp2Val instanceof VInt)){
-                throw new RuntimeException("Det va ingen int :(");
-            }
-            VInt vInt = (VInt) exp2Val;
-
-            ValueEntry entry = new ValueEntry(vInt);
-
+            //throw new RuntimeException(sig.lastKey());
+            Entry test = new ValueEntry(new VInt(0));
+            
             Value function = p.exp_1.accept(new ExpEvaluator(), env);
-            if(!(function instanceof VFunc)){
-                throw new RuntimeException("fel");
+            
+            if (strategy == Strategy.CallByName) {
+               
+                
+                test = new ClosEntry(p.exp_2, env);
+                //return function.apply(test);
             }
-            VFunc func = (VFunc)function;
-            return func.apply(entry)
-            //Lägg till strategy här
-            //Value val = p.exp_2.accept(new ExpEvaluator(), env);
+            else if (strategy == Strategy.CallByValue) {
+                //throw new RuntimeException("CallByValue");
 
-            //Value argValue = p.exp_2.accept(new ExpEvaluator(), env);
+                Value exp2Val = p.exp_2.accept(new ExpEvaluator(), env);
+                test = new ValueEntry(exp2Val);
+                //return function.apply(test);
+            }
+            
 
-            //Extend ex = new Extend(f.ident_, val, )
+            return function.apply(test);
+            //else throw new RuntimeException("Something wrong with the strategy variable");
+            
 
-
-            //return null;
         }
 
         public Value visit(EIf p, Environment env) {
@@ -219,14 +236,21 @@ public class Interpreter {
         }
 
         public Value visit(EVar p, Environment env) {
-            String id = p.ident_;
-
-            Entry entry = env.lookup(id);
-
-            return entry.value();
-
-            //return exp.accept(new ExpEvaluator(), new Extend(id, value, env));
+            Value value = env.lookup(p.ident_);
+            
+            if (value != null) {
+                return value;
+            }
+            
+            else {
+                Exp exp = sig.get(p.ident_);
+                if (exp == null) {
+                    throw new RuntimeException("Unbound variable: " + p.ident_);
+                }
+                return exp.accept(new ExpEvaluator(), new Empty());
+            }
         }
+ 
     }
 
 

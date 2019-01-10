@@ -9,9 +9,9 @@ type Result = Err String
 failure :: Show a => a -> Result
 failure x = Bad $ "Undefined case: " ++ show x
 
-transId :: Id -> Result
-transId x = case x of
-  Id string -> failure x
+transQuaConstId :: QuaConstId -> Result
+transQuaConstId x = case x of
+  QuaConstId string -> failure x
 transProgram :: Program -> Result
 transProgram x = case x of
   PDefs defs -> failure x
@@ -20,7 +20,7 @@ transDef x = case x of
   DFunStm type_ id args stms -> failure x
   DFun type_ id args -> failure x
   DDecl stm -> failure x
-  DUsing qualifiedconstant -> failure x
+  DUsing id -> failure x
 transArg :: Arg -> Result
 transArg x = case x of
   AType type_ -> failure x
@@ -46,6 +46,10 @@ transStm x = case x of
   SIfElse exp stm1 stm2 -> failure x
   SBlock stms -> failure x
   SEnd -> failure x
+transAssociative :: Associative -> Result
+transAssociative x = case x of
+  PFun exps -> failure x
+  PIndex exp -> failure x
 transType :: Type -> Result
 transType x = case x of
   TAddr type_ -> failure x
@@ -54,13 +58,10 @@ transType x = case x of
   TInt -> failure x
   TVoid -> failure x
   TChar -> failure x
-  TId qualifiedconstant -> failure x
-transQuaConstElem :: QuaConstElem -> Result
-transQuaConstElem x = case x of
-  QuaConstId id -> failure x
-transQualifiedConstant :: QualifiedConstant -> Result
-transQualifiedConstant x = case x of
-  QuaConstElems quaconstelems -> failure x
+  TId id -> failure x
+transId :: Id -> Result
+transId x = case x of
+  IId quaconstids -> failure x
 transExp :: Exp -> Result
 transExp x = case x of
   EInt integer -> failure x
@@ -69,9 +70,8 @@ transExp x = case x of
   EChar char -> failure x
   ETrue -> failure x
   EFalse -> failure x
-  EId qualifiedconstant -> failure x
-  EFun exp exps -> failure x
-  EIndex exp1 exp2 -> failure x
+  EId id -> failure x
+  ECall id associatives -> failure x
   EStut exp1 exp2 -> failure x
   EPro exp1 exp2 -> failure x
   EPIncr exp -> failure x

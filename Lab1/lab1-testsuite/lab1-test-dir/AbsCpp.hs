@@ -7,7 +7,8 @@ module AbsCpp where
 
 
 
-newtype Id = Id String deriving (Eq, Ord, Show, Read)
+newtype QuaConstId = QuaConstId String
+  deriving (Eq, Ord, Show, Read)
 data Program = PDefs [Def]
   deriving (Eq, Ord, Show, Read)
 
@@ -15,7 +16,7 @@ data Def
     = DFunStm Type Id [Arg] [Stm]
     | DFun Type Id [Arg]
     | DDecl Stm
-    | DUsing QualifiedConstant
+    | DUsing Id
   deriving (Eq, Ord, Show, Read)
 
 data Arg
@@ -44,20 +45,14 @@ data Stm
     | SEnd
   deriving (Eq, Ord, Show, Read)
 
+data Associative = PFun [Exp] | PIndex Exp
+  deriving (Eq, Ord, Show, Read)
+
 data Type
-    = TAddr Type
-    | TBool
-    | TDouble
-    | TInt
-    | TVoid
-    | TChar
-    | TId QualifiedConstant
+    = TAddr Type | TBool | TDouble | TInt | TVoid | TChar | TId Id
   deriving (Eq, Ord, Show, Read)
 
-data QuaConstElem = QuaConstId Id
-  deriving (Eq, Ord, Show, Read)
-
-data QualifiedConstant = QuaConstElems [QuaConstElem]
+data Id = IId [QuaConstId]
   deriving (Eq, Ord, Show, Read)
 
 data Exp
@@ -67,9 +62,8 @@ data Exp
     | EChar Char
     | ETrue
     | EFalse
-    | EId QualifiedConstant
-    | EFun Exp [Exp]
-    | EIndex Exp Exp
+    | EId Id
+    | ECall Id [Associative]
     | EStut Exp Exp
     | EPro Exp Exp
     | EPIncr Exp
